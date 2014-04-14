@@ -1,4 +1,8 @@
 {
-    "name": "jscriptcoder.com",
-    "version": "0.1.0"
+  "name": "jscriptcoder.com",
+  "version": "0.1.0",
+  "devDependencies": {
+    "gulp": "~3.6.0",
+    "gulp-less": "~1.2.3"
+  }
 }

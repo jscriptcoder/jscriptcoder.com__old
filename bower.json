@@ -1,4 +1,8 @@
 {
-    "name": "jscriptcoder.com",
-    "version": "0.1.0"
+  "name": "jscriptcoder.com",
+  "version": "0.1.0",
+  "devDependencies": {
+    "bootstrap": "~3.1.1",
+    "es6-module-loader": "~0.5.4"
+  }
 }
