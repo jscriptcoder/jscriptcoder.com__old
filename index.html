@@ -2,10 +2,25 @@
 <html>
 <head>
     <title>..:: jscriptcoder.com ::..</title>
+
+    <link rel="stylesheet" href="css/main.css" />
+
     <script src="bower_components/traceur/traceur.min.js"></script>
     <script src="bower_components/es6-module-loader/dist/es6-module-loader.js"></script>
+
 </head>
 <body>
-    jscriptcoder.com
+
+    <div class="console">
+        Console here<span class="cursor blink">&nbsp;</span>
+    </div>
+
+    <script type="module">
+        System
+            .import('bower_components/underscore/underscore')
+            .then(() => System.import('bower_components/backbone/backbone') )
+            .then(() => System.import('src/js/main'));
+    </script>
+
 </body>
 </html>
