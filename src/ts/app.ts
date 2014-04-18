@@ -1,5 +1,10 @@
-import Backbone = require('backbone');
+/**
+ * @module app
+ * @requires views/console
+ */
 
-export function init() {
+import Console = require('./views/console');
 
-}
+var console = new Console();
+
+//console.clear();

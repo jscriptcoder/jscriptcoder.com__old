@@ -1,3 +1,7 @@
+/**
+* Configure requirejs and bootstraps the application
+* @module bootstrap
+*/
 require.config({
     baseUrl: '/build/js',
     paths: {
@@ -9,13 +13,11 @@ require.config({
 
 var Bootstrap;
 (function (Bootstrap) {
-    var $output = document.getElementById('output');
-    var strLoading = 'Loading. Please wait...';
-    var loadingIdx = 0;
-    var interval;
-
     function init() {
-        interval = setInterval(function () {
+        var $output = document.getElementById('output');
+        var strLoading = 'Loading. Please wait...';
+        var loadingIdx = 0;
+        var interval = setInterval(function () {
             if (strLoading[loadingIdx]) {
                 $output.innerHTML += strLoading[loadingIdx++];
             } else {
