@@ -1328,10 +1328,10 @@ body {
   0%,
   100% {
     background-color: #000000;
-    color: #bbbbbb;
+    color: #44d544;
   }
   50% {
-    background-color: #bbbbbb;
+    background-color: #44d544;
     color: #000000;
   }
 }
@@ -1339,10 +1339,10 @@ body {
   0%,
   100% {
     background-color: #000000;
-    color: #bbbbbb;
+    color: #44d544;
   }
   50% {
-    background-color: #bbbbbb;
+    background-color: #44d544;
     color: #000000;
   }
 }
@@ -1350,10 +1350,10 @@ body {
   0%,
   100% {
     background-color: #000000;
-    color: #bbbbbb;
+    color: #44d544;
   }
   50% {
-    background-color: #bbbbbb;
+    background-color: #44d544;
     color: #000000;
   }
 }
@@ -1361,10 +1361,10 @@ body {
   0%,
   100% {
     background-color: #000000;
-    color: #bbbbbb;
+    color: #44d544;
   }
   50% {
-    background-color: #bbbbbb;
+    background-color: #44d544;
     color: #000000;
   }
 }
@@ -1374,7 +1374,7 @@ body {
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 12px;
   background-color: #000000;
-  color: #bbbbbb;
+  color: #44d544;
 }
 .console .cursor.blink {
   -webkit-animation: blink 1s infinite steps(1);

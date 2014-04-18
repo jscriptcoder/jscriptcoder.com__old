@@ -3,24 +3,16 @@
 <head>
     <title>..:: jscriptcoder.com ::..</title>
 
-    <link rel="stylesheet" href="css/main.css" />
-
-    <script src="bower_components/traceur/traceur.min.js"></script>
-    <script src="bower_components/es6-module-loader/dist/es6-module-loader.js"></script>
+    <link rel="stylesheet" href="build/css/main.css" />
 
 </head>
 <body>
 
-    <div class="console">
-        Console here<span class="cursor blink">&nbsp;</span>
+    <div id="console" class="console">
+        <span id="output"></span><span id="cursor" class="cursor blink">&nbsp;</span>
     </div>
 
-    <script type="module">
-        System
-            .import('bower_components/underscore/underscore')
-            .then(() => System.import('bower_components/backbone/backbone') )
-            .then(() => System.import('src/js/main'));
-    </script>
+    <script data-main="build/js/bootstrap" src="bower_components/requirejs/require.js"></script>
 
 </body>
 </html>
