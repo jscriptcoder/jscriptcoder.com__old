@@ -2,10 +2,10 @@
   "name": "jscriptcoder.com",
   "version": "0.1.0",
   "devDependencies": {
-    "bootstrap": "~3.1.1",
-    "backbone": "~1.1.2",
     "requirejs": "~2.1.11",
     "almond": "~0.2.9",
-    "jquery": "~2.1.0"
+    "jasmine": "~2.0.0",
+    "bootstrap": "~3.1.1",
+    "promise": "~0.2.2"
   }
 }

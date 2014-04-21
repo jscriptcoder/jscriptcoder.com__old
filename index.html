@@ -8,9 +8,19 @@
 </head>
 <body>
 
-    <div id="console" class="console">
-        <span id="output"></span><span id="cursor" class="cursor blink">&nbsp;</span>
-    </div>
+    <div id="terminal" class="terminal">
+
+        <div id="loading">
+            <span class="text"></span><span class="cursor">&nbsp;</span>
+        </div><!-- #loading -->
+
+        <div id="output" class="output hide"></div>
+
+        <div id="prompt" class="prompt hide">
+            <span class="symbol">js&gt;&nbsp;</span><span class="input"></span><span class="cursor blink">&nbsp;</span>
+        </div><!-- #prompt -->
+
+    </div><!-- #terminal -->
 
     <script data-main="build/js/bootstrap" src="bower_components/requirejs/require.js"></script>
 

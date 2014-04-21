@@ -1,6 +1,6 @@
 @import "cursor-blink-anime.less";
 
-.console {
+.terminal {
   height: 100%;
   padding: @console-padding;
   font-family: @console-font-family;
@@ -9,5 +9,9 @@
   color: @console-font-color;
 
   .cursor.blink { .animation(blink 1s infinite steps(1)); }
+  .cursor.type {
+    background-color: @console-font-color;
+    color: @console-bg-color;
+  }
 
 }

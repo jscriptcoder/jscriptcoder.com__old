@@ -1,10 +1,18 @@
 /**
  * @module app
- * @requires views/console
+ * @requires config
+ * @requires terminal
+ * @requires prompt
+ * @requires output
  */
 
-import Console = require('./views/console');
+import Config = require('./config');
+import Prompt = require('./prompt');
+import Output = require('./output');
+import Terminal = require('./terminal');
 
-var console = new Console();
+var prompt = new Prompt(document.getElementById('prompt'), document);
+var output = new Output(document.getElementById('output'));
+var terminal = new Terminal(document.getElementById('terminal'), prompt, output);
 
-//console.clear();
+terminal.print('This is a test');
