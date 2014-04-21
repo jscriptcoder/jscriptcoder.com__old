@@ -1,19 +1,18 @@
 /**
-* @module elementWrapper
-* @exports ElementWrapper
+* @module wrapper
+* @exports Wrapper
 */
 define(["require", "exports"], function(require, exports) {
     /**
-    * HTMLElement wrapper
-    * @class ElementWrapper
+    * @class Wrapper
     */
-    var ElementWrapper = (function () {
+    var Wrapper = (function () {
         /**
         * @constructor
         * @param {String|HTMLElemen t} el
         * @throws {Error} Wrong parameter
         */
-        function ElementWrapper(el) {
+        function Wrapper(el) {
             if (typeof el === 'string') {
                 this.__el__ = document.querySelector(el);
             } else if (el && el.nodeType) {
@@ -22,7 +21,7 @@ define(["require", "exports"], function(require, exports) {
                 throw Error('Wrong parameter: ' + el);
             }
         }
-        Object.defineProperty(ElementWrapper.prototype, "el", {
+        Object.defineProperty(Wrapper.prototype, "el", {
             /**
             * el getter
             * @readonly
@@ -40,7 +39,7 @@ define(["require", "exports"], function(require, exports) {
         * Hides the element
         * @public
         */
-        ElementWrapper.prototype.hide = function () {
+        Wrapper.prototype.hide = function () {
             this.__el__.style.display = 'none';
         };
 
@@ -48,7 +47,7 @@ define(["require", "exports"], function(require, exports) {
         * Shows the element
         * @public
         */
-        ElementWrapper.prototype.show = function () {
+        Wrapper.prototype.show = function () {
             this.__el__.style.display = '';
         };
 
@@ -57,7 +56,7 @@ define(["require", "exports"], function(require, exports) {
         * @param {HTMLElement} el
         * @public
         */
-        ElementWrapper.prototype.append = function (el) {
+        Wrapper.prototype.append = function (el) {
             this.__el__.appendChild(el);
         };
 
@@ -66,7 +65,7 @@ define(["require", "exports"], function(require, exports) {
         * @param {String} cls
         * @public
         */
-        ElementWrapper.prototype.addClass = function (cls) {
+        Wrapper.prototype.addClass = function (cls) {
             this.__el__.classList.add(cls);
         };
 
@@ -75,12 +74,12 @@ define(["require", "exports"], function(require, exports) {
         * @param {String} cls
         * @public
         */
-        ElementWrapper.prototype.removeClass = function (cls) {
+        Wrapper.prototype.removeClass = function (cls) {
             this.__el__.classList.remove(cls);
         };
-        return ElementWrapper;
+        return Wrapper;
     })();
 
     
-    return ElementWrapper;
+    return Wrapper;
 });

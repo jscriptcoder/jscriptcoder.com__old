@@ -1,13 +1,12 @@
 /**
- * @module elementWrapper
- * @exports ElementWrapper
+ * @module wrapper
+ * @exports Wrapper
  */
 
 /**
- * HTMLElement wrapper
- * @class ElementWrapper
+ * @class Wrapper
  */
-class ElementWrapper {
+class Wrapper {
 
     /**
      * @type HTMLElement
@@ -84,4 +83,4 @@ class ElementWrapper {
     }
 }
 
-export = ElementWrapper;
+export = Wrapper;

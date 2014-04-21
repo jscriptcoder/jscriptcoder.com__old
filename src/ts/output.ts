@@ -1,16 +1,18 @@
 /**
  * @module output
  * @exports Output
- * @requires elementWrapper
+ * @requires wrapper
+ * @requires utils
  */
 
-import ElementWrapper = require('./elementWrapper');
+import Wrapper = require('./wrapper');
+import Utils = require('./utils');
 
 /**
  * @class Output
- * @extends ElementWrapper
+ * @extends Wrapper
  */
-class Output extends ElementWrapper {
+class Output extends Wrapper {
 
     /**
      * @constructor
@@ -22,12 +24,21 @@ class Output extends ElementWrapper {
 
     /**
      * Prints a message wrapping it in a div
-     * @param {String} msg
+     * @param {String|String[]} msg
+     * @throws {Error} Wrong parameter
      * @public
      */
     print(msg) {
         var div = document.createElement('div');
-        div.innerText = msg;
+
+        if (Utils.isArray(msg)) {
+            msg.forEach((val) => this.print(val));
+        } else if (Utils.isString) {
+            div.innerHTML = msg.replace(/^\s/, '&nbsp;');
+        } else {
+            throw Error('Wrong parameter: ' + msg);
+        }
+
         this.append(div);
     }
 

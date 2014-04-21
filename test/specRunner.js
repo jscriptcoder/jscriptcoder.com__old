@@ -17,7 +17,7 @@ require(['boot'], function() {
     
     require([
 
-        'specs/elementWrapperSpec',
+        'specs/wrapperSpec',
         'specs/promptSpec',
         'specs/outputSpec'
 

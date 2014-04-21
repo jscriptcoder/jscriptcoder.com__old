@@ -68,7 +68,7 @@ module Bootstrap {
                 } else {
                     clearInterval(interval);
                     cursorMode(TCursorMode.blink);
-                    setTimeout(() => resolve(['app']), 2000)
+                    setTimeout(() => resolve(['app']), 3000)
                 }
             }, 60);
 

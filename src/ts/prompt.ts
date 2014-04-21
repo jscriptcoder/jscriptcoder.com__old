@@ -1,16 +1,16 @@
 /**
  * @module prompt
  * @exports Prompt
- * @requires elementWrapper
+ * @requires wrapper
  */
 
-import ElementWrapper = require('./elementWrapper');
+import Wrapper = require('./wrapper');
 
 /**
  * @class Prompt
- * @extends ElementWrapper
+ * @extends Wrapper
  */
-class Prompt extends ElementWrapper {
+class Prompt extends Wrapper {
 
     /**
      * @type HTMLElement

@@ -1,16 +1,16 @@
 /**
  * @module terminal
  * @exports Terminal
- * @requires elementWrapper
+ * @requires wrapper
  */
 
-import ElementWrapper = require('./elementWrapper');
+import Wrapper = require('./wrapper');
 
 /**
  * @class Terminal
- * @extends ElementWrapper
+ * @extends Wrapper
  */
-class Terminal extends ElementWrapper {
+class Terminal extends Wrapper {
 
     /**
      * @type Prompt

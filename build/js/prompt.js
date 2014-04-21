@@ -1,7 +1,7 @@
 /**
 * @module prompt
 * @exports Prompt
-* @requires elementWrapper
+* @requires wrapper
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -9,10 +9,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './elementWrapper'], function(require, exports, ElementWrapper) {
+define(["require", "exports", './wrapper'], function(require, exports, Wrapper) {
     /**
     * @class Prompt
-    * @extends ElementWrapper
+    * @extends Wrapper
     */
     var Prompt = (function (_super) {
         __extends(Prompt, _super);
@@ -98,7 +98,7 @@ define(["require", "exports", './elementWrapper'], function(require, exports, El
         Prompt.prototype.onKeyup = function (e) {
         };
         return Prompt;
-    })(ElementWrapper);
+    })(Wrapper);
 
     
     return Prompt;

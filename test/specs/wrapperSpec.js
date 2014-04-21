@@ -1,21 +1,21 @@
-define(['../../build/js/elementWrapper'], function(ElementWrapper) {
+define(['../../build/js/wrapper'], function(Wrapper) {
 
-    describe('Class ElementWrapper', function() {
+    describe('Class Wrapper', function() {
         var element;
 
         beforeEach(function () {
-            element = new ElementWrapper(document.createElement('div'));
+            element = new Wrapper(document.createElement('div'));
         })
 
-        it('new ElementWrapper', function() {
+        it('new Wrapper', function() {
             expect(element).toEqual(jasmine.any(ElementWrapper));
         });
 
-        it('ElementWrapper#el', function () {
+        it('Wrapper#el', function () {
             expect(element.el).toEqual(jasmine.any(HTMLElement));
         });
 
-        it('ElementWrapper#hide & ElementWrapper#show', function () {
+        it('Wrapper#hide & Wrapper#show', function () {
             element.hide();
             expect(element.el.style.display).toEqual('none');
 
@@ -23,12 +23,12 @@ define(['../../build/js/elementWrapper'], function(ElementWrapper) {
             expect(element.el.style.display).toEqual('');
         });
 
-        it('ElementWrapper#append', function () {
+        it('Wrapper#append', function () {
             element.append(document.createElement('span'));
             expect(element.el.innerHTML).toEqual('<span></span>');
         });
 
-        it('ElementWrapper#addClass & ElementWrapper#removeClass', function () {
+        it('Wrapper#addClass & Wrapper#removeClass', function () {
             element.addClass('test');
             expect(element.el.classList.contains('test')).toBeTruthy();
 

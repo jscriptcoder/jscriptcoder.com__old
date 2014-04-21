@@ -1,7 +1,7 @@
 /**
 * @module terminal
 * @exports Terminal
-* @requires elementWrapper
+* @requires wrapper
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -9,10 +9,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './elementWrapper'], function(require, exports, ElementWrapper) {
+define(["require", "exports", './wrapper'], function(require, exports, Wrapper) {
     /**
     * @class Terminal
-    * @extends ElementWrapper
+    * @extends Wrapper
     */
     var Terminal = (function (_super) {
         __extends(Terminal, _super);
@@ -35,7 +35,7 @@ define(["require", "exports", './elementWrapper'], function(require, exports, El
             this.__output__.print(msg);
         };
         return Terminal;
-    })(ElementWrapper);
+    })(Wrapper);
 
     
     return Terminal;

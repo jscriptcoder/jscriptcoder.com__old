@@ -69,7 +69,7 @@ var Bootstrap;
                     cursorMode(1 /* blink */);
                     setTimeout(function () {
                         return resolve(['app']);
-                    }, 2000);
+                    }, 3000);
                 }
             }, 60);
         });
