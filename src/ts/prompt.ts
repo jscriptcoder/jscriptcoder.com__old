@@ -7,6 +7,7 @@
 import Wrapper = require('./wrapper');
 
 /**
+ * Takes care of the user input
  * @class Prompt
  * @extends Wrapper
  */
@@ -78,21 +79,21 @@ class Prompt extends Wrapper {
     }
 
     /**
-     * Gets trigger when the user types in the kpEl passed in the constructor
+     * Gets trigger on keydown
      * @event
      * @param {Event} e
      */
     onKeydown(e) {}
 
     /**
-     * Gets trigger when the user types in the kpEl passed in the constructor
+     * Gets trigger on keypress
      * @event
      * @param {Event} e
      */
     onKeypress(e) {}
 
     /**
-     * Gets trigger when the user types in the kpEl passed in the constructor
+     * Gets trigger on keyup
      * @event
      * @param {Event} e
      */

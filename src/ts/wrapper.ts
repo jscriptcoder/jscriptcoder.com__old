@@ -1,13 +1,24 @@
 /**
  * @module wrapper
  * @exports Wrapper
+ * @requires utils
  */
 
+import Utils = require('./utils');
+
 /**
+ * jQuery-like wrapper for HTMLElements
  * @class Wrapper
  */
 class Wrapper {
 
+    /**
+     * document element. Easy to mock
+     * @type HTMLElement
+     * @static
+     */ 
+    static doc = document;
+    
     /**
      * @type HTMLElement
      * @private
@@ -21,7 +32,7 @@ class Wrapper {
      */
     constructor(el) {
         if (typeof el === 'string') {
-            this.__el__ = document.querySelector(el);
+            this.__el__ = Wrapper.doc.querySelector(el);
         } else if (el && el.nodeType) {
             this.__el__ = el;
         } else {
@@ -80,6 +91,26 @@ class Wrapper {
      */
     removeClass(cls) {
         this.__el__.classList.remove(cls);
+    }
+
+    /**
+     * Wrapper for document.createElement method
+     * @param {String} tag
+     * @param {Object} [attrs]
+     * @public
+     */
+    create(tag, attrs?) {
+        var el = Wrapper.doc.createElement(tag);
+        
+        if (Utils.isObject(attrs)) {
+            for (var p in attrs) {
+                if (attrs.hasOwnProperty(p)) {
+                    el.setAttribute(p, attrs[p]);
+                }
+            }
+        }
+        
+        return el;
     }
 }
 

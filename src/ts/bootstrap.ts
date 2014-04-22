@@ -39,16 +39,17 @@ module Bootstrap {
     enum TCursorMode {
         type,
         blink
-    }
+    };
 
     /**
      * Changes the mode of the cursor (type|blink)
      * @param {String} mode
      */
     function cursorMode(mode) {
-        cursor.classList.remove(TCursorMode[TCursorMode.type]);
-        cursor.classList.remove(TCursorMode[TCursorMode.blink]);
-        cursor.classList.add(TCursorMode[mode]);
+        var clsList = cursor.classList;
+        clsList.remove(TCursorMode[TCursorMode.type]);
+        clsList.remove(TCursorMode[TCursorMode.blink]);
+        clsList.add(TCursorMode[mode]);
     }
 
     /**
@@ -58,17 +59,17 @@ module Bootstrap {
      */
     function print(message) {
         return new Promise((resolve) => {
+            var msgIdx = 0, interval;
 
             cursorMode(TCursorMode.type);
 
-            var msgIdx = 0;
-            var interval = setInterval(() => {
+            interval = setInterval(() => {
                 if (message[msgIdx]) {
                     text.innerText += message[msgIdx++];
                 } else {
                     clearInterval(interval);
                     cursorMode(TCursorMode.blink);
-                    setTimeout(() => resolve(['app']), 3000)
+                    setTimeout(() => resolve(['app']), 3000);
                 }
             }, 60);
 

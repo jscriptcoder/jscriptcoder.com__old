@@ -11,6 +11,7 @@ var __extends = this.__extends || function (d, b) {
 };
 define(["require", "exports", './wrapper'], function(require, exports, Wrapper) {
     /**
+    * Takes care of the user input
     * @class Prompt
     * @extends Wrapper
     */
@@ -75,7 +76,7 @@ define(["require", "exports", './wrapper'], function(require, exports, Wrapper) 
         });
 
         /**
-        * Gets trigger when the user types in the kpEl passed in the constructor
+        * Gets trigger on keydown
         * @event
         * @param {Event} e
         */
@@ -83,7 +84,7 @@ define(["require", "exports", './wrapper'], function(require, exports, Wrapper) 
         };
 
         /**
-        * Gets trigger when the user types in the kpEl passed in the constructor
+        * Gets trigger on keypress
         * @event
         * @param {Event} e
         */
@@ -91,7 +92,7 @@ define(["require", "exports", './wrapper'], function(require, exports, Wrapper) 
         };
 
         /**
-        * Gets trigger when the user types in the kpEl passed in the constructor
+        * Gets trigger on keyup
         * @event
         * @param {Event} e
         */

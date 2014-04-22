@@ -1,10 +1,10 @@
 /**
- * Holds a bunch of utilities
  * @module utils
  * @exports Utils
  */
 
 /**
+ * Holds a bunch of utilities
  * @namespace Utils
  */
 module Utils {
@@ -41,10 +41,30 @@ module Utils {
      * @returns {Boolean}
      * @memberof Utils
      */
-    export function isString(value){
+    export function isString(value) {
         return typeof value === 'string';
     }
 
+    /**
+     * Whether or not the value is an object
+     * @param {Any} value
+     * @returns {Boolean}
+     * @memberof Utils
+     */
+    export function isObject(value) {
+        return value != null && typeof value === 'object';
+    }
+       
+    /**
+     * Whether or not the value is a number
+     * @param {Any} value
+     * @returns {Boolean}
+     * @memberof Utils
+     */
+    export function isNumber(value){ 
+        return typeof value === 'number';
+    }
+        
     /**
      * Strips all the html from the input
      * @param {String} html

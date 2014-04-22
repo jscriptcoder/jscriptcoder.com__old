@@ -9,8 +9,9 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './wrapper'], function(require, exports, Wrapper) {
+define(["require", "exports", './wrapper', './prompt', './output'], function(require, exports, Wrapper, Prompt, Output) {
     /**
+    * Terminal program
     * @class Terminal
     * @extends Wrapper
     */
@@ -19,20 +20,41 @@ define(["require", "exports", './wrapper'], function(require, exports, Wrapper) 
         /**
         * @constructor
         * @param {String|HTMLElement} el
-        * @param {Prompt} prompt
-        * @param {Output} output
         */
-        function Terminal(el, prompt, output) {
+        function Terminal(el) {
             _super.call(this, el);
 
-            this.__prompt__ = prompt;
-            this.__output__ = output;
-
-            this.__output__.removeClass('hide');
+            this.__prompt__ = this.newPrompt();
             this.__prompt__.removeClass('hide');
+
+            this.__output__ = this.newOutput();
+            this.__output__.removeClass('hide');
         }
-        Terminal.prototype.print = function (msg) {
-            this.__output__.print(msg);
+        /**
+        * Creates an instance of Prompt. Easy to mock
+        * @type Prompt
+        * @public
+        */
+        Terminal.prototype.newPrompt = function () {
+            return new Prompt(document.getElementById('prompt'), document);
+        };
+
+        /**
+        * Creates an instance of Output. Easy to mock
+        * @type Output
+        * @public
+        */
+        Terminal.prototype.newOutput = function () {
+            return new Output(document.getElementById('output'));
+        };
+
+        /**
+        * Internally uses Output#print method
+        * @param {String} message
+        * @public
+        */
+        Terminal.prototype.print = function (message) {
+            this.__output__.print(message);
         };
         return Terminal;
     })(Wrapper);

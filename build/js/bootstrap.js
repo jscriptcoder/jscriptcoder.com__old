@@ -40,15 +40,17 @@ var Bootstrap;
         TCursorMode[TCursorMode["type"] = 0] = "type";
         TCursorMode[TCursorMode["blink"] = 1] = "blink";
     })(TCursorMode || (TCursorMode = {}));
+    ;
 
     /**
     * Changes the mode of the cursor (type|blink)
     * @param {String} mode
     */
     function cursorMode(mode) {
-        cursor.classList.remove(TCursorMode[0 /* type */]);
-        cursor.classList.remove(TCursorMode[1 /* blink */]);
-        cursor.classList.add(TCursorMode[mode]);
+        var clsList = cursor.classList;
+        clsList.remove(TCursorMode[0 /* type */]);
+        clsList.remove(TCursorMode[1 /* blink */]);
+        clsList.add(TCursorMode[mode]);
     }
 
     /**
@@ -58,10 +60,11 @@ var Bootstrap;
     */
     function print(message) {
         return new Promise(function (resolve) {
+            var msgIdx = 0, interval;
+
             cursorMode(0 /* type */);
 
-            var msgIdx = 0;
-            var interval = setInterval(function () {
+            interval = setInterval(function () {
                 if (message[msgIdx]) {
                     text.innerText += message[msgIdx++];
                 } else {

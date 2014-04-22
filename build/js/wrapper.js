@@ -1,9 +1,11 @@
 /**
 * @module wrapper
 * @exports Wrapper
+* @requires utils
 */
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", './utils'], function(require, exports, Utils) {
     /**
+    * jQuery-like wrapper for HTMLElements
     * @class Wrapper
     */
     var Wrapper = (function () {
@@ -14,7 +16,7 @@ define(["require", "exports"], function(require, exports) {
         */
         function Wrapper(el) {
             if (typeof el === 'string') {
-                this.__el__ = document.querySelector(el);
+                this.__el__ = Wrapper.doc.querySelector(el);
             } else if (el && el.nodeType) {
                 this.__el__ = el;
             } else {
@@ -77,6 +79,27 @@ define(["require", "exports"], function(require, exports) {
         Wrapper.prototype.removeClass = function (cls) {
             this.__el__.classList.remove(cls);
         };
+
+        /**
+        * Wrapper for document.createElement method
+        * @param {String} tag
+        * @param {Object} [attrs]
+        * @public
+        */
+        Wrapper.prototype.create = function (tag, attrs) {
+            var el = Wrapper.doc.createElement(tag);
+
+            if (Utils.isObject(attrs)) {
+                for (var p in attrs) {
+                    if (attrs.hasOwnProperty(p)) {
+                        el.setAttribute(p, attrs[p]);
+                    }
+                }
+            }
+
+            return el;
+        };
+        Wrapper.doc = document;
         return Wrapper;
     })();
 

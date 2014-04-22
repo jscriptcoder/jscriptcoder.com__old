@@ -5,8 +5,11 @@
  */
 
 import Wrapper = require('./wrapper');
+import Prompt = require('./prompt');
+import Output = require('./output');
 
 /**
+ * Terminal program
  * @class Terminal
  * @extends Wrapper
  */
@@ -27,21 +30,42 @@ class Terminal extends Wrapper {
     /**
      * @constructor
      * @param {String|HTMLElement} el
-     * @param {Prompt} prompt
-     * @param {Output} output
      */
-    constructor(el, prompt, output) {
+    constructor(el) {
         super(el);
 
-        this.__prompt__ = prompt;
-        this.__output__ = output;
-
-        this.__output__.removeClass('hide');
+        this.__prompt__ = this.newPrompt();
         this.__prompt__.removeClass('hide');
+    
+        this.__output__ = this.newOutput();
+        this.__output__.removeClass('hide');
     }
 
-    print(msg) {
-        this.__output__.print(msg);
+    /**
+     * Creates an instance of Prompt. Easy to mock
+     * @type Prompt
+     * @public
+     */
+    newPrompt() {
+        return new Prompt(document.getElementById('prompt'), document);
+    }
+
+    /**
+     * Creates an instance of Output. Easy to mock
+     * @type Output
+     * @public
+     */
+    newOutput() {
+        return new Output(document.getElementById('output'));
+    }
+
+    /**
+     * Internally uses Output#print method
+     * @param {String} message
+     * @public
+     */
+    print(message) {
+        this.__output__.print(message);
     }
 
 }

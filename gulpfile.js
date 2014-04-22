@@ -3,7 +3,7 @@ var gulp = require('gulp'),
     less = require('gulp-less'),
     tsc = require('gulp-tsc');
 
-gulp.task('conn', function () {
+gulp.task('server', function () {
     conn.server();
 });
 
@@ -18,6 +18,8 @@ gulp.task('tsc', function () {
         .pipe(tsc({ module: 'amd', 'target': 'ES5' }))
         .pipe(gulp.dest('build/js/'))
 });
+
+gulp.task('compile', ['less', 'tsc']);
 
 gulp.task('default', function () {
     gulp.watch('src/less/**/*.less', ['less']);

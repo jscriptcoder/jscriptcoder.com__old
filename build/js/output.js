@@ -12,6 +12,7 @@ var __extends = this.__extends || function (d, b) {
 };
 define(["require", "exports", './wrapper', './utils'], function(require, exports, Wrapper, Utils) {
     /**
+    * Takes care of the output
     * @class Output
     * @extends Wrapper
     */
@@ -26,25 +27,23 @@ define(["require", "exports", './wrapper', './utils'], function(require, exports
         }
         /**
         * Prints a message wrapping it in a div
-        * @param {String|String[]} msg
+        * @param {String|String[]} message
         * @throws {Error} Wrong parameter
         * @public
         */
-        Output.prototype.print = function (msg) {
+        Output.prototype.print = function (message) {
             var _this = this;
-            var div = document.createElement('div');
-
-            if (Utils.isArray(msg)) {
-                msg.forEach(function (val) {
-                    return _this.print(val);
+            if (Utils.isArray(message)) {
+                message.forEach(function (line) {
+                    return _this.print(line);
                 });
-            } else if (Utils.isString) {
-                div.innerHTML = msg.replace(/^\s/, '&nbsp;');
+            } else if (Utils.isString(message)) {
+                var div = this.create('div');
+                div.innerHTML = message.replace(/^\s/, '&nbsp;');
+                this.append(div);
             } else {
-                throw Error('Wrong parameter: ' + msg);
+                throw Error('Wrong parameter: ' + message);
             }
-
-            this.append(div);
         };
         return Output;
     })(Wrapper);

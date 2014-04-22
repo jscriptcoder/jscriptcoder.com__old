@@ -12,8 +12,8 @@ define(['../../build/js/output'], function(Output) {
         });
 
         it('Output#print', function () {
-            output.print('testing')
-            expect(output.el.innerText).toEqual('testing');
+            output.print('test')
+            expect(output.el.innerText).toEqual('test');
         });
 
     });

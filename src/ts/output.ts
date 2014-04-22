@@ -9,6 +9,7 @@ import Wrapper = require('./wrapper');
 import Utils = require('./utils');
 
 /**
+ * Takes care of the output
  * @class Output
  * @extends Wrapper
  */
@@ -24,22 +25,28 @@ class Output extends Wrapper {
 
     /**
      * Prints a message wrapping it in a div
-     * @param {String|String[]} msg
+     * @param {String|String[]} message
      * @throws {Error} Wrong parameter
      * @public
      */
-    print(msg) {
-        var div = document.createElement('div');
+    print(message) {
+        
+        if (Utils.isArray(message)) { // there are more than one line
+            
+            message.forEach((line) => this.print(line));
+            
+        } else if (Utils.isString(message)) { // single line
+            
+            var div = this.create('div');
+            div.innerHTML = message.replace(/^\s/, '&nbsp;');
+            this.append(div);
 
-        if (Utils.isArray(msg)) {
-            msg.forEach((val) => this.print(val));
-        } else if (Utils.isString) {
-            div.innerHTML = msg.replace(/^\s/, '&nbsp;');
         } else {
-            throw Error('Wrong parameter: ' + msg);
+            
+            throw Error('Wrong parameter: ' + message);
+            
         }
 
-        this.append(div);
     }
 
 }

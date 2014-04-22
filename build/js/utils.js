@@ -1,10 +1,10 @@
 /**
-* Holds a bunch of utilities
 * @module utils
 * @exports Utils
 */
 define(["require", "exports"], function(require, exports) {
     /**
+    * Holds a bunch of utilities
     * @namespace Utils
     */
     var Utils;
@@ -47,6 +47,28 @@ define(["require", "exports"], function(require, exports) {
             return typeof value === 'string';
         }
         Utils.isString = isString;
+
+        /**
+        * Whether or not the value is an object
+        * @param {Any} value
+        * @returns {Boolean}
+        * @memberof Utils
+        */
+        function isObject(value) {
+            return value != null && typeof value === 'object';
+        }
+        Utils.isObject = isObject;
+
+        /**
+        * Whether or not the value is a number
+        * @param {Any} value
+        * @returns {Boolean}
+        * @memberof Utils
+        */
+        function isNumber(value) {
+            return typeof value === 'number';
+        }
+        Utils.isNumber = isNumber;
 
         /**
         * Strips all the html from the input
