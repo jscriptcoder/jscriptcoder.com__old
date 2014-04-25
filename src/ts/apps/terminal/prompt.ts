@@ -56,9 +56,7 @@ class Prompt extends DOMWrap {
         this.__input__ = this.findOne(Config.inputSel);
         this.__cursor__ = this.findOne(Config.cursorSel);
 
-        //sys.listen('keydown', this.onKeydown.bind(this));
-        //sys.listen('keypress', this.onKeypress.bind(this));
-        //sys.listen('keyup', this.onKeyup.bind(this));
+        sys.listen('keydown', this.onKeydown.bind(this));
     }
 
     /**
@@ -96,21 +94,9 @@ class Prompt extends DOMWrap {
      * @event
      * @param {Event} e
      */
-    onKeydown(e) {}
-
-    /**
-     * Gets trigger on keypress
-     * @event
-     * @param {Event} e
-     */
-    onKeypress(e) {}
-
-    /**
-     * Gets trigger on keyup
-     * @event
-     * @param {Event} e
-     */
-    onKeyup(e) {}
+    onKeydown(e) {
+        console.log(String.fromCharCode(e.which));
+    }
 }
 
 export = Prompt;

@@ -1,9 +1,9 @@
 /**
 * @module bios/loader
-* @requires bios/bios
 * @requires bios/config
+* @requires bios/bios
 */
-define(["require", "exports", './bios', './config'], function(require, exports, Bios, Config) {
+define(["require", "exports", './config', './bios'], function(require, exports, Config, Bios) {
     /**
     * Booting functionality
     * @namespace Boot

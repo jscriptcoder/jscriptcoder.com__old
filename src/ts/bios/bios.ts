@@ -1,8 +1,10 @@
 /**
  * @module bios/bios
+ * @requires bios/config
  * @exports Bios
  */
 
+import Config = require('./config');
 
 /**
  * Basic input/output functionality
@@ -17,15 +19,10 @@ module Bios {
     var doc = document;
     
     /**
-     * @type Number
-     */
-    var typingSpeedDelay = 60; // ms
-    
-    /**
      * Screen devide by default
      * @type HTMLElement
      */
-    var screen = doc.getElementById('screen') || document.body;
+    var screen = doc.getElementById(Config.screenElemId) || doc.body;
     
     /**
      * Creates DOM elements
@@ -72,14 +69,16 @@ module Bios {
             
             var msgIdx = 0, interval;
 
+            el.innerHTML = '';
+            
             interval = setInterval(() => {
                 if (message[msgIdx]) {
-                    el.innerText += message[msgIdx++];
+                    el.innerHTML += message[msgIdx++];
                 } else {
                     clearInterval(interval);
                     resolve(true);
                 }
-            }, typingSpeedDelay);
+            }, Config.typingSpeedDelay);
 
         });
     }

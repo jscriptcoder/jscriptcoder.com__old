@@ -1,8 +1,9 @@
 /**
 * @module bios/bios
+* @requires bios/config
 * @exports Bios
 */
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", './config'], function(require, exports, Config) {
     /**
     * Basic input/output functionality
     * @namespace Bios
@@ -16,15 +17,10 @@ define(["require", "exports"], function(require, exports) {
         var doc = document;
 
         /**
-        * @type Number
-        */
-        var typingSpeedDelay = 60;
-
-        /**
         * Screen devide by default
         * @type HTMLElement
         */
-        var screen = doc.getElementById('screen') || document.body;
+        var screen = doc.getElementById(Config.screenElemId) || doc.body;
 
         /**
         * Creates DOM elements
@@ -70,14 +66,16 @@ define(["require", "exports"], function(require, exports) {
             return new Promise(function (resolve) {
                 var msgIdx = 0, interval;
 
+                el.innerHTML = '';
+
                 interval = setInterval(function () {
                     if (message[msgIdx]) {
-                        el.innerText += message[msgIdx++];
+                        el.innerHTML += message[msgIdx++];
                     } else {
                         clearInterval(interval);
                         resolve(true);
                     }
-                }, typingSpeedDelay);
+                }, Config.typingSpeedDelay);
             });
         }
         Bios.print = print;

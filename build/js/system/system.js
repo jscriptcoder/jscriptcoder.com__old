@@ -63,6 +63,19 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         System.prototype.print = function (message) {
             this.__graphic__.print(message);
         };
+
+        /**
+        * Listens to events on a particular context
+        * @param {String} evtName
+        * @param {Function} handler
+        * @param {HTMLElement} [context = System.doc]
+        * @public
+        */
+        System.prototype.listen = function (evtName, handler, context) {
+            if (typeof context === "undefined") { context = System.doc; }
+            context.addEventListener(evtName, handler);
+        };
+        System.doc = document;
         return System;
     })();
 

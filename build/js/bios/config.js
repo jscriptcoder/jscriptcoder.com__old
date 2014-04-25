@@ -28,4 +28,15 @@ define(["require", "exports"], function(require, exports) {
     * @type String[]
     */
     exports.systemDeps = ['../system/sysinit'];
+
+    /**
+    * Delay, in milliseconds, per each keystroke
+    * @type Number
+    */
+    exports.typingSpeedDelay = 60;
+
+    /**
+    * @type String
+    */
+    exports.screenElemId = 'screen';
 });

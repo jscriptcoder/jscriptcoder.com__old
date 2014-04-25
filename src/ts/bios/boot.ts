@@ -1,11 +1,11 @@
 /**
  * @module bios/loader
- * @requires bios/bios
  * @requires bios/config
+ * @requires bios/bios
  */
 
-import Bios = require('./bios');
 import Config = require('./config');
+import Bios = require('./bios');
 
 /**
  * Booting functionality

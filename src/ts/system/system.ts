@@ -13,6 +13,13 @@ import Graphic = require('./drivers/graphic/graphic');
 class System {
     
     /**
+     * Reference in order to use document API
+     * @type HTMLElement
+     * @static
+     */
+    static doc = document;
+    
+    /**
      * @type Graphic
      * @private
      */
@@ -73,6 +80,17 @@ class System {
      */
     print(message) {
         this.__graphic__.print(message);
+    }
+
+    /**
+     * Listens to events on a particular context
+     * @param {String} evtName
+     * @param {Function} handler
+     * @param {HTMLElement} [context = System.doc]
+     * @public
+     */
+    listen(evtName, handler, context = System.doc) {
+        context.addEventListener(evtName, handler);
     }
 
 }

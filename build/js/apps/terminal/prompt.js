@@ -34,9 +34,8 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             this.__symbol__ = this.findOne(Config.symbolSel);
             this.__input__ = this.findOne(Config.inputSel);
             this.__cursor__ = this.findOne(Config.cursorSel);
-            //sys.listen('keydown', this.onKeydown.bind(this));
-            //sys.listen('keypress', this.onKeypress.bind(this));
-            //sys.listen('keyup', this.onKeyup.bind(this));
+
+            sys.listen('keydown', this.onKeydown.bind(this));
         }
         Object.defineProperty(Prompt.prototype, "symbol", {
             /**
@@ -86,22 +85,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @param {Event} e
         */
         Prompt.prototype.onKeydown = function (e) {
-        };
-
-        /**
-        * Gets trigger on keypress
-        * @event
-        * @param {Event} e
-        */
-        Prompt.prototype.onKeypress = function (e) {
-        };
-
-        /**
-        * Gets trigger on keyup
-        * @event
-        * @param {Event} e
-        */
-        Prompt.prototype.onKeyup = function (e) {
+            console.log(String.fromCharCode(e.which));
         };
         return Prompt;
     })(DOMWrap);

@@ -28,3 +28,14 @@ export var delayBeforeLoading = 3000;
  * @type String[]
  */
 export var systemDeps = ['../system/sysinit'];
+
+/**
+ * Delay, in milliseconds, per each keystroke
+ * @type Number
+ */
+export var typingSpeedDelay = 60;
+
+/**
+ * @type String
+ */
+export var screenElemId = 'screen';
