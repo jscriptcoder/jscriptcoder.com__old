@@ -50,8 +50,8 @@ class Terminal extends DOMWrap {
         sys.appendElement(this.el);
     
         this.__sys__ = sys;
-        this.__output__ = new Output(this.find('.output')[0], sys);
-        this.__prompt__ = new Prompt(this.find('.prompt')[0], sys);
+        this.__output__ = new Output(this.findOne(Config.outputSel), sys);
+        this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
     
         this.__output__.print(Config.msgHeader);
     }

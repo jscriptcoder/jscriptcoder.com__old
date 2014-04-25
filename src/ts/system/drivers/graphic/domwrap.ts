@@ -106,7 +106,7 @@ class DOMWrap {
     /**
      * Gets back a DOM elements found by tag or .class
      * @param {String} selector
-     * @returns {HTMLElement}
+     * @returns {HTMLCollection}
      * @public
      */
     find(selector) {
@@ -120,6 +120,16 @@ class DOMWrap {
             return this.__el__.querySelectorAll(selector);
         }
         
+    }
+
+    /**
+     * Gets back a single DOM element
+     * @param {String} selector
+     * @returns {HTMLElement}
+     * @public
+     */
+    findOne(selector) {
+        return this.find(selector)[0];
     }
 
 }

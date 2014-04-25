@@ -2,10 +2,12 @@
  * Terminal Prompt
  * @module apps/terminal/prompt
  * @requires system/drivers/graphic/domwrap
+ * @requires apps/terminal/config
  * @exports Prompt
  */
 
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
+import Config = require('./config');
 
 /**
  * Prompt user interface
@@ -50,9 +52,9 @@ class Prompt extends DOMWrap {
         super(el);
 
         this.__sys__ = sys;
-        this.__symbol__ = this.find('.symbol')[0];
-        this.__input__ = this.find('.input')[0];
-        this.__cursor__ = this.find('.cursor')[0];
+        this.__symbol__ = this.findOne(Config.symbolSel);
+        this.__input__ = this.findOne(Config.inputSel);
+        this.__cursor__ = this.findOne(Config.cursorSel);
 
         //sys.listen('keydown', this.onKeydown.bind(this));
         //sys.listen('keypress', this.onKeypress.bind(this));

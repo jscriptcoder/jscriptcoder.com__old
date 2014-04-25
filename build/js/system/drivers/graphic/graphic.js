@@ -3,6 +3,7 @@
 * @requires system/utils
 * @requires system/system
 * @requires system/drivers/graphic/domwrap
+* @requires system/drivers/graphic/config
 * @exports Graphic
 */
 var __extends = this.__extends || function (d, b) {
@@ -11,7 +12,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../utils', './domwrap'], function(require, exports, Utils, DOMWrap) {
+define(["require", "exports", '../../utils', './domwrap', './config'], function(require, exports, Utils, DOMWrap, Config) {
     /**
     * @class Graphic
     * @extends DOMWrap
@@ -25,7 +26,7 @@ define(["require", "exports", '../../utils', './domwrap'], function(require, exp
         function Graphic(screenEl) {
             console.log('[Graphic#constructor] Initializing graphic driver...');
 
-            _super.call(this, screenEl || Graphic.doc.getElementById('screen') || document.body);
+            _super.call(this, screenEl || Graphic.doc.getElementById(Config.screenElemId) || Graphic.doc.body);
 
             this.__output__ = this.el;
         }

@@ -2,6 +2,7 @@
 * Terminal Prompt
 * @module apps/terminal/prompt
 * @requires system/drivers/graphic/domwrap
+* @requires apps/terminal/config
 * @exports Prompt
 */
 var __extends = this.__extends || function (d, b) {
@@ -10,7 +11,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(require, exports, DOMWrap) {
+define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'], function(require, exports, DOMWrap, Config) {
     /**
     * Prompt user interface
     * @class Prompt
@@ -30,9 +31,9 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
             _super.call(this, el);
 
             this.__sys__ = sys;
-            this.__symbol__ = this.find('.symbol')[0];
-            this.__input__ = this.find('.input')[0];
-            this.__cursor__ = this.find('.cursor')[0];
+            this.__symbol__ = this.findOne(Config.symbolSel);
+            this.__input__ = this.findOne(Config.inputSel);
+            this.__cursor__ = this.findOne(Config.cursorSel);
             //sys.listen('keydown', this.onKeydown.bind(this));
             //sys.listen('keypress', this.onKeypress.bind(this));
             //sys.listen('keyup', this.onKeyup.bind(this));

@@ -1,9 +1,11 @@
 /**
  * @module bios/loader
- * requires bios/bios
+ * @requires bios/bios
+ * @requires bios/config
  */
 
 import Bios = require('./bios');
+import Config = require('./config');
 
 /**
  * Booting functionality
@@ -11,23 +13,11 @@ import Bios = require('./bios');
  */
 module Boot {
 
-    var delayAfterLoading = 3000
-    
-    /**
-     * Loading message
-     * @type String
-     */
-    var loadingTxt = 'Loading jscriptcoder.com. Please wait...';
-    
     /**
      * Loading element
      * @type HTMLElement
      */
-    var loadingEl = Bios.appendDOMElement([
-        '<div class="loading">',
-            '<span class="text"></span><span class="cursor">&nbsp;</span>',
-        '</div>'
-    ].join(''));
+    var loadingEl = Bios.appendDOMElement(Config.loadingTmpl);
 
     /**
      * Message element
@@ -72,13 +62,13 @@ module Boot {
         
         cursorMode(TCursorMode.type);
         
-        Bios.print(loadingTxt, txtEl)
+        Bios.print(Config.loadingMsg, txtEl)
             .then(() => {
-                cursorMode(TCursorMode.blink);
-        
                 console.log('[Promise#then] Starting the system...');
         
-                setTimeout(() => require(['../system/sysinit']), delayAfterLoading);
+                cursorMode(TCursorMode.blink);
+        
+                setTimeout(() => require(Config.systemDeps), Config.delayBeforeLoading);
             });
         
     }

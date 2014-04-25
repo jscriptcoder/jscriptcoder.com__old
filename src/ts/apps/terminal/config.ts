@@ -1,6 +1,6 @@
 /**
- * This module provides configuration items for the app
- * @module terminconf
+ * This module provides configuration items for the terminal
+ * @module apps/terminal/config
  */
 
 /**
@@ -30,3 +30,28 @@ export var msgHeader = [
     ' */',
     ' '
 ];
+
+/**
+ * @type String
+ */
+export var outputSel = '.output';
+
+/**
+ * @type String
+ */
+export var promptSel = '.prompt';
+
+/**
+ * @type String
+ */
+export var symbolSel = '.symbol';
+
+/**
+ * @type String
+ */
+export var inputSel = '.input';
+
+/**
+ * @type String
+ */
+export var cursorSel = '.cursor';

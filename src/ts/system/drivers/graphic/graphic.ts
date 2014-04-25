@@ -3,11 +3,13 @@
  * @requires system/utils
  * @requires system/system
  * @requires system/drivers/graphic/domwrap
+ * @requires system/drivers/graphic/config
  * @exports Graphic
  */
 
 import Utils = require('../../utils');
 import DOMWrap = require('./domwrap');
+import Config = require('./config');
 
 /**
  * @class Graphic
@@ -37,7 +39,7 @@ class Graphic extends DOMWrap {
     
         console.log('[Graphic#constructor] Initializing graphic driver...');
     
-        super(screenEl || Graphic.doc.getElementById('screen') || document.body);
+        super(screenEl || Graphic.doc.getElementById(Config.screenElemId) || Graphic.doc.body);
     
         this.__output__ = this.el;
     }

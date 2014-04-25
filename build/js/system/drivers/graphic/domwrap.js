@@ -91,7 +91,7 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         /**
         * Gets back a DOM elements found by tag or .class
         * @param {String} selector
-        * @returns {HTMLElement}
+        * @returns {HTMLCollection}
         * @public
         */
         DOMWrap.prototype.find = function (selector) {
@@ -104,6 +104,16 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
             } else {
                 return this.__el__.querySelectorAll(selector);
             }
+        };
+
+        /**
+        * Gets back a single DOM element
+        * @param {String} selector
+        * @returns {HTMLElement}
+        * @public
+        */
+        DOMWrap.prototype.findOne = function (selector) {
+            return this.find(selector)[0];
         };
         DOMWrap.rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
         return DOMWrap;

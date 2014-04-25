@@ -1,31 +1,20 @@
 /**
 * @module bios/loader
-* requires bios/bios
+* @requires bios/bios
+* @requires bios/config
 */
-define(["require", "exports", './bios'], function(require, exports, Bios) {
+define(["require", "exports", './bios', './config'], function(require, exports, Bios, Config) {
     /**
     * Booting functionality
     * @namespace Boot
     */
     var Boot;
     (function (Boot) {
-        var delayAfterLoading = 3000;
-
-        /**
-        * Loading message
-        * @type String
-        */
-        var loadingTxt = 'Loading jscriptcoder.com. Please wait...';
-
         /**
         * Loading element
         * @type HTMLElement
         */
-        var loadingEl = Bios.appendDOMElement([
-            '<div class="loading">',
-            '<span class="text"></span><span class="cursor">&nbsp;</span>',
-            '</div>'
-        ].join(''));
+        var loadingEl = Bios.appendDOMElement(Config.loadingTmpl);
 
         /**
         * Message element
@@ -73,14 +62,14 @@ define(["require", "exports", './bios'], function(require, exports, Bios) {
 
             cursorMode(0 /* type */);
 
-            Bios.print(loadingTxt, txtEl).then(function () {
-                cursorMode(1 /* blink */);
-
+            Bios.print(Config.loadingMsg, txtEl).then(function () {
                 console.log('[Promise#then] Starting the system...');
 
+                cursorMode(1 /* blink */);
+
                 setTimeout(function () {
-                    return require(['../system/sysinit']);
-                }, delayAfterLoading);
+                    return require(Config.systemDeps);
+                }, Config.delayBeforeLoading);
             });
         }
         Boot.start = start;

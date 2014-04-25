@@ -1,6 +1,6 @@
 /**
-* This module provides configuration items for the app
-* @module terminconf
+* This module provides configuration items for the terminal
+* @module apps/terminal/config
 */
 define(["require", "exports"], function(require, exports) {
     /**
@@ -30,4 +30,29 @@ define(["require", "exports"], function(require, exports) {
         ' */',
         ' '
     ];
+
+    /**
+    * @type String
+    */
+    exports.outputSel = '.output';
+
+    /**
+    * @type String
+    */
+    exports.promptSel = '.prompt';
+
+    /**
+    * @type String
+    */
+    exports.symbolSel = '.symbol';
+
+    /**
+    * @type String
+    */
+    exports.inputSel = '.input';
+
+    /**
+    * @type String
+    */
+    exports.cursorSel = '.cursor';
 });
