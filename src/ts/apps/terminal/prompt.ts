@@ -1,18 +1,25 @@
 /**
- * @module prompt
+ * Terminal Prompt
+ * @module apps/terminal/prompt
+ * @requires system/drivers/graphic/domwrap
  * @exports Prompt
- * @requires wrapper
  */
 
-import Wrapper = require('./wrapper');
+import DOMWrap = require('../../system/drivers/graphic/domwrap');
 
 /**
- * Takes care of the user input
+ * Prompt user interface
  * @class Prompt
- * @extends Wrapper
+ * @extends DOMWrap
  */
-class Prompt extends Wrapper {
+class Prompt extends DOMWrap {
 
+    /**
+     * @type System
+     * @private
+     */
+    __sys__;
+    
     /**
      * @type HTMLElement
      * @private
@@ -33,19 +40,23 @@ class Prompt extends Wrapper {
 
     /**
      * @constructor
-     * @param {String|HTMLElement} el
-     * @param {String|HTMLElement} kpEl
+     * @param {HTMLElement} el
+     * @param {System} sys
+     * @param {HTMLElement} kpEl
      */
-    constructor(el, kpEl) {
+    constructor(el, sys) {
+        console.log('[Prompt#constructor] Setting up terminal prompt...');
+    
         super(el);
 
-        this.__symbol__ = this.__el__.querySelector('.symbol');
-        this.__input__ = this.__el__.querySelector('.input');
-        this.__cursor__ = this.__el__.querySelector('.cursor');
+        this.__sys__ = sys;
+        this.__symbol__ = this.find('.symbol')[0];
+        this.__input__ = this.find('.input')[0];
+        this.__cursor__ = this.find('.cursor')[0];
 
-        kpEl.addEventListener('keydown', this.onKeydown.bind(this));
-        kpEl.addEventListener('keypress', this.onKeypress.bind(this));
-        kpEl.addEventListener('keyup', this.onKeyup.bind(this));
+        //sys.listen('keydown', this.onKeydown.bind(this));
+        //sys.listen('keypress', this.onKeypress.bind(this));
+        //sys.listen('keyup', this.onKeyup.bind(this));
     }
 
     /**

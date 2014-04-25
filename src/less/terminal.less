@@ -1,17 +1,12 @@
-@import "cursor-blink-anime.less";
-
 .terminal {
-  height: 100%;
-  padding: @console-padding;
-  font-family: @console-font-family;
-  font-size: @console-font-size;
-  background-color: @console-bg-color;
-  color: @console-font-color;
-
-  .cursor.blink { .animation(blink 1s infinite steps(1)); }
-  .cursor.type {
-    background-color: @console-font-color;
-    color: @console-bg-color;
-  }
-
+    height: 100%;
+    font-family: @terminal-font-family;
+    font-size: @terminal-font-size;
+    background-color: @terminal-bg-color;
+    color: @terminal-font-color;
+    
+    .cursor.type {
+        background-color: @terminal-font-color;
+        color: @terminal-bg-color;
+    }
 }

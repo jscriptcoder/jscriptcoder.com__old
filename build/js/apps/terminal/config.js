@@ -1,8 +1,20 @@
 /**
 * This module provides configuration items for the app
-* @module config
+* @module terminconf
 */
 define(["require", "exports"], function(require, exports) {
+    /**
+    * @type String
+    */
+    exports.template = [
+        '<div id="terminal">',
+        '<div class="output"></div>',
+        '<div class="prompt">',
+        '<span class="symbol">js&gt;&nbsp;</span><span class="input"></span><span class="cursor blink">&nbsp;</span>',
+        '</div>',
+        '</div>'
+    ].join('');
+
     /**
     * @type String[]
     */

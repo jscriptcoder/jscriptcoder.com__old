@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
     <title>..:: jscriptcoder.com ::..</title>
 
     <link rel="stylesheet" href="build/css/main.css" />
 
 </head>
 <body>
-
-    <div id="terminal" class="terminal">
-
-        <div id="loading">
-            <span class="text"></span><span class="cursor">&nbsp;</span>
-        </div><!-- #loading -->
-
-        <div id="output" class="output hide"></div>
-
-        <div id="prompt" class="prompt hide">
-            <span class="symbol">js&gt;&nbsp;</span><span class="input"></span><span class="cursor blink">&nbsp;</span>
-        </div><!-- #prompt -->
-
-    </div><!-- #terminal -->
-
-    <script data-main="build/js/bootstrap" src="bower_components/requirejs/require.js"></script>
-
+    
+    <div id="screen" class="screen"></div>
+    
+    <script data-main="build/js/bios/boot" src="bower_components/requirejs/require.js"></script>
+    
 </body>
 </html>

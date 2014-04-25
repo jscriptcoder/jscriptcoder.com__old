@@ -71,43 +71,15 @@ define(["require", "exports"], function(require, exports) {
         Utils.isNumber = isNumber;
 
         /**
-        * Strips all the html from the input
-        * @param {String} html
-        * @returns {String}
+        * Whether or not the value is an DOM element
+        * @param {Any} value
+        * @returns {Boolean}
         * @memberof Utils
         */
-        function stripHtml(html) {
-            if (typeof html === "undefined") { html = ''; }
-            return html.replace(/(<[^>]+>)/ig, '');
+        function isDOMElement(value) {
+            return !!(value && value.nodeName);
         }
-        Utils.stripHtml = stripHtml;
-
-        /**
-        * Returns the url query string parameter
-        * @param {String} key
-        * @param {String} [qs = window.location.href]
-        * @returns {String}
-        * @memberof Utils
-        */
-        function getUrlParam(key, qs) {
-            if (typeof qs === "undefined") { qs = window.location.href; }
-            var results = new RegExp('[\\?&]' + key + '=([^&#]*)').exec(qs);
-            return (results && results[1]) ? decodeURIComponent(results[1]) : '';
-        }
-        Utils.getUrlParam = getUrlParam;
-
-        /**
-        * Returns the url hashtag parameter
-        * @param {String} [qs = window.location.href]
-        * @returns {String}
-        * @memberof Utils
-        */
-        function getUrlHashtag(qs) {
-            if (typeof qs === "undefined") { qs = window.location.href; }
-            var results = new RegExp('#([^#]*)').exec(qs);
-            return (results && results[1]) ? decodeURIComponent(results[1]) : '';
-        }
-        Utils.getUrlHashtag = getUrlHashtag;
+        Utils.isDOMElement = isDOMElement;
     })(Utils || (Utils = {}));
 
     

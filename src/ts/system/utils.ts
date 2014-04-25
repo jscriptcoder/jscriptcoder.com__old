@@ -66,36 +66,13 @@ module Utils {
     }
         
     /**
-     * Strips all the html from the input
-     * @param {String} html
-     * @returns {String}
+     * Whether or not the value is an DOM element
+     * @param {Any} value
+     * @returns {Boolean}
      * @memberof Utils
      */
-    export function stripHtml(html = '') {
-        return html.replace(/(<[^>]+>)/ig, '');
-    }
-
-    /**
-     * Returns the url query string parameter
-     * @param {String} key
-     * @param {String} [qs = window.location.href]
-     * @returns {String}
-     * @memberof Utils
-     */
-    export function getUrlParam (key, qs = window.location.href) {
-        var results = new RegExp('[\\?&]' + key + '=([^&#]*)').exec(qs);
-        return (results && results[1]) ? decodeURIComponent(results[1]) : '';
-    }
-
-    /**
-     * Returns the url hashtag parameter
-     * @param {String} [qs = window.location.href]
-     * @returns {String}
-     * @memberof Utils
-     */
-    export function getUrlHashtag(qs = window.location.href) {
-        var results = new RegExp('#([^#]*)').exec(qs);
-        return (results && results[1]) ? decodeURIComponent(results[1]) : '';
+    export function isDOMElement(value) {
+        return !!(value && value.nodeName);
     }
 
 }

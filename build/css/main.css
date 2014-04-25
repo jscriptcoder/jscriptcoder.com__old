@@ -1369,7 +1369,10 @@ pre code {
   position: fixed;
 }
 /**
- * console styles configuration
+ * Screen stype configuration
+ */
+/**
+ * Terminal stype configuration
  */
 html,
 body {
@@ -1419,17 +1422,29 @@ body {
     color: #000000;
   }
 }
-.terminal {
+.screen {
   height: 100%;
+  box-sizing: border-box;
   padding: 10px;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 12px;
   background-color: #000000;
   color: #44d544;
 }
-.terminal .cursor.blink {
+.screen .cursor.blink {
   -webkit-animation: blink 1s infinite steps(1);
   animation: blink 1s infinite steps(1);
+}
+.screen .cursor.type {
+  background-color: #44d544;
+  color: #000000;
+}
+.terminal {
+  height: 100%;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 12px;
+  background-color: #000000;
+  color: #44d544;
 }
 .terminal .cursor.type {
   background-color: #44d544;

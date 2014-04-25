@@ -1,7 +1,8 @@
 /**
-* @module prompt
+* Terminal Prompt
+* @module apps/terminal/prompt
+* @requires system/drivers/graphic/domwrap
 * @exports Prompt
-* @requires wrapper
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -9,29 +10,32 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './wrapper'], function(require, exports, Wrapper) {
+define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(require, exports, DOMWrap) {
     /**
-    * Takes care of the user input
+    * Prompt user interface
     * @class Prompt
-    * @extends Wrapper
+    * @extends DOMWrap
     */
     var Prompt = (function (_super) {
         __extends(Prompt, _super);
         /**
         * @constructor
-        * @param {String|HTMLElement} el
-        * @param {String|HTMLElement} kpEl
+        * @param {HTMLElement} el
+        * @param {System} sys
+        * @param {HTMLElement} kpEl
         */
-        function Prompt(el, kpEl) {
+        function Prompt(el, sys) {
+            console.log('[Prompt#constructor] Setting up terminal prompt...');
+
             _super.call(this, el);
 
-            this.__symbol__ = this.__el__.querySelector('.symbol');
-            this.__input__ = this.__el__.querySelector('.input');
-            this.__cursor__ = this.__el__.querySelector('.cursor');
-
-            kpEl.addEventListener('keydown', this.onKeydown.bind(this));
-            kpEl.addEventListener('keypress', this.onKeypress.bind(this));
-            kpEl.addEventListener('keyup', this.onKeyup.bind(this));
+            this.__sys__ = sys;
+            this.__symbol__ = this.find('.symbol')[0];
+            this.__input__ = this.find('.input')[0];
+            this.__cursor__ = this.find('.cursor')[0];
+            //sys.listen('keydown', this.onKeydown.bind(this));
+            //sys.listen('keypress', this.onKeypress.bind(this));
+            //sys.listen('keyup', this.onKeyup.bind(this));
         }
         Object.defineProperty(Prompt.prototype, "symbol", {
             /**
@@ -99,7 +103,7 @@ define(["require", "exports", './wrapper'], function(require, exports, Wrapper) 
         Prompt.prototype.onKeyup = function (e) {
         };
         return Prompt;
-    })(Wrapper);
+    })(DOMWrap);
 
     
     return Prompt;

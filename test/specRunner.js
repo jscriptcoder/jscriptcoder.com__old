@@ -1,4 +1,4 @@
-﻿require.config({
+require.config({
 
     paths: {
         jasmine: '../bower_components/jasmine/lib/jasmine-core/jasmine',
@@ -17,9 +17,7 @@ require(['boot'], function() {
     
     require([
 
-        'specs/wrapperSpec',
-        'specs/promptSpec',
-        'specs/outputSpec'
+        // specs here
 
     ], window.onload);
     
