@@ -10,7 +10,7 @@ export var template = [
     '<div id="terminal">',
         '<div class="output"></div>',
         '<div class="prompt">',
-            '<span class="symbol">js&gt;&nbsp;</span><span class="input"></span><span class="cursor blink">&nbsp;</span>',
+            '<span class="symbol">js&gt;&nbsp;</span><span class="input"><span class="cursor blink">&nbsp;</span></span>',
         '</div>',
     '</div>'
 ].join('');

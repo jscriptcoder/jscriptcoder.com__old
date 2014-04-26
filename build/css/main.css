@@ -1381,45 +1381,45 @@ body {
 @keyframes blink {
   0%,
   100% {
-    background-color: #000000;
-    color: #44d544;
-  }
-  50% {
     background-color: #44d544;
     color: #000000;
+  }
+  50% {
+    background-color: #000000;
+    color: #44d544;
   }
 }
 @-webkit-keyframes blink {
   0%,
   100% {
-    background-color: #000000;
-    color: #44d544;
-  }
-  50% {
     background-color: #44d544;
     color: #000000;
+  }
+  50% {
+    background-color: #000000;
+    color: #44d544;
   }
 }
 @-ms-keyframes blink {
   0%,
   100% {
-    background-color: #000000;
-    color: #44d544;
-  }
-  50% {
     background-color: #44d544;
     color: #000000;
+  }
+  50% {
+    background-color: #000000;
+    color: #44d544;
   }
 }
 @-moz-keyframes blink {
   0%,
   100% {
-    background-color: #000000;
-    color: #44d544;
-  }
-  50% {
     background-color: #44d544;
     color: #000000;
+  }
+  50% {
+    background-color: #000000;
+    color: #44d544;
   }
 }
 .screen {

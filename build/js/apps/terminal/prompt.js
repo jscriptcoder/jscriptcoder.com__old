@@ -36,53 +36,11 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             this.__cursor__ = this.findOne(Config.cursorSel);
 
             this.__cmd__ = '';
-            this.__input__.innerHTML = '';
+            this.__curPos__ = 0; // zero-base
 
             sys.listen('keypress', this.onKeypress.bind(this));
             sys.listen('keydown', this.onKeydown.bind(this));
         }
-        Object.defineProperty(Prompt.prototype, "symbol", {
-            /**
-            * symbol getter
-            * @readonly
-            * @returns {HTMLElement}
-            * @public
-            */
-            get: function () {
-                return this.__symbol__;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Prompt.prototype, "input", {
-            /**
-            * input getter
-            * @readonly
-            * @returns {HTMLElement}
-            * @public
-            */
-            get: function () {
-                return this.__input__;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
-        Object.defineProperty(Prompt.prototype, "cursor", {
-            /**
-            * cursor getter
-            * @readonly
-            * @returns {HTMLElement}
-            * @public
-            */
-            get: function () {
-                return this.__cursor__;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(Prompt.prototype, "cmd", {
             /**
             * command getter
@@ -98,33 +56,55 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         });
 
         /**
-        * Encodes the parameter to show it properly in the input
+        * Encodes the parameter to show it properly in the html input
         * @param {String} str
         * @returns {String}
-        * @public
+        * @private
         */
-        Prompt.prototype.encode = function (str) {
+        Prompt.prototype.__encode__ = function (str) {
             return str.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
         };
 
         /**
-        * Sets the content of the input, current command by default
-        * @param {String} [str = this.cmd]
-        * @public
+        * Splits the command into two, left and right to the cursor
+        * @returns {String[]}
+        * @private
         */
-        Prompt.prototype.setInput = function (str) {
-            if (typeof str === "undefined") { str = this.cmd; }
-            this.__input__.innerHTML = this.encode(str);
+        Prompt.prototype.__splitCmd__ = function () {
+            return [
+                this.__cmd__.substring(0, this.__curPos__),
+                this.__cmd__.substr(this.__curPos__)
+            ];
         };
 
         /**
-        * Inserts a character in the input
+        * Joins the left and right parts to form the new command, adding the cursor in between
+        * @param {String[]} parts
+        * @private
+        */
+        Prompt.prototype.__joinCmdAndInsert__ = function (parts) {
+            var left = parts[0], right = parts[1];
+
+            this.__cmd__ = left + right;
+
+            this.__input__.innerHTML = this.__encode__(left);
+            this.__input__.appendChild(this.__cursor__);
+            this.__input__.innerHTML += this.__encode__(right.substr(1));
+        };
+
+        /**
+        * Inserts a new character in the input
         * @param {String} char
         * @public
         */
         Prompt.prototype.insert = function (char) {
-            this.__cmd__ += char;
-            this.setInput();
+            var parts = this.__splitCmd__();
+
+            // adds a char to the left part
+            parts[0] += char;
+            this.__curPos__++;
+
+            this.__joinCmdAndInsert__(parts);
         };
 
         /**
@@ -133,16 +113,29 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         */
         Prompt.prototype.backspace = function () {
             if (this.__cmd__ !== '') {
-                this.__cmd__ = this.__cmd__.slice(0, -1);
-                this.setInput();
+                var parts = this.__splitCmd__();
+
+                // deletes last char from the left part
+                parts[0] = parts[0].slice(0, -1);
+                this.__curPos__--;
+
+                this.__joinCmdAndInsert__(parts);
             }
         };
 
         /**
-        * Applies enter on the input
+        * Moves the cursor to a different position
+        * @param {Number} pos
         * @public
         */
-        Prompt.prototype.enter = function () {
+        Prompt.prototype.moveCursorTo = function (pos) {
+            this.__curPos__ = pos < 0 ? 0 : (pos > this.__cmd__.length ? this.__cmd__.length : pos);
+
+            var parts = this.__splitCmd__(), curChar = parts[1].charAt(0);
+
+            this.__cursor__.innerHTML = curChar ? this.__encode__(curChar) : '&nbsp;';
+
+            this.__joinCmdAndInsert__(parts);
         };
 
         /**
@@ -155,7 +148,6 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
 
             if (!e.ctrlKey && !e.altKey) {
                 this.insert(String.fromCharCode(e.which));
-                console.log('keypress', e);
             }
         };
 
@@ -168,6 +160,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             switch (e.which) {
                 case 8:
                     e.preventDefault();
+
                     console.log('BACKSPACE');
 
                     this.backspace();
@@ -175,6 +168,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
                     break;
                 case 9:
                     e.preventDefault();
+
                     console.log('TAB');
 
                     this.insert('\t');
@@ -182,35 +176,45 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
                     break;
                 case 13:
                     e.preventDefault();
-                    console.log('ENTER');
 
-                    this.enter();
+                    console.log('ENTER');
 
                     break;
                 case 38:
                 case 40:
                     e.preventDefault();
-                    console.log('UP/DOWN');
-                    break;
-                case 37:
-                case 39:
-                    e.preventDefault();
-                    console.log('LEFT/RIGHT');
+
+                    console.log('UP/DOWN - History');
+
                     break;
                 case 36:
                 case 35:
+                case 37:
+                case 39:
                     e.preventDefault();
-                    console.log('HOME/END');
+
+                    console.log('HOME/END/LEFT/RIGHT - Cursor position');
+
+                    var CurPos = {
+                        36: 0,
+                        35: this.__cmd__.length,
+                        37: this.__curPos__ - 1,
+                        39: this.__curPos__ + 1
+                    };
+
+                    this.moveCursorTo(CurPos[e.which]);
+
                     break;
                 case 67:
                 case 86:
                     if (e.ctrlKey) {
                         e.preventDefault();
+
                         console.log('COPY/PASTE');
+                        // TODO
                     }
+
                     break;
-                default:
-                    console.log(e);
             }
         };
 
