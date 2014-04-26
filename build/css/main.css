@@ -1424,6 +1424,7 @@ body {
 }
 .screen {
   height: 100%;
+  overflow-y: scroll;
   box-sizing: border-box;
   padding: 10px;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;

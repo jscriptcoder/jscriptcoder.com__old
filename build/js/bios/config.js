@@ -21,7 +21,7 @@ define(["require", "exports"], function(require, exports) {
     * We add some delay before the system is loaded
     * @type Number
     */
-    exports.delayBeforeLoading = 3000;
+    exports.delayBeforeLoading = 0;
 
     /**
     * List of dependencies to load

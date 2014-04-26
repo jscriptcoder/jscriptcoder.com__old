@@ -153,7 +153,6 @@ class Graphic extends DOMWrap {
         }
 
     }
-
           
     /**
      * Empties the output by setting innerHTML to ''

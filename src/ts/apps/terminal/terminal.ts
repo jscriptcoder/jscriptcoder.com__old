@@ -53,7 +53,18 @@ class Terminal extends DOMWrap {
         this.__output__ = new Output(this.findOne(Config.outputSel), sys);
         this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
     
+        this.__prompt__.processCommand = this.processCommand.bind(this);
         this.__output__.print(Config.msgHeader);
+        
+    }
+
+    /**
+     * Processes the command after hitting enter
+     * @param {String} cmd
+     * @public
+     */
+    processCommand(cmd) {
+        console.log('[Terminal#processCommand] Processing', cmd);
     }
     
 }

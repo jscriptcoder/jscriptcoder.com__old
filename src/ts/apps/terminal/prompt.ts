@@ -1,5 +1,5 @@
 /**
- * Terminal Prompt
+ * Terminal prompt
  * @module apps/terminal/prompt
  * @requires system/drivers/graphic/domwrap
  * @requires apps/terminal/config
@@ -39,6 +39,13 @@ class Prompt extends DOMWrap {
      * @private
      */
     __cursor__;
+    
+    /**
+     * Command line introduced
+     * @type String
+     * @private
+     */
+    __cmd__;
 
     /**
      * @constructor
@@ -56,6 +63,10 @@ class Prompt extends DOMWrap {
         this.__input__ = this.findOne(Config.inputSel);
         this.__cursor__ = this.findOne(Config.cursorSel);
 
+        this.__cmd__ = '';
+        this.__input__.innerHTML = '';
+    
+        sys.listen('keypress', this.onKeypress.bind(this));
         sys.listen('keydown', this.onKeydown.bind(this));
     }
 
@@ -90,13 +101,145 @@ class Prompt extends DOMWrap {
     }
 
     /**
-     * Gets trigger on keydown
+     * command getter
+     * @readonly
+     * @returns {String}
+     * @public
+     */
+    get cmd() {
+        return this.__cmd__;
+    }
+
+    /**
+     * Encodes the parameter to show it properly in the input
+     * @param {String} str
+     * @returns {String}
+     * @public
+     */
+    encode(str) {
+        return str
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+            .replace(/ /g, '&nbsp;');
+    }
+
+    /**
+     * Sets the content of the input, current command by default
+     * @param {String} [str = this.cmd]
+     * @public
+     */
+    setInput(str = this.cmd) {
+        this.__input__.innerHTML = this.encode(str);
+    }
+
+    /**
+     * Inserts a character in the input
+     * @param {String} char
+     * @public
+     */
+    insert(char) {
+        this.__cmd__ += char;
+        this.setInput();
+    }
+
+    /**
+     * Applies backspace on the input
+     * @public
+     */
+    backspace() {
+        if (this.__cmd__ !== '') {
+            this.__cmd__ = this.__cmd__.slice(0, -1);
+            this.setInput();
+        }
+    }
+
+    /**
+     * Applies enter on the input
+     * @public
+     */
+    enter() {
+        
+    }
+
+    /**
+     * Gets trigger on keypress
+     * @event
+     * @param {Event} e
+     */
+    onKeypress(e) {
+        e.preventDefault();
+        
+        if (!e.ctrlKey && !e.altKey) {
+            this.insert(String.fromCharCode(e.which));
+            console.log('keypress', e);
+        }
+
+    }
+
+    /**
+     * Gets trigger on keydown. Filters out special keys
      * @event
      * @param {Event} e
      */
     onKeydown(e) {
-        console.log(String.fromCharCode(e.which));
+        
+        switch(e.which) {
+            case 8: // BACKSPACE
+                e.preventDefault();
+                console.log('BACKSPACE');
+                
+                this.backspace();
+                
+                break;
+            case 9: // TAB
+                e.preventDefault();
+                console.log('TAB');
+                
+                this.insert('\t');
+                
+                break;
+            case 13: // ENTER
+                e.preventDefault();
+                console.log('ENTER');
+                
+                this.enter();
+                
+                break;
+            case 38: // UP
+            case 40: // DOWN
+                e.preventDefault();
+                console.log('UP/DOWN');
+                break;
+            case 37: // LEFT
+            case 39: // RIGHT
+                e.preventDefault();
+                console.log('LEFT/RIGHT')
+                break;
+            case 36: // HOME
+            case 35: // END
+                e.preventDefault();
+                console.log('HOME/END');
+                break;
+            case 67: // C
+            case 86: // V
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    console.log('COPY/PASTE');
+                }
+                break;
+            default:
+                console.log(e);
+            
+        }
+        
     }
+
+    /**
+     * Processes the command after hitting enter. Implemented by Terminal
+     * @abstract
+     * @param {String} cmd
+     * @public
+     */
+    processCommand(cmd) {}
 }
 
 export = Prompt;

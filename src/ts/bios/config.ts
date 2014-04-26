@@ -21,7 +21,7 @@ export var loadingMsg = 'Loading jscriptcoder.com. Please wait...';
  * We add some delay before the system is loaded
  * @type Number
  */
-export var delayBeforeLoading = 3000;
+export var delayBeforeLoading = 0;
 
 /**
  * List of dependencies to load
