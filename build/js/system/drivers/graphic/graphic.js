@@ -21,17 +21,52 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         __extends(Graphic, _super);
         /**
         * Initializes and instance of Graphic, calling the constructor of DOMWrap
-        * @param {Document} doc
+        * @param {System} sys
         * @param {HTMLElement} [screenEl = <div id="screen" />]
         * @constructor
         */
-        function Graphic(doc, screenEl) {
+        function Graphic(sys, screenEl) {
             console.log('[Graphic#constructor] Initializing graphic driver...');
 
-            _super.call(this, screenEl || doc.getElementById(Config.screenElemId) || doc.body);
+            _super.call(this, screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
 
+            this.__sys__ = sys;
+            this.__doc__ = sys.doc;
             this.__output__ = this.el;
+
+            this.__setSysAPI__();
         }
+        /**
+        * Sets the API that'll be available in the system to be use by software
+        * @private
+        */
+        Graphic.prototype.__setSysAPI__ = function () {
+            var _this = this;
+            var sys = this.__sys__;
+
+            sys.createElement = function (name) {
+                return _this.createElement(name);
+            };
+            sys.encode = function (str) {
+                return _this.htmlEncode(str);
+            };
+            sys.createGUI = function (gui, attach) {
+                return attach ? _this.appendHtmlElement(gui) : _this.createElementByHtml(gui);
+            };
+            sys.clearOutput = function () {
+                return _this.empty();
+            };
+            sys.clearScreen = function () {
+                return _this.empty(true);
+            };
+            sys.setOutput = function (el) {
+                return _this.output = el;
+            };
+            sys.output = function (msg) {
+                return _this.print(msg);
+            };
+        };
+
         Object.defineProperty(Graphic.prototype, "doc", {
             /**
             * doc getter

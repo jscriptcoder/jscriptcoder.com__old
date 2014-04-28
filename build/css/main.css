@@ -1440,14 +1440,14 @@ body {
   background-color: #44d544;
   color: #000000;
 }
-.terminal {
+.shell {
   height: 100%;
   font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
   font-size: 12px;
   background-color: #000000;
   color: #44d544;
 }
-.terminal .cursor.type {
+.shell .cursor.type {
   background-color: #44d544;
   color: #000000;
 }

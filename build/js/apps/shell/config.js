@@ -7,7 +7,7 @@ define(["require", "exports"], function(require, exports) {
     * @type String
     */
     exports.template = [
-        '<div id="shell">',
+        '<div id="shell" class="shell">',
         '<div class="output"></div>',
         '<div class="prompt">',
         '<span class="symbol">js&gt;&nbsp;</span><span class="input"><span class="cursor blink">&nbsp;</span></span>',

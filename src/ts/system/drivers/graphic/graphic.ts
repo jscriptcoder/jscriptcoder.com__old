@@ -18,6 +18,12 @@ import Config = require('./config');
 class Graphic extends DOMWrap {
 
     /**
+     * @type System
+     * @private
+     */
+    __sys__;
+    
+    /**
      * Document API
      * @type Document
      * @private
@@ -33,17 +39,38 @@ class Graphic extends DOMWrap {
     
     /**
      * Initializes and instance of Graphic, calling the constructor of DOMWrap
-     * @param {Document} doc
+     * @param {System} sys
      * @param {HTMLElement} [screenEl = <div id="screen" />]
      * @constructor
      */
-    constructor(doc, screenEl?) {
+    constructor(sys, screenEl?) {
     
         console.log('[Graphic#constructor] Initializing graphic driver...');
     
-        super(screenEl || doc.getElementById(Config.screenElemId) || doc.body);
+        super(screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
     
+        this.__sys__ = sys;
+        this.__doc__ = sys.doc;
         this.__output__ = this.el;
+    
+        this.__setSysAPI__();
+    }
+
+    /**
+     * Sets the API that'll be available in the system to be use by software
+     * @private
+     */
+    __setSysAPI__() {
+        var sys = this.__sys__;
+        
+        sys.createElement = (name) => this.createElement(name);
+        sys.encode = (str) => this.htmlEncode(str);
+        sys.createGUI = (gui, attach?) => attach ? this.appendHtmlElement(gui) : this.createElementByHtml(gui);
+        sys.clearOutput = () => this.empty();
+        sys.clearScreen = () => this.empty(true);
+        sys.setOutput = (el) => this.output = el;
+        sys.output = (msg) => this.print(msg);
+        
     }
 
     /**

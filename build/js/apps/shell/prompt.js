@@ -32,7 +32,6 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             _super.call(this, el);
 
             this.__sys__ = sys;
-            this.__graphic__ = sys.graphic;
 
             this.__symbol__ = this.findOne(Config.symbolSel, true);
             this.__input__ = this.findOne(Config.inputSel, true);
@@ -76,13 +75,13 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @private
         */
         Prompt.prototype.__joinCmdAndInsert__ = function (parts) {
-            var left = parts[0], right = parts[1], graphic = this.__graphic__, tmp = graphic.createElement('div');
+            var left = parts[0], right = parts[1], sys = this.__sys__, tmp = sys.createElement('div');
 
             this.__cmd__ = left + right;
 
-            tmp.innerHTML = graphic.htmlEncode(left);
+            tmp.innerHTML = sys.encode(left);
             tmp.appendChild(this.__cursor__.el);
-            tmp.innerHTML = graphic.htmlEncode(right.substr(1));
+            tmp.innerHTML += sys.encode(right.substr(1));
 
             this.__input__.html(tmp.innerHTML);
         };
@@ -108,13 +107,15 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         */
         Prompt.prototype.backspace = function () {
             if (this.__cmd__ !== '') {
-                var parts = this.__getCmdParts__();
+                var parts = this.__getCmdParts__(), left = parts[0];
 
-                // deletes last char from the left part
-                parts[0] = parts[0].slice(0, -1);
-                this.__curPos__--;
+                if (left !== '') {
+                    // deletes last char from the left part
+                    parts[0] = left.slice(0, -1);
+                    this.__curPos__--;
 
-                this.__joinCmdAndInsert__(parts);
+                    this.__joinCmdAndInsert__(parts);
+                }
             }
         };
 
@@ -128,7 +129,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
 
             var parts = this.__getCmdParts__(), curChar = parts[1].charAt(0);
 
-            this.__cursor__.html(curChar ? this.__graphic__.htmlEncode(curChar) : '&nbsp;');
+            this.__cursor__.html(curChar ? this.__sys__.encode(curChar) : '&nbsp;');
 
             this.__joinCmdAndInsert__(parts);
         };

@@ -28,9 +28,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         function Shell(sys) {
             console.log('[Terminal#constructor] Initializing terminal app...');
 
-            _super.call(this, sys.createElement(Config.template));
-
-            sys.appendElement(this.el);
+            _super.call(this, sys.createGUI(Config.template, true));
 
             this.__sys__ = sys;
             this.__output__ = new Output(this.findOne(Config.outputSel), sys);

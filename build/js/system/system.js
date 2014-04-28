@@ -17,7 +17,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         function System() {
             console.log('[System#constructor] Initializing system and drivers...');
 
-            this.__graphic__ = new Graphic(System.doc);
+            this.__graphic__ = new Graphic(this);
         }
         Object.defineProperty(System.prototype, "global", {
             /**
@@ -59,11 +59,40 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         });
 
         /**
+        * Creates a new HTML element based on the tagName
+        * @param {String} name
+        * @public
+        */
+        System.prototype.createElement = function (name) {
+            throw Error('[System#createElement] must be implemented by the graphic driver');
+        };
+
+        /**
+        * Encodes a string to be displayed properly
+        * @param {String} str
+        * @public
+        */
+        System.prototype.encode = function (str) {
+            throw Error('[System#encode] must be implemented by the graphic driver');
+        };
+
+        /**
+        * Creates a new GUI
+        * @param {String} gui
+        * @param {Boolean} attach
+        * @returns {HTMLElement}
+        * @public
+        */
+        System.prototype.createGUI = function (gui, attach) {
+            throw Error('[System#createGUIElement] must be implemented by the graphic driver');
+        };
+
+        /**
         * Empties only the output
         * @public
         */
         System.prototype.clearOutput = function () {
-            this.__graphic__.empty();
+            throw Error('[System#clearOutput] must be implemented by the graphic driver');
         };
 
         /**
@@ -71,7 +100,16 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.clearScreen = function () {
-            this.__graphic__.empty(true);
+            throw Error('[System#clearScreen] must be implemented by the graphic driver');
+        };
+
+        /**
+        * Sets the output element for content display
+        * @param {HTMLElement} el
+        * @public
+        */
+        System.prototype.setOutput = function (el) {
+            throw Error('[System#setOutput] must be implemented by the graphic driver');
         };
 
         /**
@@ -80,7 +118,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.output = function (msg) {
-            this.__graphic__.print(msg);
+            throw Error('[System#output] must be implemented by the graphic driver');
         };
 
         /**

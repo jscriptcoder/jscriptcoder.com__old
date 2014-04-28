@@ -46,9 +46,7 @@ class Shell extends DOMWrap {
     
         console.log('[Terminal#constructor] Initializing terminal app...');
     
-        super(sys.createElement(Config.template));
-    
-        sys.appendElement(this.el);
+        super(sys.createGUI(Config.template, true));
     
         this.__sys__ = sys;
         this.__output__ = new Output(this.findOne(Config.outputSel), sys);

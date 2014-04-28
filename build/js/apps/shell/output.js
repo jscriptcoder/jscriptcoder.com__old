@@ -30,9 +30,9 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
 
             _super.call(this, el);
 
-            this.__graphic__ = sys.graphic;
+            this.__sys__ = sys;
 
-            this.__graphic__.setOutput(this.el);
+            this.__sys__.setOutput(this.el);
         }
         /**
         * Sends a message to the output
@@ -40,7 +40,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
         * @public
         */
         Output.prototype.print = function (message) {
-            this.__graphic__.print(message);
+            this.__sys__.output(message);
         };
         return Output;
     })(DOMWrap);

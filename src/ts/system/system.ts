@@ -39,7 +39,7 @@ class System {
     
         console.log('[System#constructor] Initializing system and drivers...');
     
-        this.__graphic__ = new Graphic(System.doc);
+        this.__graphic__ = new Graphic(this);
     }
 
     /**
@@ -70,11 +70,40 @@ class System {
     }
 
     /**
+     * Creates a new HTML element based on the tagName
+     * @param {String} name
+     * @public
+     */
+    createElement(name) {
+        throw Error ('[System#createElement] must be implemented by the graphic driver');
+    }
+
+    /**
+     * Encodes a string to be displayed properly
+     * @param {String} str
+     * @public
+     */
+    encode(str) {
+        throw Error ('[System#encode] must be implemented by the graphic driver');
+    }
+
+    /**
+     * Creates a new GUI
+     * @param {String} gui
+     * @param {Boolean} attach
+     * @returns {HTMLElement}
+     * @public
+     */
+    createGUI(gui, attach) {
+        throw Error ('[System#createGUIElement] must be implemented by the graphic driver');
+    }
+
+    /**
      * Empties only the output
      * @public
      */
     clearOutput() {
-        this.__graphic__.empty();
+        throw Error ('[System#clearOutput] must be implemented by the graphic driver');
     }
 
     /**
@@ -82,7 +111,16 @@ class System {
      * @public
      */
     clearScreen() {
-        this.__graphic__.empty(true);
+        throw Error ('[System#clearScreen] must be implemented by the graphic driver');
+    }
+
+    /**
+     * Sets the output element for content display
+     * @param {HTMLElement} el
+     * @public
+     */
+    setOutput(el) {
+        throw Error ('[System#setOutput] must be implemented by the graphic driver');
     }
 
     /**
@@ -91,7 +129,7 @@ class System {
      * @public
      */
     output(msg) {
-        this.__graphic__.print(msg);
+        throw Error ('[System#output] must be implemented by the graphic driver');
     }
 
     /**

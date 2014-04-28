@@ -15,10 +15,10 @@ import DOMWrap = require('../../system/drivers/graphic/domwrap');
 class Output extends DOMWrap {
 
     /**
-     * @type Graphic
+     * @type System
      * @private
      */
-    __graphic__;
+    __sys__;
     
     /**
      * Initializes an instance of Output
@@ -32,9 +32,9 @@ class Output extends DOMWrap {
     
         super(el);
 
-        this.__graphic__ = sys.graphic;
+        this.__sys__ = sys;
     
-        this.__graphic__.setOutput(this.el);
+        this.__sys__.setOutput(this.el);
     }
 
     /**
@@ -43,7 +43,7 @@ class Output extends DOMWrap {
      * @public
      */
     print(message) {
-        this.__graphic__.print(message);
+        this.__sys__.output(message);
     }
 
 }
