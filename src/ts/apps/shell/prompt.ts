@@ -1,8 +1,8 @@
 /**
- * Terminal prompt
- * @module apps/terminal/prompt
+ * Shell prompt
+ * @module apps/shell/prompt
  * @requires system/drivers/graphic/domwrap
- * @requires apps/terminal/config
+ * @requires apps/shell/config
  * @exports Prompt
  */
 
@@ -23,19 +23,25 @@ class Prompt extends DOMWrap {
     __sys__;
     
     /**
-     * @type HTMLElement
+     * @type Graphic
+     * @private
+     */
+    __graphic__;
+    
+    /**
+     * @type DOMWrap
      * @private
      */
     __symbol__;
 
     /**
-     * @type HTMLElement
+     * @type DOMWrap
      * @private
      */
     __input__;
 
     /**
-     * @type HTMLElement
+     * @type DOMWrap
      * @private
      */
     __cursor__;
@@ -55,20 +61,23 @@ class Prompt extends DOMWrap {
     __curPos__;
 
     /**
-     * @constructor
+     * Initializes an instance of Prompt
      * @param {HTMLElement} el
      * @param {System} sys
      * @param {HTMLElement} kpEl
+     * @constructor
      */
     constructor(el, sys) {
-        console.log('[Prompt#constructor] Setting up terminal prompt...');
+        console.log('[Prompt#constructor] Setting up shell prompt...');
     
         super(el);
 
         this.__sys__ = sys;
-        this.__symbol__ = this.findOne(Config.symbolSel);
-        this.__input__ = this.findOne(Config.inputSel);
-        this.__cursor__ = this.findOne(Config.cursorSel);
+        this.__graphic__ = sys.graphic;
+    
+        this.__symbol__ = this.findOne(Config.symbolSel, true);
+        this.__input__ = this.findOne(Config.inputSel, true);
+        this.__cursor__ = this.findOne(Config.cursorSel, true);
         
         this.__cmd__ = '';
         this.__curPos__ = 0; // zero-base
@@ -88,23 +97,11 @@ class Prompt extends DOMWrap {
     }
 
     /**
-     * Encodes the parameter to show it properly in the html input
-     * @param {String} str
-     * @returns {String}
-     * @private
-     */
-    __encode__(str) {
-        return str
-            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
-            .replace(/ /g, '&nbsp;');
-    }
-
-    /**
-     * Splits the command into two, left and right to the cursor
+     * Gets back the left and right (to the cursor) parts of the command
      * @returns {String[]}
      * @private
      */
-    __splitCmd__() {
+    __getCmdParts__() {
         return [
             this.__cmd__.substring(0, this.__curPos__), 
             this.__cmd__.substr(this.__curPos__)
@@ -118,13 +115,18 @@ class Prompt extends DOMWrap {
      */
     __joinCmdAndInsert__(parts) {
         var left = parts[0],
-            right = parts[1];
+            right = parts[1],
+            graphic = this.__graphic__,
+            tmp = graphic.createElement('div');
         
         this.__cmd__ = left + right;
         
-        this.__input__.innerHTML = this.__encode__(left);
-        this.__input__.appendChild(this.__cursor__);
-        this.__input__.innerHTML += this.__encode__(right.substr(1));
+        tmp.innerHTML = graphic.htmlEncode(left);
+        tmp.appendChild(this.__cursor__.el);
+        tmp.innerHTML = graphic.htmlEncode(right.substr(1));
+        
+        this.__input__.html(tmp.innerHTML);
+        
     }
 
     
@@ -135,7 +137,7 @@ class Prompt extends DOMWrap {
      * @public
      */
     insert(char) {
-        var parts = this.__splitCmd__();
+        var parts = this.__getCmdParts__();
         
         // adds a char to the left part
         parts[0] += char;
@@ -150,7 +152,7 @@ class Prompt extends DOMWrap {
      */
     backspace() {
         if (this.__cmd__ !== '') {
-            var parts = this.__splitCmd__();
+            var parts = this.__getCmdParts__();
 
             // deletes last char from the left part
             parts[0] = parts[0].slice(0, -1);
@@ -169,17 +171,17 @@ class Prompt extends DOMWrap {
         
         this.__curPos__ = pos < 0 ? 0 : (pos > this.__cmd__.length ? this.__cmd__.length : pos);
         
-        var parts = this.__splitCmd__(),
+        var parts = this.__getCmdParts__(),
             curChar = parts[1].charAt(0);
         
-        this.__cursor__.innerHTML = curChar ? this.__encode__(curChar) : '&nbsp;';
+        this.__cursor__.html(curChar ? this.__graphic__.htmlEncode(curChar) : '&nbsp;');
         
         this.__joinCmdAndInsert__(parts);
         
     }
 
     /**
-     * Gets trigger on keypress
+     * Gets triggered on keypress
      * @event
      * @param {Event} e
      */
@@ -194,8 +196,8 @@ class Prompt extends DOMWrap {
 
     /**
      * Gets trigger on keydown. Filters out special keys
-     * @event
      * @param {Event} e
+     * @event
      */
     onKeydown(e) {
         
@@ -269,11 +271,10 @@ class Prompt extends DOMWrap {
 
     /**
      * Processes the command after hitting enter. Implemented by Terminal
-     * @abstract
      * @param {String} cmd
-     * @public
+     * @abstract
      */
-    processCommand(cmd) {}
+    onCommand(cmd) {}
 }
 
 export = Prompt;

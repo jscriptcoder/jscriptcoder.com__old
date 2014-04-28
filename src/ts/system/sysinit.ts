@@ -1,11 +1,11 @@
 /**
  * @module system/init
  * @requires system/system
- * @requires apps/terminal/terminal
+ * @requires apps/shell/shell
  */
 
 import System = require('./system');
-import Terminal = require('../apps/terminal/terminal');
+import Shell = require('../apps/shell/shell');
 
 /**
  * Contains the system initialization logic
@@ -19,9 +19,9 @@ module SysInit {
     var system;
     
     /**
-     * @type Terminal
+     * @type Shell
      */
-    var terminal;
+    var shell;
 
     /**
      * Runs the system
@@ -29,13 +29,15 @@ module SysInit {
      */
     export function run() {
         
+        // initializes the system
         system = new System();
         
         console.log('[SysInit.run] Clearing screen');
         
-        system.clear();
+        system.clearScreen();
         
-        terminal = new Terminal(system);
+        // runs the shell
+        shell = new Shell(system);
         
         console.log('[SysInit.run] System up and running');
         

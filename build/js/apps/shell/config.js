@@ -1,13 +1,13 @@
 /**
-* This module provides configuration items for the terminal
-* @module apps/terminal/config
+* This module provides configuration items for the shell
+* @module apps/shell/config
 */
 define(["require", "exports"], function(require, exports) {
     /**
     * @type String
     */
     exports.template = [
-        '<div id="terminal">',
+        '<div id="shell">',
         '<div class="output"></div>',
         '<div class="prompt">',
         '<span class="symbol">js&gt;&nbsp;</span><span class="input"><span class="cursor blink">&nbsp;</span></span>',

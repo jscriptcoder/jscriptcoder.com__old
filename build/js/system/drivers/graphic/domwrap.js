@@ -10,9 +10,10 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
     */
     var DOMWrap = (function () {
         /**
-        * @constructor
+        * Initializes an instance of DOMWrap
         * @param {HTMLElement} el
         * @throws {Error} Wrong DOM element
+        * @constructor
         */
         function DOMWrap(el) {
             console.log('[DOMWrap#constructor] Hooking up DOM:', el);
@@ -89,6 +90,20 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         };
 
         /**
+        * Inserts or returns the html content of the element (jQuery#html like)
+        * @param {String} [str]
+        * @returns {HTMLElements}
+        * @public
+        */
+        DOMWrap.prototype.html = function (str) {
+            if (Utils.isString(str)) {
+                this.__el__.innerHTML = str;
+            }
+
+            return this.__el__.innerHTML;
+        };
+
+        /**
         * Gets back a DOM elements found by tag or .class
         * @param {String} selector
         * @returns {HTMLCollection}
@@ -107,13 +122,17 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         };
 
         /**
-        * Gets back a single DOM element
+        * Gets back a single DOM element - wrapped in the DOMWrap is specified
         * @param {String} selector
+        * @param {Boolean} [wrap]
         * @returns {HTMLElement}
         * @public
         */
-        DOMWrap.prototype.findOne = function (selector) {
-            return this.find(selector)[0];
+        DOMWrap.prototype.findOne = function (selector, wrap) {
+            var el = this.find(selector)[0];
+            if (wrap)
+                el = new DOMWrap(el);
+            return el;
         };
         DOMWrap.rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
         return DOMWrap;

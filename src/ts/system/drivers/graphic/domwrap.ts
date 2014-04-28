@@ -26,13 +26,14 @@ class DOMWrap {
     __el__;
 
     /**
-     * @constructor
+     * Initializes an instance of DOMWrap
      * @param {HTMLElement} el
      * @throws {Error} Wrong DOM element
+     * @constructor
      */
     constructor(el) {
     
-    console.log('[DOMWrap#constructor] Hooking up DOM:', el);
+        console.log('[DOMWrap#constructor] Hooking up DOM:', el);
         
         if (Utils.isDOMElement(el)) {
             this.__el__ = el;
@@ -102,6 +103,19 @@ class DOMWrap {
         this.__el__.innerHTML = '';
     }
 
+    /**
+     * Inserts or returns the html content of the element (jQuery#html like)
+     * @param {String} [str]
+     * @returns {HTMLElements}
+     * @public
+     */
+    html(str?) {
+        if (Utils.isString(str)) {
+            this.__el__.innerHTML = str;
+        }
+        
+        return this.__el__.innerHTML;
+    }
     
     /**
      * Gets back a DOM elements found by tag or .class
@@ -123,13 +137,16 @@ class DOMWrap {
     }
 
     /**
-     * Gets back a single DOM element
+     * Gets back a single DOM element - wrapped in the DOMWrap is specified
      * @param {String} selector
+     * @param {Boolean} [wrap]
      * @returns {HTMLElement}
      * @public
      */
-    findOne(selector) {
-        return this.find(selector)[0];
+    findOne(selector, wrap?): any {
+        var el = this.find(selector)[0];
+        if (wrap) el = new DOMWrap(el);
+        return el;
     }
 
 }

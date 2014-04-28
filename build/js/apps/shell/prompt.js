@@ -1,8 +1,8 @@
 /**
-* Terminal prompt
-* @module apps/terminal/prompt
+* Shell prompt
+* @module apps/shell/prompt
 * @requires system/drivers/graphic/domwrap
-* @requires apps/terminal/config
+* @requires apps/shell/config
 * @exports Prompt
 */
 var __extends = this.__extends || function (d, b) {
@@ -20,20 +20,23 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
     var Prompt = (function (_super) {
         __extends(Prompt, _super);
         /**
-        * @constructor
+        * Initializes an instance of Prompt
         * @param {HTMLElement} el
         * @param {System} sys
         * @param {HTMLElement} kpEl
+        * @constructor
         */
         function Prompt(el, sys) {
-            console.log('[Prompt#constructor] Setting up terminal prompt...');
+            console.log('[Prompt#constructor] Setting up shell prompt...');
 
             _super.call(this, el);
 
             this.__sys__ = sys;
-            this.__symbol__ = this.findOne(Config.symbolSel);
-            this.__input__ = this.findOne(Config.inputSel);
-            this.__cursor__ = this.findOne(Config.cursorSel);
+            this.__graphic__ = sys.graphic;
+
+            this.__symbol__ = this.findOne(Config.symbolSel, true);
+            this.__input__ = this.findOne(Config.inputSel, true);
+            this.__cursor__ = this.findOne(Config.cursorSel, true);
 
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
@@ -56,21 +59,11 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         });
 
         /**
-        * Encodes the parameter to show it properly in the html input
-        * @param {String} str
-        * @returns {String}
-        * @private
-        */
-        Prompt.prototype.__encode__ = function (str) {
-            return str.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
-        };
-
-        /**
-        * Splits the command into two, left and right to the cursor
+        * Gets back the left and right (to the cursor) parts of the command
         * @returns {String[]}
         * @private
         */
-        Prompt.prototype.__splitCmd__ = function () {
+        Prompt.prototype.__getCmdParts__ = function () {
             return [
                 this.__cmd__.substring(0, this.__curPos__),
                 this.__cmd__.substr(this.__curPos__)
@@ -83,13 +76,15 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @private
         */
         Prompt.prototype.__joinCmdAndInsert__ = function (parts) {
-            var left = parts[0], right = parts[1];
+            var left = parts[0], right = parts[1], graphic = this.__graphic__, tmp = graphic.createElement('div');
 
             this.__cmd__ = left + right;
 
-            this.__input__.innerHTML = this.__encode__(left);
-            this.__input__.appendChild(this.__cursor__);
-            this.__input__.innerHTML += this.__encode__(right.substr(1));
+            tmp.innerHTML = graphic.htmlEncode(left);
+            tmp.appendChild(this.__cursor__.el);
+            tmp.innerHTML = graphic.htmlEncode(right.substr(1));
+
+            this.__input__.html(tmp.innerHTML);
         };
 
         /**
@@ -98,7 +93,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @public
         */
         Prompt.prototype.insert = function (char) {
-            var parts = this.__splitCmd__();
+            var parts = this.__getCmdParts__();
 
             // adds a char to the left part
             parts[0] += char;
@@ -113,7 +108,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         */
         Prompt.prototype.backspace = function () {
             if (this.__cmd__ !== '') {
-                var parts = this.__splitCmd__();
+                var parts = this.__getCmdParts__();
 
                 // deletes last char from the left part
                 parts[0] = parts[0].slice(0, -1);
@@ -131,15 +126,15 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         Prompt.prototype.moveCursorTo = function (pos) {
             this.__curPos__ = pos < 0 ? 0 : (pos > this.__cmd__.length ? this.__cmd__.length : pos);
 
-            var parts = this.__splitCmd__(), curChar = parts[1].charAt(0);
+            var parts = this.__getCmdParts__(), curChar = parts[1].charAt(0);
 
-            this.__cursor__.innerHTML = curChar ? this.__encode__(curChar) : '&nbsp;';
+            this.__cursor__.html(curChar ? this.__graphic__.htmlEncode(curChar) : '&nbsp;');
 
             this.__joinCmdAndInsert__(parts);
         };
 
         /**
-        * Gets trigger on keypress
+        * Gets triggered on keypress
         * @event
         * @param {Event} e
         */
@@ -153,8 +148,8 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
 
         /**
         * Gets trigger on keydown. Filters out special keys
-        * @event
         * @param {Event} e
+        * @event
         */
         Prompt.prototype.onKeydown = function (e) {
             switch (e.which) {
@@ -220,11 +215,10 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
 
         /**
         * Processes the command after hitting enter. Implemented by Terminal
-        * @abstract
         * @param {String} cmd
-        * @public
+        * @abstract
         */
-        Prompt.prototype.processCommand = function (cmd) {
+        Prompt.prototype.onCommand = function (cmd) {
         };
         return Prompt;
     })(DOMWrap);

@@ -1,7 +1,7 @@
 /**
+* HTML graphic driver
 * @module system/drivers/graphic/graphic
 * @requires system/utils
-* @requires system/system
 * @requires system/drivers/graphic/domwrap
 * @requires system/drivers/graphic/config
 * @exports Graphic
@@ -20,16 +20,31 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
     var Graphic = (function (_super) {
         __extends(Graphic, _super);
         /**
-        * @constructor
+        * Initializes and instance of Graphic, calling the constructor of DOMWrap
+        * @param {Document} doc
         * @param {HTMLElement} [screenEl = <div id="screen" />]
+        * @constructor
         */
-        function Graphic(screenEl) {
+        function Graphic(doc, screenEl) {
             console.log('[Graphic#constructor] Initializing graphic driver...');
 
-            _super.call(this, screenEl || Graphic.doc.getElementById(Config.screenElemId) || Graphic.doc.body);
+            _super.call(this, screenEl || doc.getElementById(Config.screenElemId) || doc.body);
 
             this.__output__ = this.el;
         }
+        Object.defineProperty(Graphic.prototype, "doc", {
+            /**
+            * doc getter
+            * @returns {Document}
+            * @public
+            */
+            get: function () {
+                return this.__doc__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(Graphic.prototype, "output", {
             /**
             * output getter
@@ -49,7 +64,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
                 if (Utils.isDOMElement(output)) {
                     this.__output__ = output;
                 } else {
-                    throw Error('[DOMWrap#setOutput] Wrong DOM element');
+                    throw Error('[Graphic#set output] Wrong DOM element');
                 }
             },
             enumerable: true,
@@ -58,16 +73,36 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
 
         /**
-        * Creates DOM elements from html strings
+        * Wrapper for document.createElement method
+        * @param {String} tagName
+        * @return {HTMLElement}
+        * @public
+        */
+        Graphic.prototype.createElement = function (tagName) {
+            return this.doc.createElement(tagName);
+        };
+
+        /**
+        * Wrapper for document.getElementById method
+        * @param {String} id
+        * @return {HTMLElement}
+        * @public
+        */
+        Graphic.prototype.getElementById = function (id) {
+            return this.doc.getElementById(id);
+        };
+
+        /**
+        * Creates DOM elements from a html strings
         * @param {String} html
         * @returns {HTMLElement}
         * @public
         */
-        Graphic.prototype.createDOMElement = function (html) {
-            if (typeof html === "undefined") { html = ''; }
-            var div = Graphic.doc.createElement('div');
-            div.innerHTML = html;
-            return div.children[0];
+        Graphic.prototype.createElementByHtml = function (htmlEl) {
+            if (typeof htmlEl === "undefined") { htmlEl = ''; }
+            var tmp = this.createElement('div');
+            tmp.innerHTML = htmlEl;
+            return tmp.firstChild;
         };
 
         /**
@@ -75,18 +110,19 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         * @param {String|HTMLElement} html
         * @param {HTMLElement} [appendTo = this.output]
         * @returns {HTMLElement}
+        * @throws {Error} Wrong parameter
         * @public
         */
-        Graphic.prototype.appendDOMElement = function (html, appendTo) {
+        Graphic.prototype.appendHtmlElement = function (html, appendTo) {
             if (typeof appendTo === "undefined") { appendTo = this.output; }
             var el;
 
             if (Utils.isString(html)) {
-                el = this.createDOMElement(html);
+                el = this.createElementByHtml(html);
             } else if (Utils.isDOMElement(html)) {
                 el = html;
             } else {
-                throw Error('');
+                throw Error('[Graphic#appendHtmlElement] Wrong parameter');
             }
 
             appendTo.appendChild(el);
@@ -95,18 +131,18 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         };
 
         /**
-        * Gets back a DOM element by #id, tag or .class
+        * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
         * @param {String} selector
         * @param {HTMLElement} [contextEl = Graphic.doc]
         * @returns {HTMLElement}
         * @public
         */
         Graphic.prototype.getDOMElement = function (selector, contextEl) {
-            if (typeof contextEl === "undefined") { contextEl = Graphic.doc; }
+            if (typeof contextEl === "undefined") { contextEl = this.doc; }
             var match = Graphic.rquickExpr.exec(selector), m;
 
             if ((m = match[1])) {
-                return Graphic.doc.getElementById(m);
+                return this.getElementById(m);
             } else if (match[2]) {
                 return contextEl.getElementsByTagName(selector)[0];
             } else if ((m = match[3])) {
@@ -114,6 +150,18 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             } else {
                 return contextEl.querySelectorAll(selector)[0];
             }
+        };
+
+        /**
+        * Returns a string with the HTML entities in order to be used in HTML literals
+        * @param {String} str
+        * return {String}
+        * @public
+        */
+        Graphic.prototype.htmlEncode = function (str) {
+            var el = this.createElement('div');
+            el.innerText = el.textContent = str;
+            return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
         };
 
         /**
@@ -132,9 +180,9 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             } else if (Utils.isString(message)) {
                 console.log('[Graphic#print] Printing message:', message);
 
-                var div = Graphic.doc.createElement('div');
+                var div = this.createElement('div');
                 div.innerHTML = message.replace(/^\s/g, '&nbsp;');
-                this.appendDOMElement(div, appendTo);
+                this.appendHtmlElement(div, appendTo);
             } else {
                 throw Error('[Graphic#print] Wrong message');
             }
@@ -142,12 +190,17 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
         /**
         * Empties the output by setting innerHTML to ''
+        * @param {Boolean} all
         * @public
         */
-        Graphic.prototype.empty = function () {
-            this.output.innerHTML = '';
+        Graphic.prototype.empty = function (all) {
+            if (all) {
+                _super.prototype.empty.call(this);
+                this.output = this.el; // redirects the output to the main screen element
+            } else {
+                this.output.innerHTML = '';
+            }
         };
-        Graphic.doc = document;
         return Graphic;
     })(DOMWrap);
 

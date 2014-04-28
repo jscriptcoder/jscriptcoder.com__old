@@ -11,57 +11,76 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
     var System = (function () {
         /**
         * Initializes the system, drivers, etc...
+        * @param {HTMLElement} doc
         * @constructor
         */
         function System() {
             console.log('[System#constructor] Initializing system and drivers...');
 
-            this.__graphic__ = new Graphic();
+            this.__graphic__ = new Graphic(System.doc);
         }
-        /**
-        * Sets the output by default
-        * @param {HTMLElement} output
-        * @public
-        */
-        System.prototype.setOutput = function (output) {
-            this.__graphic__.output = output;
-        };
+        Object.defineProperty(System.prototype, "global", {
+            /**
+            * global getter
+            * @returns {Window}
+            * @public
+            */
+            get: function () {
+                return System.global;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(System.prototype, "doc", {
+            /**
+            * doc getter
+            * @returns {Document}
+            * @public
+            */
+            get: function () {
+                return System.doc;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(System.prototype, "graphic", {
+            /**
+            * graphic getter
+            * @returns {Graphic}
+            * @public
+            */
+            get: function () {
+                return this.__graphic__;
+            },
+            enumerable: true,
+            configurable: true
+        });
 
         /**
-        * Creates DOM elements from html strings
-        * @param {String} html
-        * @returns {HTMLElement}
+        * Empties only the output
         * @public
         */
-        System.prototype.createElement = function (html) {
-            return this.__graphic__.createDOMElement(html);
-        };
-
-        /**
-        * Appends an elements to the screen
-        * @param {HTMLElement} el
-        * @returns {HTMLElement}
-        * @public
-        */
-        System.prototype.appendElement = function (el) {
-            return this.__graphic__.appendDOMElement(el);
-        };
-
-        /**
-        * Clears the screen
-        * @public
-        */
-        System.prototype.clear = function () {
+        System.prototype.clearOutput = function () {
             this.__graphic__.empty();
         };
 
         /**
-        * Prints a message
-        * @param {String|String[]} message
+        * Clears the whole screen
         * @public
         */
-        System.prototype.print = function (message) {
-            this.__graphic__.print(message);
+        System.prototype.clearScreen = function () {
+            this.__graphic__.empty(true);
+        };
+
+        /**
+        * Sends a string to the output
+        * @param {String} msg
+        * @public
+        */
+        System.prototype.output = function (msg) {
+            this.__graphic__.print(msg);
         };
 
         /**
@@ -76,6 +95,8 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
             context.addEventListener(evtName, handler);
         };
         System.doc = document;
+
+        System.global = window;
         return System;
     })();
 

@@ -11,14 +11,19 @@ import Graphic = require('./drivers/graphic/graphic');
  * @class System
  */
 class System {
-    
+
     /**
-     * Reference in order to use document API
-     * @type HTMLElement
-     * @static
+     * document API
+     * @type Document
      */
     static doc = document;
     
+    /**
+     * window API
+     * @type Window
+     */
+    static global = window;
+        
     /**
      * @type Graphic
      * @private
@@ -27,59 +32,66 @@ class System {
     
     /**
      * Initializes the system, drivers, etc...
+     * @param {HTMLElement} doc
      * @constructor
      */
     constructor() {
     
         console.log('[System#constructor] Initializing system and drivers...');
     
-        this.__graphic__ = new Graphic(); 
+        this.__graphic__ = new Graphic(System.doc);
     }
 
     /**
-     * Sets the output by default
-     * @param {HTMLElement} output
+     * global getter
+     * @returns {Window}
      * @public
      */
-    setOutput(output) {
-        this.__graphic__.output = output;
+    get global() {
+        return System.global;
     }
 
     /**
-     * Creates DOM elements from html strings
-     * @param {String} html
-     * @returns {HTMLElement}
+     * doc getter
+     * @returns {Document}
      * @public
      */
-    createElement(html) {
-        return this.__graphic__.createDOMElement(html);
+    get doc() {
+        return System.doc;
     }
 
     /**
-     * Appends an elements to the screen
-     * @param {HTMLElement} el
-     * @returns {HTMLElement}
+     * graphic getter
+     * @returns {Graphic}
      * @public
      */
-    appendElement(el) {
-        return this.__graphic__.appendDOMElement(el);
+    get graphic() {
+        return this.__graphic__;
     }
 
     /**
-     * Clears the screen
+     * Empties only the output
      * @public
      */
-    clear() {
+    clearOutput() {
         this.__graphic__.empty();
     }
 
     /**
-     * Prints a message
-     * @param {String|String[]} message
+     * Clears the whole screen
      * @public
      */
-    print(message) {
-        this.__graphic__.print(message);
+    clearScreen() {
+        this.__graphic__.empty(true);
+    }
+
+    /**
+     * Sends a string to the output
+     * @param {String} msg
+     * @public
+     */
+    output(msg) {
+        this.__graphic__.print(msg);
     }
 
     /**

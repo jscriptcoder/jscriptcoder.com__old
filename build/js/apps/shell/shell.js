@@ -1,10 +1,10 @@
 /**
-* @module apps/terminal/terminal
+* @module apps/shell/shell
 * @requires system/drivers/graphic/domwrap
-* @requires apps/terminal/config
-* @requires apps/terminal/output
-* @requires apps/terminal/prompt
-* @exports Terminal
+* @requires apps/shell/config
+* @requires apps/shell/output
+* @requires apps/shell/prompt
+* @exports Shell
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -14,17 +14,18 @@ var __extends = this.__extends || function (d, b) {
 };
 define(["require", "exports", '../../system/drivers/graphic/domwrap', './config', './output', './prompt'], function(require, exports, DOMWrap, Config, Output, Prompt) {
     /**
-    * Terminal application for user interaction with the system
+    * Shell application for user interaction with the system
     * @class Terminal
     * @extends DOMWrap
     */
-    var Terminal = (function (_super) {
-        __extends(Terminal, _super);
+    var Shell = (function (_super) {
+        __extends(Shell, _super);
         /**
-        * @constructor
+        * Initializes an instance of Terminal`
         * @param {System} sys
+        * @constructor
         */
-        function Terminal(sys) {
+        function Shell(sys) {
             console.log('[Terminal#constructor] Initializing terminal app...');
 
             _super.call(this, sys.createElement(Config.template));
@@ -35,20 +36,21 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             this.__output__ = new Output(this.findOne(Config.outputSel), sys);
             this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
 
-            this.__prompt__.processCommand = this.processCommand.bind(this);
+            this.__prompt__.onCommand = this.onCommand.bind(this);
+
             this.__output__.print(Config.msgHeader);
         }
         /**
-        * Processes the command after hitting enter
+        * Gets trigger when the user sends the js command by pressing enter
         * @param {String} cmd
-        * @public
+        * @event
         */
-        Terminal.prototype.processCommand = function (cmd) {
-            console.log('[Terminal#processCommand] Processing', cmd);
+        Shell.prototype.onCommand = function (cmd) {
+            console.log('[Terminal#onCommand] Command:', cmd);
         };
-        return Terminal;
+        return Shell;
     })(DOMWrap);
 
     
-    return Terminal;
+    return Shell;
 });

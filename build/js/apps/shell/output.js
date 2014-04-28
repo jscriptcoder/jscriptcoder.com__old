@@ -1,6 +1,6 @@
 /**
-* Terminal Output
-* @module apps/terminal/output
+* Shell Output
+* @module apps/shell/output
 * @requires system/drivers/graphic/domwrap
 * @exports Output
 */
@@ -19,19 +19,20 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
     var Output = (function (_super) {
         __extends(Output, _super);
         /**
-        * @constructor
+        * Initializes an instance of Output
         * @param {HTMLElement} el
-        * @param {System} sys
+        * @param {Terminal} termin
         * @param {HTMLElement} kpEl
+        * @constructor
         */
         function Output(el, sys) {
-            console.log('[Output#constructor] Setting up terminal output...');
+            console.log('[Output#constructor] Setting up shell output...');
 
             _super.call(this, el);
 
-            this.__sys__ = sys;
+            this.__graphic__ = sys.graphic;
 
-            sys.setOutput(this.el);
+            this.__graphic__.setOutput(this.el);
         }
         /**
         * Sends a message to the output
@@ -39,7 +40,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
         * @public
         */
         Output.prototype.print = function (message) {
-            this.__sys__.print(message);
+            this.__graphic__.print(message);
         };
         return Output;
     })(DOMWrap);

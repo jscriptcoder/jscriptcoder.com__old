@@ -1,10 +1,10 @@
 /**
- * @module apps/terminal/terminal
+ * @module apps/shell/shell
  * @requires system/drivers/graphic/domwrap
- * @requires apps/terminal/config
- * @requires apps/terminal/output
- * @requires apps/terminal/prompt
- * @exports Terminal
+ * @requires apps/shell/config
+ * @requires apps/shell/output
+ * @requires apps/shell/prompt
+ * @exports Shell
  */
 
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
@@ -13,11 +13,11 @@ import Output = require('./output');
 import Prompt = require('./prompt');
 
 /**
- * Terminal application for user interaction with the system
+ * Shell application for user interaction with the system
  * @class Terminal
  * @extends DOMWrap
  */
-class Terminal extends DOMWrap {
+class Shell extends DOMWrap {
     
     /**
      * @type System
@@ -38,8 +38,9 @@ class Terminal extends DOMWrap {
     __prompt__;
     
     /**
-     * @constructor
+     * Initializes an instance of Terminal`
      * @param {System} sys
+     * @constructor
      */
     constructor(sys) {
     
@@ -53,20 +54,21 @@ class Terminal extends DOMWrap {
         this.__output__ = new Output(this.findOne(Config.outputSel), sys);
         this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
     
-        this.__prompt__.processCommand = this.processCommand.bind(this);
+        this.__prompt__.onCommand = this.onCommand.bind(this);
+    
         this.__output__.print(Config.msgHeader);
         
     }
 
     /**
-     * Processes the command after hitting enter
+     * Gets trigger when the user sends the js command by pressing enter
      * @param {String} cmd
-     * @public
+     * @event
      */
-    processCommand(cmd) {
-        console.log('[Terminal#processCommand] Processing', cmd);
+    onCommand(cmd) {
+        console.log('[Terminal#onCommand] Command:', cmd);
     }
     
 }
 
-export = Terminal;
+export = Shell;

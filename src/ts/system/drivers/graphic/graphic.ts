@@ -1,7 +1,7 @@
 /**
+ * HTML graphic driver
  * @module system/drivers/graphic/graphic
  * @requires system/utils
- * @requires system/system
  * @requires system/drivers/graphic/domwrap
  * @requires system/drivers/graphic/config
  * @exports Graphic
@@ -18,11 +18,11 @@ import Config = require('./config');
 class Graphic extends DOMWrap {
 
     /**
-     * We need this reference in order to use document API
-     * @type HTMLElement
-     * @static
+     * Document API
+     * @type Document
+     * @private
      */
-    static doc = document;
+    __doc__;
     
     /**
      * Elements to output content, "this.el" by default
@@ -32,16 +32,27 @@ class Graphic extends DOMWrap {
     __output__;
     
     /**
-     * @constructor
+     * Initializes and instance of Graphic, calling the constructor of DOMWrap
+     * @param {Document} doc
      * @param {HTMLElement} [screenEl = <div id="screen" />]
+     * @constructor
      */
-    constructor(screenEl?) {
+    constructor(doc, screenEl?) {
     
         console.log('[Graphic#constructor] Initializing graphic driver...');
     
-        super(screenEl || Graphic.doc.getElementById(Config.screenElemId) || Graphic.doc.body);
+        super(screenEl || doc.getElementById(Config.screenElemId) || doc.body);
     
         this.__output__ = this.el;
+    }
+
+    /**
+     * doc getter
+     * @returns {Document}
+     * @public
+     */
+    get doc() {
+        return this.__doc__;
     }
 
     /**
@@ -63,21 +74,41 @@ class Graphic extends DOMWrap {
         if (Utils.isDOMElement(output)) {
             this.__output__ = output;
         } else {
-            throw Error('[DOMWrap#setOutput] Wrong DOM element');
+            throw Error('[Graphic#set output] Wrong DOM element');
         }
         
     }
 
     /**
-     * Creates DOM elements from html strings
+     * Wrapper for document.createElement method
+     * @param {String} tagName
+     * @return {HTMLElement}
+     * @public
+     */
+    createElement(tagName) {
+        return this.doc.createElement(tagName);
+    }
+
+    /**
+     * Wrapper for document.getElementById method
+     * @param {String} id
+     * @return {HTMLElement}
+     * @public
+     */
+    getElementById(id) {
+        return this.doc.getElementById(id);
+    }
+
+    /**
+     * Creates DOM elements from a html strings
      * @param {String} html
      * @returns {HTMLElement}
      * @public
      */
-    createDOMElement(html = '') {
-        var div = Graphic.doc.createElement('div');
-        div.innerHTML = html;
-        return div.children[0];
+    createElementByHtml(htmlEl = '') {
+        var tmp = this.createElement('div');
+        tmp.innerHTML = htmlEl;
+        return tmp.firstChild;
     }
 
     /**
@@ -85,17 +116,18 @@ class Graphic extends DOMWrap {
      * @param {String|HTMLElement} html
      * @param {HTMLElement} [appendTo = this.output]
      * @returns {HTMLElement}
+     * @throws {Error} Wrong parameter
      * @public
      */
-    appendDOMElement(html, appendTo = this.output) {
+    appendHtmlElement(html, appendTo = this.output) {
         var el;
         
         if (Utils.isString(html)) {
-            el = this.createDOMElement(html);   
+            el = this.createElementByHtml(html);   
         } else if (Utils.isDOMElement(html)) {
             el = html;
         } else {
-            throw Error('')
+            throw Error('[Graphic#appendHtmlElement] Wrong parameter');
         }
         
         appendTo.appendChild(el);
@@ -104,17 +136,17 @@ class Graphic extends DOMWrap {
     }
 
     /**
-     * Gets back a DOM element by #id, tag or .class
+     * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
      * @param {String} selector
      * @param {HTMLElement} [contextEl = Graphic.doc]
      * @returns {HTMLElement}
      * @public
      */
-    getDOMElement(selector, contextEl = Graphic.doc) {
+    getDOMElement(selector, contextEl = this.doc) {
         var match = Graphic.rquickExpr.exec(selector), m;
         
         if ((m = match[1])) {
-            return Graphic.doc.getElementById(m);
+            return this.getElementById(m);
         } else if (match[2]) {
             return contextEl.getElementsByTagName(selector)[0];
         } else if ((m = match[3])) {
@@ -123,6 +155,20 @@ class Graphic extends DOMWrap {
             return contextEl.querySelectorAll(selector)[0];
         }
         
+    }
+
+    /**
+     * Returns a string with the HTML entities in order to be used in HTML literals
+     * @param {String} str
+     * return {String}
+     * @public
+     */
+    htmlEncode(str) {
+        var el = this.createElement('div');
+        el.innerText = el.textContent = str;
+        return el.innerHTML
+            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
+            .replace(/ /g, '&nbsp;');
     }
 
     /**
@@ -142,9 +188,9 @@ class Graphic extends DOMWrap {
           
             console.log('[Graphic#print] Printing message:', message);
           
-            var div = Graphic.doc.createElement('div');
+            var div = this.createElement('div');
             div.innerHTML = message.replace(/^\s/g, '&nbsp;');
-            this.appendDOMElement(div, appendTo);
+            this.appendHtmlElement(div, appendTo);
 
         } else {
             
@@ -156,10 +202,18 @@ class Graphic extends DOMWrap {
           
     /**
      * Empties the output by setting innerHTML to ''
+     * @param {Boolean} all
      * @public
      */
-    empty() {
-        this.output.innerHTML = '';
+    empty(all?) {
+          
+        if (all) {
+            super.empty();
+            this.output = this.el; // redirects the output to the main screen element
+        } else {
+            this.output.innerHTML = '';
+        }
+        
     }
     
 }

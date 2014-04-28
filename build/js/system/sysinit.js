@@ -1,9 +1,9 @@
 /**
 * @module system/init
 * @requires system/system
-* @requires apps/terminal/terminal
+* @requires apps/shell/shell
 */
-define(["require", "exports", './system', '../apps/terminal/terminal'], function(require, exports, System, Terminal) {
+define(["require", "exports", './system', '../apps/shell/shell'], function(require, exports, System, Shell) {
     /**
     * Contains the system initialization logic
     * @namespace SysInit
@@ -16,22 +16,24 @@ define(["require", "exports", './system', '../apps/terminal/terminal'], function
         var system;
 
         /**
-        * @type Terminal
+        * @type Shell
         */
-        var terminal;
+        var shell;
 
         /**
         * Runs the system
         * @memberof SysInit
         */
         function run() {
+            // initializes the system
             system = new System();
 
             console.log('[SysInit.run] Clearing screen');
 
-            system.clear();
+            system.clearScreen();
 
-            terminal = new Terminal(system);
+            // runs the shell
+            shell = new Shell(system);
 
             console.log('[SysInit.run] System up and running');
         }

@@ -1,6 +1,6 @@
 /**
- * Terminal Output
- * @module apps/terminal/output
+ * Shell Output
+ * @module apps/shell/output
  * @requires system/drivers/graphic/domwrap
  * @exports Output
  */
@@ -15,25 +15,26 @@ import DOMWrap = require('../../system/drivers/graphic/domwrap');
 class Output extends DOMWrap {
 
     /**
-     * @type System
+     * @type Graphic
      * @private
      */
-    __sys__;
+    __graphic__;
     
     /**
-     * @constructor
+     * Initializes an instance of Output
      * @param {HTMLElement} el
-     * @param {System} sys
+     * @param {Terminal} termin
      * @param {HTMLElement} kpEl
+     * @constructor
      */
     constructor(el, sys) {
-        console.log('[Output#constructor] Setting up terminal output...');
+        console.log('[Output#constructor] Setting up shell output...');
     
         super(el);
 
-        this.__sys__ = sys;
+        this.__graphic__ = sys.graphic;
     
-        sys.setOutput(this.el);
+        this.__graphic__.setOutput(this.el);
     }
 
     /**
@@ -42,7 +43,7 @@ class Output extends DOMWrap {
      * @public
      */
     print(message) {
-        this.__sys__.print(message);
+        this.__graphic__.print(message);
     }
 
 }

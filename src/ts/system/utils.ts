@@ -14,7 +14,7 @@ module Utils {
      * @type Function
      */
     var toString = Object.prototype.toString;
-
+    
     /**
      * Whether or not the value is an array
      * @param {Any} value
