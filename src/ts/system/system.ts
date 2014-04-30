@@ -1,16 +1,21 @@
 /**
  * @module system/system
+ * @requires system/interrupts
  * @requires system/drivers/graphic/graphic
+ * @requires system/drivers/keyboard/keyboard
  * @exports System
  */
 
+import Interrups = require('./interrupts');
 import Graphic = require('./drivers/graphic/graphic');
+import Keyboard = require('./drivers/keyboard/keyboard');
 
 /**
- * Contains the System API
+ * Contains the System API and acts as a mediator between drivers and apps
  * @class System
+ * @extends Interrupts
  */
-class System {
+class System extends Interrups {
 
     /**
      * document API
@@ -31,6 +36,12 @@ class System {
     __graphic__;
     
     /**
+     * @type Keyboard
+     * @private
+     */
+    __keyboard__;
+    
+    /**
      * Initializes the system, drivers, etc...
      * @param {HTMLElement} doc
      * @constructor
@@ -39,7 +50,10 @@ class System {
     
         console.log('[System#constructor] Initializing system and drivers...');
     
+        super();
+    
         this.__graphic__ = new Graphic(this);
+        this.__keyboard__ = new Keyboard(this);
     }
 
     /**
@@ -70,12 +84,32 @@ class System {
     }
 
     /**
-     * Creates a new HTML element based on the tagName
-     * @param {String} name
+     * keyboard getter
+     * @returns {Keyboard}
      * @public
      */
-    createElement(name) {
-        throw Error ('[System#createElement] must be implemented by the graphic driver');
+    get keyboard() {
+        return this.__keyboard__;
+    }
+
+    /**
+     * Wrapper for document.createElement method
+     * @param {String} tagName
+     * @return {HTMLElement}
+     * @public
+     */
+    createElement(tagName) {
+        return System.doc.createElement(tagName);
+    }
+
+    /**
+     * Wrapper for document.getElementById method
+     * @param {String} id
+     * @return {HTMLElement}
+     * @public
+     */
+    getElementById(id) {
+        return System.doc.getElementById(id);
     }
 
     /**
@@ -84,7 +118,7 @@ class System {
      * @public
      */
     encode(str) {
-        throw Error ('[System#encode] must be implemented by the graphic driver');
+        return this.__graphic__.htmlEncode(str);
     }
 
     /**
@@ -95,7 +129,7 @@ class System {
      * @public
      */
     createGUI(gui, attach) {
-        throw Error ('[System#createGUIElement] must be implemented by the graphic driver');
+        return attach ? this.__graphic__.appendHtmlElement(gui) : this.__graphic__.createElementByHtml(gui);
     }
 
     /**
@@ -103,7 +137,7 @@ class System {
      * @public
      */
     clearOutput() {
-        throw Error ('[System#clearOutput] must be implemented by the graphic driver');
+        this.__graphic__.empty();
     }
 
     /**
@@ -111,7 +145,7 @@ class System {
      * @public
      */
     clearScreen() {
-        throw Error ('[System#clearScreen] must be implemented by the graphic driver');
+        this.__graphic__.empty(true);
     }
 
     /**
@@ -120,7 +154,7 @@ class System {
      * @public
      */
     setOutput(el) {
-        throw Error ('[System#setOutput] must be implemented by the graphic driver');
+        this.__graphic__.output = el;
     }
 
     /**
@@ -129,18 +163,19 @@ class System {
      * @public
      */
     output(msg) {
-        throw Error ('[System#output] must be implemented by the graphic driver');
+        this.__graphic__.print(msg);
     }
 
     /**
-     * Listens to events on a particular context
-     * @param {String} evtName
-     * @param {Function} handler
-     * @param {HTMLElement} [context = System.doc]
+     * Installs keypress listeners on an element
+     * @param {HTMLElement} [el = this.doc]
      * @public
      */
-    listen(evtName, handler, context = System.doc) {
-        context.addEventListener(evtName, handler);
+    installKeypressInterrupts(el = this.doc) {
+        var keyboard = this.__keyboard__;
+        
+        this.listen('keypress', keyboard.onKeypress.bind(keyboard), el);
+        this.listen('keydown', keyboard.onKeydown.bind(keyboard), el);
     }
 
 }

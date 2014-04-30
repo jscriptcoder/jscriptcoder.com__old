@@ -1,5 +1,5 @@
 /**
- * @module utils
+ * @module system/utils
  * @exports Utils
  */
 
@@ -73,6 +73,16 @@ module Utils {
      */
     export function isDOMElement(value) {
         return !!(value && value.nodeName);
+    }
+       
+    /**
+     * Whether or not the value is a function
+     * @param {Any} value
+     * @returns {Boolean}
+     * @memberof Utils
+     */
+    export function isFunction(value){
+        return typeof value === 'function';
     }
 
 }

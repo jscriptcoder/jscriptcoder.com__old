@@ -24,13 +24,6 @@ class Graphic extends DOMWrap {
     __sys__;
     
     /**
-     * Document API
-     * @type Document
-     * @private
-     */
-    __doc__;
-    
-    /**
      * Elements to output content, "this.el" by default
      * @type HTMLElement
      * @private
@@ -38,7 +31,7 @@ class Graphic extends DOMWrap {
     __output__;
     
     /**
-     * Initializes and instance of Graphic, calling the constructor of DOMWrap
+     * Initializes an instance of Graphic, calling the constructor of DOMWrap
      * @param {System} sys
      * @param {HTMLElement} [screenEl = <div id="screen" />]
      * @constructor
@@ -50,36 +43,7 @@ class Graphic extends DOMWrap {
         super(screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
     
         this.__sys__ = sys;
-        this.__doc__ = sys.doc;
         this.__output__ = this.el;
-    
-        this.__setSysAPI__();
-    }
-
-    /**
-     * Sets the API that'll be available in the system to be use by software
-     * @private
-     */
-    __setSysAPI__() {
-        var sys = this.__sys__;
-        
-        sys.createElement = (name) => this.createElement(name);
-        sys.encode = (str) => this.htmlEncode(str);
-        sys.createGUI = (gui, attach?) => attach ? this.appendHtmlElement(gui) : this.createElementByHtml(gui);
-        sys.clearOutput = () => this.empty();
-        sys.clearScreen = () => this.empty(true);
-        sys.setOutput = (el) => this.output = el;
-        sys.output = (msg) => this.print(msg);
-        
-    }
-
-    /**
-     * doc getter
-     * @returns {Document}
-     * @public
-     */
-    get doc() {
-        return this.__doc__;
     }
 
     /**
@@ -107,33 +71,13 @@ class Graphic extends DOMWrap {
     }
 
     /**
-     * Wrapper for document.createElement method
-     * @param {String} tagName
-     * @return {HTMLElement}
-     * @public
-     */
-    createElement(tagName) {
-        return this.doc.createElement(tagName);
-    }
-
-    /**
-     * Wrapper for document.getElementById method
-     * @param {String} id
-     * @return {HTMLElement}
-     * @public
-     */
-    getElementById(id) {
-        return this.doc.getElementById(id);
-    }
-
-    /**
      * Creates DOM elements from a html strings
      * @param {String} html
      * @returns {HTMLElement}
      * @public
      */
     createElementByHtml(htmlEl = '') {
-        var tmp = this.createElement('div');
+        var tmp = this.__sys__.createElement('div');
         tmp.innerHTML = htmlEl;
         return tmp.firstChild;
     }
@@ -165,15 +109,15 @@ class Graphic extends DOMWrap {
     /**
      * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
      * @param {String} selector
-     * @param {HTMLElement} [contextEl = Graphic.doc]
+     * @param {HTMLElement} contextEl
      * @returns {HTMLElement}
      * @public
      */
-    getDOMElement(selector, contextEl = this.doc) {
+    getDOMElement(selector, contextEl) {
         var match = Graphic.rquickExpr.exec(selector), m;
         
         if ((m = match[1])) {
-            return this.getElementById(m);
+            return this.__sys__.getElementById(m);
         } else if (match[2]) {
             return contextEl.getElementsByTagName(selector)[0];
         } else if ((m = match[3])) {
@@ -191,7 +135,7 @@ class Graphic extends DOMWrap {
      * @public
      */
     htmlEncode(str) {
-        var el = this.createElement('div');
+        var el = this.__sys__.createElement('div');
         el.innerText = el.textContent = str;
         return el.innerHTML
             .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
@@ -215,7 +159,7 @@ class Graphic extends DOMWrap {
           
             console.log('[Graphic#print] Printing message:', message);
           
-            var div = this.createElement('div');
+            var div = this.__sys__.createElement('div');
             div.innerHTML = message.replace(/^\s/g, '&nbsp;');
             this.appendHtmlElement(div, appendTo);
 

@@ -1,6 +1,7 @@
 /**
 * Shell prompt
 * @module apps/shell/prompt
+* @requires system/utils
 * @requires system/drivers/graphic/domwrap
 * @requires apps/shell/config
 * @exports Prompt
@@ -11,7 +12,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'], function(require, exports, DOMWrap, Config) {
+define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config'], function(require, exports, Utils, DOMWrap, Config) {
     /**
     * Prompt user interface
     * @class Prompt
@@ -22,16 +23,17 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         /**
         * Initializes an instance of Prompt
         * @param {HTMLElement} el
-        * @param {System} sys
+        * @param {Shell} shell
         * @param {HTMLElement} kpEl
         * @constructor
         */
-        function Prompt(el, sys) {
+        function Prompt(el, shell) {
             console.log('[Prompt#constructor] Setting up shell prompt...');
 
             _super.call(this, el);
 
-            this.__sys__ = sys;
+            this.__shell__ = shell;
+            this.__sys__ = shell.sys;
 
             this.__symbol__ = this.findOne(Config.symbolSel, true);
             this.__input__ = this.findOne(Config.inputSel, true);
@@ -40,8 +42,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
 
-            sys.listen('keypress', this.onKeypress.bind(this));
-            sys.listen('keydown', this.onKeydown.bind(this));
+            this.__startListening__();
         }
         Object.defineProperty(Prompt.prototype, "cmd", {
             /**
@@ -56,6 +57,17 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * Starts listening to key events
+        * @private
+        */
+        Prompt.prototype.__startListening__ = function () {
+            var sys = this.__sys__;
+
+            sys.listen('keypress', this.onKeypress.bind(this));
+            sys.installKeypressInterrupts();
+        };
 
         /**
         * Gets back the left and right (to the cursor) parts of the command
@@ -102,24 +114,6 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         };
 
         /**
-        * Applies backspace on the input
-        * @public
-        */
-        Prompt.prototype.backspace = function () {
-            if (this.__cmd__ !== '') {
-                var parts = this.__getCmdParts__(), left = parts[0];
-
-                if (left !== '') {
-                    // deletes last char from the left part
-                    parts[0] = left.slice(0, -1);
-                    this.__curPos__--;
-
-                    this.__joinCmdAndInsert__(parts);
-                }
-            }
-        };
-
-        /**
         * Moves the cursor to a different position
         * @param {Number} pos
         * @public
@@ -135,91 +129,100 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         };
 
         /**
-        * Gets triggered on keypress
-        * @event
-        * @param {Event} e
+        * Sends BACKSPACE/DEL to the input
+        * @param {String} type [backspace|del]
+        * @public
         */
-        Prompt.prototype.onKeypress = function (e) {
-            e.preventDefault();
+        Prompt.prototype.delete = function (key) {
+            if (this.__cmd__ !== '') {
+                var parts = this.__getCmdParts__(), part = key === 'backspace' ? parts[0] : parts[1];
 
-            if (!e.ctrlKey && !e.altKey) {
-                this.insert(String.fromCharCode(e.which));
-            }
-        };
-
-        /**
-        * Gets trigger on keydown. Filters out special keys
-        * @param {Event} e
-        * @event
-        */
-        Prompt.prototype.onKeydown = function (e) {
-            switch (e.which) {
-                case 8:
-                    e.preventDefault();
-
-                    console.log('BACKSPACE');
-
-                    this.backspace();
-
-                    break;
-                case 9:
-                    e.preventDefault();
-
-                    console.log('TAB');
-
-                    this.insert('\t');
-
-                    break;
-                case 13:
-                    e.preventDefault();
-
-                    console.log('ENTER');
-
-                    break;
-                case 38:
-                case 40:
-                    e.preventDefault();
-
-                    console.log('UP/DOWN - History');
-
-                    break;
-                case 36:
-                case 35:
-                case 37:
-                case 39:
-                    e.preventDefault();
-
-                    console.log('HOME/END/LEFT/RIGHT - Cursor position');
-
-                    var CurPos = {
-                        36: 0,
-                        35: this.__cmd__.length,
-                        37: this.__curPos__ - 1,
-                        39: this.__curPos__ + 1
-                    };
-
-                    this.moveCursorTo(CurPos[e.which]);
-
-                    break;
-                case 67:
-                case 86:
-                    if (e.ctrlKey) {
-                        e.preventDefault();
-
-                        console.log('COPY/PASTE');
-                        // TODO
+                if (part !== '') {
+                    switch (key) {
+                        case 'backspace':
+                            // deletes last char from the left part
+                            parts[0] = part.slice(0, -1);
+                            this.__curPos__--;
+                            break;
+                        case 'del':
+                            // deletes first char from the right part
+                            parts[1] = part[0] + part.substr(2);
+                            break;
                     }
 
+                    this.__joinCmdAndInsert__(parts);
+                }
+            }
+        };
+
+        /**
+        * Sends a tab
+        * @public
+        */
+        Prompt.prototype.tab = function () {
+            this.insert('\t');
+        };
+
+        /**
+        * Sends enter
+        * @public
+        */
+        Prompt.prototype.enter = function () {
+            //this.onCommand(this.__cmd__);
+        };
+
+        /**
+        * Sends HOME/END keys
+        * @param {String} where (end|home);
+        * @public
+        */
+        Prompt.prototype.jump = function (where) {
+            this.moveCursorTo({
+                'end': this.__cmd__.length,
+                'home': 0
+            }[where]);
+        };
+
+        /**
+        * Sends arrows
+        * @param {String} which [up|down|left|right]
+        * @public
+        */
+        Prompt.prototype.arrow = function (which) {
+            switch (which) {
+                case 'up':
+                case 'down':
+                    break;
+
+                case 'left':
+                case 'right':
+                    this.moveCursorTo({
+                        'left': this.__curPos__ - 1,
+                        'right': this.__curPos__ + 1
+                    }[which]);
                     break;
             }
         };
 
         /**
-        * Processes the command after hitting enter. Implemented by Terminal
-        * @param {String} cmd
-        * @abstract
+        * Sends a character
+        * @param {String} c
+        * @public
         */
-        Prompt.prototype.onCommand = function (cmd) {
+        Prompt.prototype.char = function (c) {
+            this.insert(c);
+        };
+
+        /**
+        * Gets triggered on keypress
+        * @param {String} type
+        * @param {String} key
+        * @event
+        */
+        Prompt.prototype.onKeypress = function (type, key) {
+            if (Utils.isFunction(this[type])) {
+                this[type](key);
+            }
         };
         return Prompt;
     })(DOMWrap);

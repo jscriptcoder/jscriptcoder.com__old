@@ -20,7 +20,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
     var Graphic = (function (_super) {
         __extends(Graphic, _super);
         /**
-        * Initializes and instance of Graphic, calling the constructor of DOMWrap
+        * Initializes an instance of Graphic, calling the constructor of DOMWrap
         * @param {System} sys
         * @param {HTMLElement} [screenEl = <div id="screen" />]
         * @constructor
@@ -31,55 +31,8 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             _super.call(this, screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
 
             this.__sys__ = sys;
-            this.__doc__ = sys.doc;
             this.__output__ = this.el;
-
-            this.__setSysAPI__();
         }
-        /**
-        * Sets the API that'll be available in the system to be use by software
-        * @private
-        */
-        Graphic.prototype.__setSysAPI__ = function () {
-            var _this = this;
-            var sys = this.__sys__;
-
-            sys.createElement = function (name) {
-                return _this.createElement(name);
-            };
-            sys.encode = function (str) {
-                return _this.htmlEncode(str);
-            };
-            sys.createGUI = function (gui, attach) {
-                return attach ? _this.appendHtmlElement(gui) : _this.createElementByHtml(gui);
-            };
-            sys.clearOutput = function () {
-                return _this.empty();
-            };
-            sys.clearScreen = function () {
-                return _this.empty(true);
-            };
-            sys.setOutput = function (el) {
-                return _this.output = el;
-            };
-            sys.output = function (msg) {
-                return _this.print(msg);
-            };
-        };
-
-        Object.defineProperty(Graphic.prototype, "doc", {
-            /**
-            * doc getter
-            * @returns {Document}
-            * @public
-            */
-            get: function () {
-                return this.__doc__;
-            },
-            enumerable: true,
-            configurable: true
-        });
-
         Object.defineProperty(Graphic.prototype, "output", {
             /**
             * output getter
@@ -108,26 +61,6 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
 
         /**
-        * Wrapper for document.createElement method
-        * @param {String} tagName
-        * @return {HTMLElement}
-        * @public
-        */
-        Graphic.prototype.createElement = function (tagName) {
-            return this.doc.createElement(tagName);
-        };
-
-        /**
-        * Wrapper for document.getElementById method
-        * @param {String} id
-        * @return {HTMLElement}
-        * @public
-        */
-        Graphic.prototype.getElementById = function (id) {
-            return this.doc.getElementById(id);
-        };
-
-        /**
         * Creates DOM elements from a html strings
         * @param {String} html
         * @returns {HTMLElement}
@@ -135,7 +68,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         */
         Graphic.prototype.createElementByHtml = function (htmlEl) {
             if (typeof htmlEl === "undefined") { htmlEl = ''; }
-            var tmp = this.createElement('div');
+            var tmp = this.__sys__.createElement('div');
             tmp.innerHTML = htmlEl;
             return tmp.firstChild;
         };
@@ -168,16 +101,15 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         /**
         * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
         * @param {String} selector
-        * @param {HTMLElement} [contextEl = Graphic.doc]
+        * @param {HTMLElement} contextEl
         * @returns {HTMLElement}
         * @public
         */
         Graphic.prototype.getDOMElement = function (selector, contextEl) {
-            if (typeof contextEl === "undefined") { contextEl = this.doc; }
             var match = Graphic.rquickExpr.exec(selector), m;
 
             if ((m = match[1])) {
-                return this.getElementById(m);
+                return this.__sys__.getElementById(m);
             } else if (match[2]) {
                 return contextEl.getElementsByTagName(selector)[0];
             } else if ((m = match[3])) {
@@ -194,7 +126,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         * @public
         */
         Graphic.prototype.htmlEncode = function (str) {
-            var el = this.createElement('div');
+            var el = this.__sys__.createElement('div');
             el.innerText = el.textContent = str;
             return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
         };
@@ -215,7 +147,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             } else if (Utils.isString(message)) {
                 console.log('[Graphic#print] Printing message:', message);
 
-                var div = this.createElement('div');
+                var div = this.__sys__.createElement('div');
                 div.innerHTML = message.replace(/^\s/g, '&nbsp;');
                 this.appendHtmlElement(div, appendTo);
             } else {

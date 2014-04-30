@@ -49,13 +49,41 @@ class Shell extends DOMWrap {
         super(sys.createGUI(Config.template, true));
     
         this.__sys__ = sys;
-        this.__output__ = new Output(this.findOne(Config.outputSel), sys);
-        this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
-    
-        this.__prompt__.onCommand = this.onCommand.bind(this);
+        this.__output__ = new Output(this.findOne(Config.outputSel), this);
+        this.__prompt__ = new Prompt(this.findOne(Config.promptSel), this);
     
         this.__output__.print(Config.msgHeader);
         
+    }
+
+    /**
+     * sys getter
+     * @readonly
+     * @returns {System}
+     * @public
+     */
+    get sys() {
+        return this.__sys__;
+    }
+
+    /**
+     * output getter
+     * @readonly
+     * @returns {Output}
+     * @public
+     */
+    get output() {
+        return this.__output__;
+    }
+
+    /**
+     * prompt getter
+     * @readonly
+     * @returns {Prompt}
+     * @public
+     */
+    get prompt() {
+        return this.__prompt__;
     }
 
     /**
@@ -64,7 +92,7 @@ class Shell extends DOMWrap {
      * @event
      */
     onCommand(cmd) {
-        console.log('[Terminal#onCommand] Command:', cmd);
+        console.log('[Shell#onCommand] must be implemented by the Prompt');
     }
     
 }

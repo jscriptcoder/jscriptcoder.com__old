@@ -1,5 +1,5 @@
 /**
-* @module utils
+* @module system/utils
 * @exports Utils
 */
 define(["require", "exports"], function(require, exports) {
@@ -80,6 +80,17 @@ define(["require", "exports"], function(require, exports) {
             return !!(value && value.nodeName);
         }
         Utils.isDOMElement = isDOMElement;
+
+        /**
+        * Whether or not the value is a function
+        * @param {Any} value
+        * @returns {Boolean}
+        * @memberof Utils
+        */
+        function isFunction(value) {
+            return typeof value === 'function';
+        }
+        Utils.isFunction = isFunction;
     })(Utils || (Utils = {}));
 
     

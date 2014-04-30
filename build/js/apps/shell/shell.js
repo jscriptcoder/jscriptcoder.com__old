@@ -31,20 +31,60 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             _super.call(this, sys.createGUI(Config.template, true));
 
             this.__sys__ = sys;
-            this.__output__ = new Output(this.findOne(Config.outputSel), sys);
-            this.__prompt__ = new Prompt(this.findOne(Config.promptSel), sys);
-
-            this.__prompt__.onCommand = this.onCommand.bind(this);
+            this.__output__ = new Output(this.findOne(Config.outputSel), this);
+            this.__prompt__ = new Prompt(this.findOne(Config.promptSel), this);
 
             this.__output__.print(Config.msgHeader);
         }
+        Object.defineProperty(Shell.prototype, "sys", {
+            /**
+            * sys getter
+            * @readonly
+            * @returns {System}
+            * @public
+            */
+            get: function () {
+                return this.__sys__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Shell.prototype, "output", {
+            /**
+            * output getter
+            * @readonly
+            * @returns {Output}
+            * @public
+            */
+            get: function () {
+                return this.__output__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(Shell.prototype, "prompt", {
+            /**
+            * prompt getter
+            * @readonly
+            * @returns {Prompt}
+            * @public
+            */
+            get: function () {
+                return this.__prompt__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
         * Gets trigger when the user sends the js command by pressing enter
         * @param {String} cmd
         * @event
         */
         Shell.prototype.onCommand = function (cmd) {
-            console.log('[Terminal#onCommand] Command:', cmd);
+            console.log('[Shell#onCommand] must be implemented by the Prompt');
         };
         return Shell;
     })(DOMWrap);

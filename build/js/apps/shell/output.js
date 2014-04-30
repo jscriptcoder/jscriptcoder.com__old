@@ -21,16 +21,17 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
         /**
         * Initializes an instance of Output
         * @param {HTMLElement} el
-        * @param {Terminal} termin
+        * @param {Shell} shell
         * @param {HTMLElement} kpEl
         * @constructor
         */
-        function Output(el, sys) {
+        function Output(el, shell) {
             console.log('[Output#constructor] Setting up shell output...');
 
             _super.call(this, el);
 
-            this.__sys__ = sys;
+            this.__shell__ = shell;
+            this.__sys__ = shell.sys;
 
             this.__sys__.setOutput(this.el);
         }

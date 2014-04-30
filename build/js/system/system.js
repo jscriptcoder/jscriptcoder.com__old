@@ -1,14 +1,24 @@
 /**
 * @module system/system
+* @requires system/interrupts
 * @requires system/drivers/graphic/graphic
+* @requires system/drivers/keyboard/keyboard
 * @exports System
 */
-define(["require", "exports", './drivers/graphic/graphic'], function(require, exports, Graphic) {
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard'], function(require, exports, Interrups, Graphic, Keyboard) {
     /**
-    * Contains the System API
+    * Contains the System API and acts as a mediator between drivers and apps
     * @class System
+    * @extends Interrupts
     */
-    var System = (function () {
+    var System = (function (_super) {
+        __extends(System, _super);
         /**
         * Initializes the system, drivers, etc...
         * @param {HTMLElement} doc
@@ -17,7 +27,10 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         function System() {
             console.log('[System#constructor] Initializing system and drivers...');
 
+            _super.call(this);
+
             this.__graphic__ = new Graphic(this);
+            this.__keyboard__ = new Keyboard(this);
         }
         Object.defineProperty(System.prototype, "global", {
             /**
@@ -58,13 +71,37 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
             configurable: true
         });
 
+        Object.defineProperty(System.prototype, "keyboard", {
+            /**
+            * keyboard getter
+            * @returns {Keyboard}
+            * @public
+            */
+            get: function () {
+                return this.__keyboard__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         /**
-        * Creates a new HTML element based on the tagName
-        * @param {String} name
+        * Wrapper for document.createElement method
+        * @param {String} tagName
+        * @return {HTMLElement}
         * @public
         */
-        System.prototype.createElement = function (name) {
-            throw Error('[System#createElement] must be implemented by the graphic driver');
+        System.prototype.createElement = function (tagName) {
+            return System.doc.createElement(tagName);
+        };
+
+        /**
+        * Wrapper for document.getElementById method
+        * @param {String} id
+        * @return {HTMLElement}
+        * @public
+        */
+        System.prototype.getElementById = function (id) {
+            return System.doc.getElementById(id);
         };
 
         /**
@@ -73,7 +110,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.encode = function (str) {
-            throw Error('[System#encode] must be implemented by the graphic driver');
+            return this.__graphic__.htmlEncode(str);
         };
 
         /**
@@ -84,7 +121,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.createGUI = function (gui, attach) {
-            throw Error('[System#createGUIElement] must be implemented by the graphic driver');
+            return attach ? this.__graphic__.appendHtmlElement(gui) : this.__graphic__.createElementByHtml(gui);
         };
 
         /**
@@ -92,7 +129,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.clearOutput = function () {
-            throw Error('[System#clearOutput] must be implemented by the graphic driver');
+            this.__graphic__.empty();
         };
 
         /**
@@ -100,7 +137,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.clearScreen = function () {
-            throw Error('[System#clearScreen] must be implemented by the graphic driver');
+            this.__graphic__.empty(true);
         };
 
         /**
@@ -109,7 +146,7 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.setOutput = function (el) {
-            throw Error('[System#setOutput] must be implemented by the graphic driver');
+            this.__graphic__.output = el;
         };
 
         /**
@@ -118,25 +155,26 @@ define(["require", "exports", './drivers/graphic/graphic'], function(require, ex
         * @public
         */
         System.prototype.output = function (msg) {
-            throw Error('[System#output] must be implemented by the graphic driver');
+            this.__graphic__.print(msg);
         };
 
         /**
-        * Listens to events on a particular context
-        * @param {String} evtName
-        * @param {Function} handler
-        * @param {HTMLElement} [context = System.doc]
+        * Installs keypress listeners on an element
+        * @param {HTMLElement} [el = this.doc]
         * @public
         */
-        System.prototype.listen = function (evtName, handler, context) {
-            if (typeof context === "undefined") { context = System.doc; }
-            context.addEventListener(evtName, handler);
+        System.prototype.installKeypressInterrupts = function (el) {
+            if (typeof el === "undefined") { el = this.doc; }
+            var keyboard = this.__keyboard__;
+
+            this.listen('keypress', keyboard.onKeypress.bind(keyboard), el);
+            this.listen('keydown', keyboard.onKeydown.bind(keyboard), el);
         };
         System.doc = document;
 
         System.global = window;
         return System;
-    })();
+    })(Interrups);
 
     
     return System;

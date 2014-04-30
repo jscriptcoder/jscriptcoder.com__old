@@ -15,6 +15,12 @@ import DOMWrap = require('../../system/drivers/graphic/domwrap');
 class Output extends DOMWrap {
 
     /**
+     * @type Shell
+     * @private
+     */
+    __shell__;
+    
+    /**
      * @type System
      * @private
      */
@@ -23,16 +29,17 @@ class Output extends DOMWrap {
     /**
      * Initializes an instance of Output
      * @param {HTMLElement} el
-     * @param {Terminal} termin
+     * @param {Shell} shell
      * @param {HTMLElement} kpEl
      * @constructor
      */
-    constructor(el, sys) {
+    constructor(el, shell) {
         console.log('[Output#constructor] Setting up shell output...');
     
         super(el);
 
-        this.__sys__ = sys;
+        this.__shell__ = shell;
+        this.__sys__ = shell.sys;
     
         this.__sys__.setOutput(this.el);
     }
