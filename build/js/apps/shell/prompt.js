@@ -99,6 +99,15 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Returns the string representation of the prompt
+        * @returns {String}
+        * @public
+        */
+        Prompt.prototype.toString = function () {
+            return this.__el__.innerText;
+        };
+
+        /**
         * Inserts a new character in the input
         * @param {String} char
         * @public
@@ -126,6 +135,48 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cursor__.html(curChar ? this.__sys__.encode(curChar) : '&nbsp;');
 
             this.__joinCmdAndInsert__(parts);
+        };
+
+        /**
+        * Moves the cursor forward
+        * @public
+        */
+        Prompt.prototype.moveCursorForward = function () {
+            this.moveCursorTo(this.__curPos__ + 1);
+        };
+
+        /**
+        * Moves the cursor backward
+        * @public
+        */
+        Prompt.prototype.moveCursorBackward = function () {
+            this.moveCursorTo(this.__curPos__ - 1);
+        };
+
+        /**
+        * Moves the cursor to the beginning
+        * @public
+        */
+        Prompt.prototype.moveCursorHome = function () {
+            this.moveCursorTo(0);
+        };
+
+        /**
+        * Moves the cursor to the end
+        * @public
+        */
+        Prompt.prototype.moveCursorEnd = function () {
+            this.moveCursorTo(this.__cmd__.length);
+        };
+
+        /**
+        * Clears the command line
+        * @public
+        */
+        Prompt.prototype.clear = function () {
+            console.log('[Prompt#clear] Clearing the input...');
+            this.__cmd__ = '';
+            this.moveCursorTo(0);
         };
 
         /**
@@ -168,7 +219,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.enter = function () {
-            //this.onCommand(this.__cmd__);
+            this.__shell__.onCommand(this.__cmd__);
+
+            //this.__storeCmdHistory__();
+            this.clear();
         };
 
         /**
@@ -177,10 +231,14 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.jump = function (where) {
-            this.moveCursorTo({
-                'end': this.__cmd__.length,
-                'home': 0
-            }[where]);
+            switch (where) {
+                case 'home':
+                    this.moveCursorHome();
+                    break;
+                case 'end':
+                    this.moveCursorEnd();
+                    break;
+            }
         };
 
         /**
@@ -195,11 +253,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
                     break;
 
                 case 'left':
+                    this.moveCursorBackward();
+                    break;
                 case 'right':
-                    this.moveCursorTo({
-                        'left': this.__curPos__ - 1,
-                        'right': this.__curPos__ + 1
-                    }[which]);
+                    this.moveCursorForward();
                     break;
             }
         };

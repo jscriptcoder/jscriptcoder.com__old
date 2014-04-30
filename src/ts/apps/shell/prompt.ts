@@ -142,7 +142,12 @@ class Prompt extends DOMWrap {
         
     }
 
-    
+    /**
+     * Returns the string representation of the prompt
+     * @returns {String}
+     * @public
+     */
+    toString() { return this.__el__.innerText }
 
     /**
      * Inserts a new character in the input
@@ -178,6 +183,40 @@ class Prompt extends DOMWrap {
     }
 
     /**
+     * Moves the cursor forward
+     * @public
+     */
+    moveCursorForward() { this.moveCursorTo(this.__curPos__ + 1) }
+
+    /**
+     * Moves the cursor backward
+     * @public
+     */
+    moveCursorBackward() { this.moveCursorTo(this.__curPos__ - 1) }
+
+    /**
+     * Moves the cursor to the beginning
+     * @public
+     */
+    moveCursorHome() { this.moveCursorTo(0) }
+
+    /**
+     * Moves the cursor to the end
+     * @public
+     */
+    moveCursorEnd() { this.moveCursorTo(this.__cmd__.length) }
+
+    /**
+     * Clears the command line
+     * @public
+     */
+    clear() {
+        console.log('[Prompt#clear] Clearing the input...');
+        this.__cmd__ = '';
+        this.moveCursorTo(0);
+    }
+
+    /**
      * Sends BACKSPACE/DEL to the input
      * @param {String} type [backspace|del]
      * @public
@@ -192,8 +231,7 @@ class Prompt extends DOMWrap {
                 switch(key) {
                     case 'backspace':
                         // deletes last char from the left part
-                        parts[0] = part.slice(0, -1);
-                        this.__curPos__--;
+                        parts[0] = part.slice(0, -1); this.__curPos__--;
                         break;
                     case 'del':
                         // deletes first char from the right part
@@ -219,8 +257,9 @@ class Prompt extends DOMWrap {
      * @public
      */
     enter() {
-        
-        //this.onCommand(this.__cmd__);
+        this.__shell__.onCommand(this.__cmd__);
+        //this.__storeCmdHistory__();
+        this.clear();
     }
 
     /**
@@ -229,10 +268,10 @@ class Prompt extends DOMWrap {
      * @public
      */
     jump(where) {
-        this.moveCursorTo({
-            'end': this.__cmd__.length,
-            'home': 0
-        }[where]);
+        switch(where){
+            case 'home': this.moveCursorHome(); break;
+            case 'end': this.moveCursorEnd(); break;
+        }
     }
 
     /**
@@ -248,13 +287,8 @@ class Prompt extends DOMWrap {
                 //TODO: history
                 break;
                 
-            case 'left':
-            case 'right':
-                this.moveCursorTo({
-                    'left': this.__curPos__ - 1,
-                    'right': this.__curPos__ + 1
-                }[which]);
-                break;
+            case 'left': this.moveCursorBackward(); break;
+            case 'right': this.moveCursorForward(); break;
                 
         }
     }

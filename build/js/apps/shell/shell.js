@@ -84,7 +84,8 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @event
         */
         Shell.prototype.onCommand = function (cmd) {
-            console.log('[Shell#onCommand] must be implemented by the Prompt');
+            console.log('[Shell#onCommand] command:', cmd);
+            this.__output__.print(this.__prompt__.toString());
         };
         return Shell;
     })(DOMWrap);

@@ -92,7 +92,8 @@ class Shell extends DOMWrap {
      * @event
      */
     onCommand(cmd) {
-        console.log('[Shell#onCommand] must be implemented by the Prompt');
+        console.log('[Shell#onCommand] command:', cmd);
+        this.__output__.print(this.__prompt__.toString());
     }
     
 }

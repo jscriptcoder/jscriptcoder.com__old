@@ -33,24 +33,22 @@ define(["require", "exports", './config', './bios'], function(require, exports, 
         * Different cursor modes
         * @enum String
         */
-        var TCursorMode;
-        (function (TCursorMode) {
-            TCursorMode[TCursorMode["type"] = 0] = "type";
-            TCursorMode[TCursorMode["blink"] = 1] = "blink";
-        })(TCursorMode || (TCursorMode = {}));
-        ;
+        var CURSOR_MODE = {
+            type: 'type',
+            blink: 'blink'
+        };
 
         /**
         * Changes the mode of the cursor (type|blink)
         * @param {String} mode
         */
         function cursorMode(mode) {
-            console.log('[Boot - cursorMode] Changing cursor mode to', TCursorMode[mode]);
+            console.log('[Boot - cursorMode] Changing cursor mode to', CURSOR_MODE[mode]);
 
             var clsList = cursorEl.classList;
-            clsList.remove(TCursorMode[0 /* type */]);
-            clsList.remove(TCursorMode[1 /* blink */]);
-            clsList.add(TCursorMode[mode]);
+            clsList.remove(CURSOR_MODE.type);
+            clsList.remove(CURSOR_MODE.blink);
+            clsList.add(CURSOR_MODE[mode]);
         }
 
         /**
@@ -60,12 +58,12 @@ define(["require", "exports", './config', './bios'], function(require, exports, 
         function start() {
             console.log('[Boot.start] Starting jscriptcoder.com...');
 
-            cursorMode(0 /* type */);
+            cursorMode(CURSOR_MODE.type);
 
             Bios.print(Config.loadingMsg, txtEl).then(function () {
                 console.log('[Promise#then] Starting the system...');
 
-                cursorMode(1 /* blink */);
+                cursorMode(CURSOR_MODE.blink);
 
                 setTimeout(function () {
                     return require(Config.systemDeps);

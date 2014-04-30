@@ -45,10 +45,7 @@ define(["require", "exports"], function(require, exports) {
                     e.preventDefault();
                     console.log('BACKSPACE/DEL');
 
-                    sys.interrupt('keypress', 'delete', {
-                        8: 'backspace',
-                        46: 'del'
-                    }[e.which]);
+                    sys.interrupt('keypress', 'delete', Keyboard.SPECIAL_KEYS[e.which]);
 
                     break;
                 case 9:
@@ -70,10 +67,7 @@ define(["require", "exports"], function(require, exports) {
                     e.preventDefault();
                     console.log('HOME/END');
 
-                    sys.interrupt('keypress', 'jump', {
-                        35: 'end',
-                        36: 'home'
-                    }[e.which]);
+                    sys.interrupt('keypress', 'jump', Keyboard.SPECIAL_KEYS[e.which]);
 
                     break;
                 case 37:
@@ -83,12 +77,7 @@ define(["require", "exports"], function(require, exports) {
                     e.preventDefault();
                     console.log('ARROW');
 
-                    sys.interrupt('keypress', 'arrow', {
-                        37: 'left',
-                        38: 'up',
-                        39: 'right',
-                        40: 'down'
-                    }[e.which]);
+                    sys.interrupt('keypress', 'arrow', Keyboard.SPECIAL_KEYS[e.which]);
 
                     break;
                 case 67:
@@ -100,6 +89,18 @@ define(["require", "exports"], function(require, exports) {
 
                     break;
             }
+        };
+        Keyboard.SPECIAL_KEYS = {
+            8: 'backspace',
+            9: 'tab',
+            13: 'enter',
+            35: 'end',
+            36: 'home',
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down',
+            46: 'del'
         };
         return Keyboard;
     })();

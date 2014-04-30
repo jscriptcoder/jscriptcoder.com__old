@@ -36,7 +36,10 @@ module Boot {
      * Different cursor modes
      * @enum String
      */
-    enum TCursorMode { type, blink };
+    var CURSOR_MODE = {
+        type: 'type', 
+        blink: 'blink'
+    };
     
     /**
      * Changes the mode of the cursor (type|blink)
@@ -44,12 +47,12 @@ module Boot {
      */
     function cursorMode(mode) {
         
-        console.log('[Boot - cursorMode] Changing cursor mode to', TCursorMode[mode]);
+        console.log('[Boot - cursorMode] Changing cursor mode to', CURSOR_MODE[mode]);
         
         var clsList = cursorEl.classList;
-        clsList.remove(TCursorMode[TCursorMode.type]);
-        clsList.remove(TCursorMode[TCursorMode.blink]);
-        clsList.add(TCursorMode[mode]);
+        clsList.remove(CURSOR_MODE.type);
+        clsList.remove(CURSOR_MODE.blink);
+        clsList.add(CURSOR_MODE[mode]);
     }
     
     /**
@@ -60,13 +63,13 @@ module Boot {
         
         console.log('[Boot.start] Starting jscriptcoder.com...');
         
-        cursorMode(TCursorMode.type);
+        cursorMode(CURSOR_MODE.type);
         
         Bios.print(Config.loadingMsg, txtEl)
             .then(() => {
                 console.log('[Promise#then] Starting the system...');
         
-                cursorMode(TCursorMode.blink);
+                cursorMode(CURSOR_MODE.blink);
         
                 setTimeout(() => require(Config.systemDeps), Config.delayBeforeLoading);
             });
