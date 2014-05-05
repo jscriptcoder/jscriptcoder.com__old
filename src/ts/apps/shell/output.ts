@@ -3,6 +3,7 @@
  * @module apps/shell/output
  * @requires system/drivers/graphic/domwrap
  * @exports Output
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
@@ -13,12 +14,6 @@ import DOMWrap = require('../../system/drivers/graphic/domwrap');
  * @extends DOMWrap
  */
 class Output extends DOMWrap {
-
-    /**
-     * @type Shell
-     * @private
-     */
-    __shell__;
     
     /**
      * @type System
@@ -29,18 +24,16 @@ class Output extends DOMWrap {
     /**
      * Initializes an instance of Output
      * @param {HTMLElement} el
-     * @param {Shell} shell
+     * @param {System} shell
      * @param {HTMLElement} kpEl
      * @constructor
      */
-    constructor(el, shell) {
+    constructor(el, sys) {
         console.log('[Output#constructor] Setting up shell output...');
     
         super(el);
 
-        this.__shell__ = shell;
-        this.__sys__ = shell.sys;
-    
+        this.__sys__ = sys;
         this.__sys__.setOutput(this.el);
     }
 

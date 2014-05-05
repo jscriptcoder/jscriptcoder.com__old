@@ -5,6 +5,7 @@
  * @requires system/drivers/graphic/domwrap
  * @requires apps/shell/config
  * @exports Prompt
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('../../system/utils');
@@ -17,18 +18,18 @@ import Config = require('./config');
  * @extends DOMWrap
  */
 class Prompt extends DOMWrap {
-
-    /**
-     * @type Shell
-     * @private
-     */
-    __shell__;
     
     /**
      * @type System
      * @private
      */
     __sys__;
+    
+    /**
+     * @type Function
+     * @private
+     */
+    __onEnter__;
     
     /**
      * @type DOMWrap
@@ -65,17 +66,18 @@ class Prompt extends DOMWrap {
     /**
      * Initializes an instance of Prompt
      * @param {HTMLElement} el
-     * @param {Shell} shell
+     * @param {System} sys
+     * @param {Function} onEnter
      * @param {HTMLElement} kpEl
      * @constructor
      */
-    constructor(el, shell) {
+    constructor(el, sys, onEnter) {
         console.log('[Prompt#constructor] Setting up shell prompt...');
     
         super(el);
 
-        this.__shell__ = shell;
-        this.__sys__ = shell.sys;
+        this.__sys__ = sys;
+        this.__onEnter__ = onEnter;
     
         this.__symbol__ = this.findOne(Config.symbolSel, true);
         this.__input__ = this.findOne(Config.inputSel, true);
@@ -84,29 +86,17 @@ class Prompt extends DOMWrap {
         this.__cmd__ = '';
         this.__curPos__ = 0; // zero-base
     
-        this.__startListening__();
+        this.__sys__.listen('keypress', this.onKeypress.bind(this));
     }
 
     /**
-     * command getter
+     * cmd getter
      * @readonly
      * @returns {String}
      * @public
      */
     get cmd() {
         return this.__cmd__;
-    }
-
-    /**
-     * Starts listening to key events
-     * @private
-     */
-    __startListening__() {
-        var sys = this.__sys__;
-        
-        sys.listen('keypress', this.onKeypress.bind(this));
-        sys.installKeypressInterrupts();
-        
     }
 
     /**
@@ -130,7 +120,7 @@ class Prompt extends DOMWrap {
         var left = parts[0],
             right = parts[1],
             sys = this.__sys__,
-            tmp = sys.createElement('div');
+            tmp = Utils.createElement('div');
         
         this.__cmd__ = left + right;
         
@@ -257,7 +247,7 @@ class Prompt extends DOMWrap {
      * @public
      */
     enter() {
-        this.__shell__.onCommand(this.__cmd__);
+        this.__onEnter__(this.__cmd__);
         //this.__storeCmdHistory__();
         this.clear();
     }
@@ -267,7 +257,7 @@ class Prompt extends DOMWrap {
      * @param {String} where (end|home);
      * @public
      */
-    jump(where) {
+    move(where) {
         switch(where){
             case 'home': this.moveCursorHome(); break;
             case 'end': this.moveCursorEnd(); break;

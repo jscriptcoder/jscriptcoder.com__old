@@ -1,9 +1,10 @@
 /**
 * Keyboard driver
 * @module system/drivers/keyboard/keyboard
+* @requires system/utils
 * @exports Keyboard
 */
-define(["require", "exports"], function(require, exports) {
+define(["require", "exports", '../../utils'], function(require, exports, Utils) {
     /**
     * @class Keyboard
     * @extends DOMWrap
@@ -17,17 +18,22 @@ define(["require", "exports"], function(require, exports) {
         function Keyboard(sys) {
             console.log('[Keyboard#constructor] Initializing keyboard driver...');
             this.__sys__ = sys;
+
+            var doc = Utils.doc;
+
+            sys.listen('keypress', this.onKeypress.bind(this), doc);
+            sys.listen('keydown', this.onKeydown.bind(this), doc);
         }
         /**
         * Gets triggered on keypress
-        * @event
         * @param {Event} e
+        * @event
         */
         Keyboard.prototype.onKeypress = function (e) {
             e.preventDefault();
 
             if (!e.ctrlKey && !e.altKey) {
-                this.__sys__.interrupt('keypress', 'char', String.fromCharCode(e.which));
+                this.__sys__.interrupt('keypress', 'char', Utils.toChar(e.which));
             }
         };
 
@@ -67,7 +73,7 @@ define(["require", "exports"], function(require, exports) {
                     e.preventDefault();
                     console.log('HOME/END');
 
-                    sys.interrupt('keypress', 'jump', Keyboard.SPECIAL_KEYS[e.which]);
+                    sys.interrupt('keypress', 'move', Keyboard.SPECIAL_KEYS[e.which]);
 
                     break;
                 case 37:

@@ -3,6 +3,7 @@
  * @module @module system/interrupts
  * @requires system/utils
  * @exports Interrupts
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('./utils');
@@ -35,7 +36,7 @@ class Interrupts {
      * @public
      */
     listen(type, handler, context = null) {
-        if (Utils.isDOMElement(context)) {
+        if (Utils.isHTMLElement(context)) {
             // for document and other HTMLElement events
             context.addEventListener(type, handler);
         } else {
@@ -67,7 +68,7 @@ class Interrupts {
     unlisten(type, handler?, context?) {
         var ints = this.__ints__[type], idx;
              
-        if (Utils.isDOMElement(context)) {
+        if (Utils.isHTMLElement(context)) {
             // for document and other HTMLElements
             context.removeEventListener(type, handler);
         } else {

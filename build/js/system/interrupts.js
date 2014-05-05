@@ -25,7 +25,7 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
         */
         Interrupts.prototype.listen = function (type, handler, context) {
             if (typeof context === "undefined") { context = null; }
-            if (Utils.isDOMElement(context)) {
+            if (Utils.isHTMLElement(context)) {
                 // for document and other HTMLElement events
                 context.addEventListener(type, handler);
             } else {
@@ -63,7 +63,7 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
         Interrupts.prototype.unlisten = function (type, handler, context) {
             var ints = this.__ints__[type], idx;
 
-            if (Utils.isDOMElement(context)) {
+            if (Utils.isHTMLElement(context)) {
                 // for document and other HTMLElements
                 context.removeEventListener(type, handler);
             } else {

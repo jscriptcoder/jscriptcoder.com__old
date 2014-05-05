@@ -14,7 +14,7 @@ define(["require", "exports", './config', './bios'], function(require, exports, 
         * Loading element
         * @type HTMLElement
         */
-        var loadingEl = Bios.appendDOMElement(Config.loadingTmpl);
+        var loadingEl = Bios.appendHTMLElement(Config.loadingTmpl);
 
         /**
         * Message element
@@ -23,8 +23,7 @@ define(["require", "exports", './config', './bios'], function(require, exports, 
         var txtEl = loadingEl.querySelector('.text');
 
         /**
-        * Cursor element
-        * I need to typecast due to an issue in lib.d.ts
+        * Cursor element. I need to typecast due to an issue in lib.d.ts
         * @type HTMLElement
         */
         var cursorEl = loadingEl.querySelector('.cursor');

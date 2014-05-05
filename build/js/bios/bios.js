@@ -20,15 +20,15 @@ define(["require", "exports", './config'], function(require, exports, Config) {
         * Screen devide by default
         * @type HTMLElement
         */
-        var screen = doc.getElementById(Config.screenElemId) || doc.body;
+        var screenEl = doc.getElementById(Config.screenElemId) || doc.body;
 
         /**
         * Creates DOM elements
         * @param {String} html
         * @returns {HTMLElement}
         */
-        function createDOMElement(html) {
-            console.log('[Bios - createDOMElement] Creating DOM:', html);
+        function createHTMLElement(html) {
+            console.log('[Bios - createHTMLElement] Creating element:', html);
 
             var div = doc.createElement('div');
             div.innerHTML = html;
@@ -42,13 +42,13 @@ define(["require", "exports", './config'], function(require, exports, Config) {
         * @returns {HTMLElement}
         * @memberof Bios
         */
-        function appendDOMElement(html, appendTo) {
-            if (typeof appendTo === "undefined") { appendTo = screen; }
-            var el = createDOMElement(html);
+        function appendHTMLElement(html, appendTo) {
+            if (typeof appendTo === "undefined") { appendTo = screenEl; }
+            var el = createHTMLElement(html);
             appendTo.appendChild(el);
             return el;
         }
-        Bios.appendDOMElement = appendDOMElement;
+        Bios.appendHTMLElement = appendHTMLElement;
 
         /**
         * Prints a message in the screen with typing effect
@@ -61,7 +61,7 @@ define(["require", "exports", './config'], function(require, exports, Config) {
             console.log('[Bios.start] Printing message:', message);
 
             if (!el)
-                el = appendDOMElement('<div>');
+                el = appendHTMLElement('<div>');
 
             return new Promise(function (resolve) {
                 var msgIdx = 0, interval;

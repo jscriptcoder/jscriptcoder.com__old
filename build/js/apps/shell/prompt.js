@@ -23,17 +23,18 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         /**
         * Initializes an instance of Prompt
         * @param {HTMLElement} el
-        * @param {Shell} shell
+        * @param {System} sys
+        * @param {Function} onEnter
         * @param {HTMLElement} kpEl
         * @constructor
         */
-        function Prompt(el, shell) {
+        function Prompt(el, sys, onEnter) {
             console.log('[Prompt#constructor] Setting up shell prompt...');
 
             _super.call(this, el);
 
-            this.__shell__ = shell;
-            this.__sys__ = shell.sys;
+            this.__sys__ = sys;
+            this.__onEnter__ = onEnter;
 
             this.__symbol__ = this.findOne(Config.symbolSel, true);
             this.__input__ = this.findOne(Config.inputSel, true);
@@ -42,11 +43,11 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
 
-            this.__startListening__();
+            this.__sys__.listen('keypress', this.onKeypress.bind(this));
         }
         Object.defineProperty(Prompt.prototype, "cmd", {
             /**
-            * command getter
+            * cmd getter
             * @readonly
             * @returns {String}
             * @public
@@ -57,17 +58,6 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             enumerable: true,
             configurable: true
         });
-
-        /**
-        * Starts listening to key events
-        * @private
-        */
-        Prompt.prototype.__startListening__ = function () {
-            var sys = this.__sys__;
-
-            sys.listen('keypress', this.onKeypress.bind(this));
-            sys.installKeypressInterrupts();
-        };
 
         /**
         * Gets back the left and right (to the cursor) parts of the command
@@ -87,7 +77,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @private
         */
         Prompt.prototype.__joinCmdAndInsert__ = function (parts) {
-            var left = parts[0], right = parts[1], sys = this.__sys__, tmp = sys.createElement('div');
+            var left = parts[0], right = parts[1], sys = this.__sys__, tmp = Utils.createElement('div');
 
             this.__cmd__ = left + right;
 
@@ -219,7 +209,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.enter = function () {
-            this.__shell__.onCommand(this.__cmd__);
+            this.__onEnter__(this.__cmd__);
 
             //this.__storeCmdHistory__();
             this.clear();
@@ -230,7 +220,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @param {String} where (end|home);
         * @public
         */
-        Prompt.prototype.jump = function (where) {
+        Prompt.prototype.move = function (where) {
             switch (where) {
                 case 'home':
                     this.moveCursorHome();

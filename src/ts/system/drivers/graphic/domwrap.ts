@@ -2,6 +2,7 @@
  * @module system/drivers/graphic/domwrap
  * @requires system/utils
  * @exports DOMWrap
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('../../utils');
@@ -35,7 +36,7 @@ class DOMWrap {
     
         console.log('[DOMWrap#constructor] Hooking up DOM:', el);
         
-        if (Utils.isDOMElement(el)) {
+        if (Utils.isHTMLElement(el)) {
             this.__el__ = el;
         } else {
             throw Error('[DOMWrap#constructor] Wrong DOM element');
@@ -48,60 +49,46 @@ class DOMWrap {
      * @returns {HTMLElement}
      * @public
      */
-    get el() {
-        return this.__el__;
-    }
+    get el() { return this.__el__ }
 
     /**
      * Hides the element
      * @public
      */
-    hide() {
-        this.__el__.style.display = 'none';
-    }
+    hide() { this.__el__.style.display = 'none' }
 
     /**
      * Shows the element
      * @public
      */
-    show() {
-        this.__el__.style.display = '';
-    }
+    show() { this.__el__.style.display = '' }
 
     /**
      * Wrapper for appendChild method
      * @param {HTMLElement} el
      * @public
      */
-    append(el) {
-        this.__el__.appendChild(el);
-    }
+    append(el) { this.__el__.appendChild(el) }
 
     /**
      * Wrapper for classList.add method
      * @param {String} cls
      * @public
      */
-    addClass(cls) {
-        this.__el__.classList.add(cls);
-    }
+    addClass(cls) { this.__el__.classList.add(cls) }
 
     /**
      * Wrapper for classList.remove method
      * @param {String} cls
      * @public
      */
-    rmClass(cls) {
-        this.__el__.classList.remove(cls);
-    }
+    rmClass(cls) { this.__el__.classList.remove(cls) }
 
     /**
      * Empties the element by setting innerHTML to ''
      * @public
      */
-    empty() {
-        this.__el__.innerHTML = '';
-    }
+    empty() { this.__el__.innerHTML = '' }
 
     /**
      * Inserts or returns the html content of the element (jQuery#html like)
@@ -110,10 +97,7 @@ class DOMWrap {
      * @public
      */
     html(str?) {
-        if (Utils.isString(str)) {
-            this.__el__.innerHTML = str;
-        }
-        
+        if (Utils.isString(str)) this.__el__.innerHTML = str;
         return this.__el__.innerHTML;
     }
     
@@ -124,14 +108,14 @@ class DOMWrap {
      * @public
      */
     find(selector) {
-        var match = DOMWrap.rquickExpr.exec(selector), m;
+        var el = this.__el__, match = DOMWrap.rquickExpr.exec(selector), m;
         
         if (match[2]) {
-            return this.__el__.getElementsByTagName(selector);
+            return el.getElementsByTagName(selector);
         } else if ((m = match[3])) {
-            return this.__el__.getElementsByClassName(m);
+            return el.getElementsByClassName(m);
         } else {
-            return this.__el__.querySelectorAll(selector);
+            return el.querySelectorAll(selector);
         }
         
     }

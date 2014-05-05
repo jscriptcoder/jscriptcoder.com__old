@@ -5,6 +5,7 @@
  * @requires system/drivers/graphic/domwrap
  * @requires system/drivers/graphic/config
  * @exports Graphic
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('../../utils');
@@ -40,10 +41,15 @@ class Graphic extends DOMWrap {
     
         console.log('[Graphic#constructor] Initializing graphic driver...');
     
-        super(screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
+        // fallbacks: Config.screenElemId or document.body
+        screenEl = screenEl || Utils.getElementById(Config.screenElemId) || Utils.doc.body;
+    
+        super(screenEl);
     
         this.__sys__ = sys;
         this.__output__ = this.el;
+    
+        this.__setSysAPI__(sys);
     }
 
     /**
@@ -62,7 +68,7 @@ class Graphic extends DOMWrap {
      * @public
      */
     set output(output) {
-        if (Utils.isDOMElement(output)) {
+        if (Utils.isHTMLElement(output)) {
             this.__output__ = output;
         } else {
             throw Error('[Graphic#set output] Wrong DOM element');
@@ -71,13 +77,27 @@ class Graphic extends DOMWrap {
     }
 
     /**
+     * Implements general methods to be used in the system
+     * @param {System} sys
+     * @private
+     */
+    __setSysAPI__(sys) {
+        sys.encode = (str) => this.htmlEncode(str);
+        sys.createGUI = (gui, attach) => attach ? this.appendHTMLElement(gui) : this.createHTMLElement(gui);
+        sys.clearOutput = () => this.empty();
+        sys.clearScreen = () => this.empty(true);
+        sys.setOutput = (el) => this.__output__ = el;
+        sys.output = (msg) => this.print(msg);
+    }
+
+    /**
      * Creates DOM elements from a html strings
      * @param {String} html
      * @returns {HTMLElement}
      * @public
      */
-    createElementByHtml(htmlEl = '') {
-        var tmp = this.__sys__.createElement('div');
+    createHTMLElement(htmlEl = '') {
+        var tmp = Utils.createElement('div');
         tmp.innerHTML = htmlEl;
         return tmp.firstChild;
     }
@@ -90,12 +110,12 @@ class Graphic extends DOMWrap {
      * @throws {Error} Wrong parameter
      * @public
      */
-    appendHtmlElement(html, appendTo = this.output) {
+    appendHTMLElement(html, appendTo = this.output) {
         var el;
         
         if (Utils.isString(html)) {
-            el = this.createElementByHtml(html);   
-        } else if (Utils.isDOMElement(html)) {
+            el = this.createHTMLElement(html);   
+        } else if (Utils.isHTMLElement(html)) {
             el = html;
         } else {
             throw Error('[Graphic#appendHtmlElement] Wrong parameter');
@@ -113,11 +133,11 @@ class Graphic extends DOMWrap {
      * @returns {HTMLElement}
      * @public
      */
-    getDOMElement(selector, contextEl) {
+    getHTMLElement(selector, contextEl) {
         var match = Graphic.rquickExpr.exec(selector), m;
         
         if ((m = match[1])) {
-            return this.__sys__.getElementById(m);
+            return Utils.getElementById(m);
         } else if (match[2]) {
             return contextEl.getElementsByTagName(selector)[0];
         } else if ((m = match[3])) {
@@ -131,11 +151,11 @@ class Graphic extends DOMWrap {
     /**
      * Returns a string with the HTML entities in order to be used in HTML literals
      * @param {String} str
-     * return {String}
+     * @return {String}
      * @public
      */
     htmlEncode(str) {
-        var el = this.__sys__.createElement('div');
+        var el = Utils.createElement('div');
         el.innerText = el.textContent = str;
         return el.innerHTML
             .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
@@ -152,16 +172,14 @@ class Graphic extends DOMWrap {
     print(message, appendTo?) {
           
         if (Utils.isArray(message)) { // there are more than one line
-            
             message.forEach((line) => this.print(line));
-            
         } else if (Utils.isString(message)) { // single line
           
             console.log('[Graphic#print] Printing message:', message);
           
-            var div = this.__sys__.createElement('div');
-            div.innerHTML = message.replace(/^\s/g, '&nbsp;');
-            this.appendHtmlElement(div, appendTo);
+            var div = Utils.createElement('div');
+            div.innerHTML = this.htmlEncode(message);
+            this.appendHTMLElement(div, appendTo);
 
         } else {
             

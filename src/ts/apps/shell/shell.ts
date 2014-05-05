@@ -5,6 +5,7 @@
  * @requires apps/shell/output
  * @requires apps/shell/prompt
  * @exports Shell
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
@@ -49,8 +50,8 @@ class Shell extends DOMWrap {
         super(sys.createGUI(Config.template, true));
     
         this.__sys__ = sys;
-        this.__output__ = new Output(this.findOne(Config.outputSel), this);
-        this.__prompt__ = new Prompt(this.findOne(Config.promptSel), this);
+        this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
+        this.__prompt__ = this.__createPrompt__(this.findOne(Config.promptSel));
     
         this.__output__.print(Config.msgHeader);
         
@@ -84,6 +85,26 @@ class Shell extends DOMWrap {
      */
     get prompt() {
         return this.__prompt__;
+    }
+
+    /**
+     * Instantiates an Output object. Makes it easy to mock
+     * @param {HTMLElement} el
+     * @returns {Output}
+     * @private
+     */
+    __createOutput__(el) {
+        return new Output(el, this.__sys__);
+    }
+
+    /**
+     * Instantiates a Prompt object. Makes it easy to mock
+     * @param {HTMLElement} el
+     * @returns {Prompt}
+     * @private
+     */
+    __createPrompt__(el) {
+        return new Prompt(el, this.__sys__, this.onCommand.bind(this));
     }
 
     /**

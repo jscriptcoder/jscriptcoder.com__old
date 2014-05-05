@@ -2,6 +2,7 @@
  * @module bios/bios
  * @requires bios/config
  * @exports Bios
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Config = require('./config');
@@ -22,16 +23,16 @@ module Bios {
      * Screen devide by default
      * @type HTMLElement
      */
-    var screen = doc.getElementById(Config.screenElemId) || doc.body;
+    var screenEl = doc.getElementById(Config.screenElemId) || doc.body;
     
     /**
      * Creates DOM elements
      * @param {String} html
      * @returns {HTMLElement}
      */
-    function createDOMElement(html) {
+    function createHTMLElement(html) {
         
-        console.log('[Bios - createDOMElement] Creating DOM:', html);
+        console.log('[Bios - createHTMLElement] Creating element:', html);
         
         var div = doc.createElement('div');
         div.innerHTML = html;
@@ -45,9 +46,8 @@ module Bios {
      * @returns {HTMLElement}
      * @memberof Bios
      */
-    export function appendDOMElement(html, appendTo = screen) {
-        
-        var el = createDOMElement(html);
+    export function appendHTMLElement(html, appendTo = screenEl) {
+        var el = createHTMLElement(html);
         appendTo.appendChild(el);
         return el;
     }
@@ -63,7 +63,7 @@ module Bios {
         
         console.log('[Bios.start] Printing message:', message);
         
-        if (!el) el = appendDOMElement('<div>');
+        if (!el) el = appendHTMLElement('<div>');
         
         return new Promise((resolve) => {
             

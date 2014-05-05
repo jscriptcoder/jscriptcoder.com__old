@@ -31,8 +31,8 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             _super.call(this, sys.createGUI(Config.template, true));
 
             this.__sys__ = sys;
-            this.__output__ = new Output(this.findOne(Config.outputSel), this);
-            this.__prompt__ = new Prompt(this.findOne(Config.promptSel), this);
+            this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
+            this.__prompt__ = this.__createPrompt__(this.findOne(Config.promptSel));
 
             this.__output__.print(Config.msgHeader);
         }
@@ -77,6 +77,26 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * Instantiates an Output object. Makes it easy to mock
+        * @param {HTMLElement} el
+        * @returns {Output}
+        * @private
+        */
+        Shell.prototype.__createOutput__ = function (el) {
+            return new Output(el, this.__sys__);
+        };
+
+        /**
+        * Instantiates a Prompt object. Makes it easy to mock
+        * @param {HTMLElement} el
+        * @returns {Prompt}
+        * @private
+        */
+        Shell.prototype.__createPrompt__ = function (el) {
+            return new Prompt(el, this.__sys__, this.onCommand.bind(this));
+        };
 
         /**
         * Gets trigger when the user sends the js command by pressing enter

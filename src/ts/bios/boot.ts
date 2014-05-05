@@ -2,6 +2,7 @@
  * @module bios/loader
  * @requires bios/config
  * @requires bios/bios
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Config = require('./config');
@@ -17,7 +18,7 @@ module Boot {
      * Loading element
      * @type HTMLElement
      */
-    var loadingEl = Bios.appendDOMElement(Config.loadingTmpl);
+    var loadingEl = Bios.appendHTMLElement(Config.loadingTmpl);
 
     /**
      * Message element
@@ -26,8 +27,7 @@ module Boot {
     var txtEl = loadingEl.querySelector('.text');
 
     /**
-     * Cursor element
-     * I need to typecast due to an issue in lib.d.ts
+     * Cursor element. I need to typecast due to an issue in lib.d.ts
      * @type HTMLElement
      */
     var cursorEl = <HTMLElement>loadingEl.querySelector('.cursor');

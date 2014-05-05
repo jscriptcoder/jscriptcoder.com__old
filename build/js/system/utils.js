@@ -16,6 +16,18 @@ define(["require", "exports"], function(require, exports) {
         var toString = Object.prototype.toString;
 
         /**
+        * document API
+        * @type Document
+        */
+        Utils.doc = document;
+
+        /**
+        * jQuery-like query selector
+        * @type Document
+        */
+        var $ = Utils.doc.querySelectorAll.bind(Utils.doc);
+
+        /**
         * Whether or not the value is an array
         * @param {Any} value
         * @returns {Boolean}
@@ -76,10 +88,10 @@ define(["require", "exports"], function(require, exports) {
         * @returns {Boolean}
         * @memberof Utils
         */
-        function isDOMElement(value) {
+        function isHTMLElement(value) {
             return !!(value && value.nodeName);
         }
-        Utils.isDOMElement = isDOMElement;
+        Utils.isHTMLElement = isHTMLElement;
 
         /**
         * Whether or not the value is a function
@@ -91,6 +103,83 @@ define(["require", "exports"], function(require, exports) {
             return typeof value === 'function';
         }
         Utils.isFunction = isFunction;
+
+        /**
+        * Wrapper for document.createElement method
+        * @param {String} tagName
+        * @return {HTMLElement}
+        * @memberof Utils
+        */
+        function createElement(tagName) {
+            return Utils.doc.createElement(tagName);
+        }
+        Utils.createElement = createElement;
+
+        /**
+        * Wrapper for document.getElementById method
+        * @param {String} id
+        * @return {HTMLElement}
+        * @public
+        */
+        function getElementById(id) {
+            return Utils.doc.getElementById(id);
+        }
+        Utils.getElementById = getElementById;
+
+        /**
+        * Wrapper for document.getElementsByTagName method
+        * @param {String} id
+        * @return {HTMLCollection}
+        * @public
+        */
+        function getElementsByTagName(tagName) {
+            return Utils.doc.getElementsByTagName(tagName);
+        }
+        Utils.getElementsByTagName = getElementsByTagName;
+
+        /**
+        * Wrapper for document.getElementsByClassName method
+        * @param {String} id
+        * @return {HTMLCollection}
+        * @public
+        */
+        function getElementsByClassName(className) {
+            return Utils.doc.getElementsByClassName(className);
+        }
+        Utils.getElementsByClassName = getElementsByClassName;
+
+        /**
+        * jQuery-like query selector
+        * @param {String} sel
+        * @return {HTMLCollection}
+        * @memberof Utils
+        */
+        function query(sel) {
+            return $(sel);
+        }
+        Utils.query = query;
+
+        /**
+        * Queries just one element
+        * @param {String} sel
+        * @return {HTMLElement}
+        * @memberof Utils
+        */
+        function queryOne(sel) {
+            return query(sel)[0];
+        }
+        Utils.queryOne = queryOne;
+
+        /**
+        * Returns the string representation of a charCode
+        * @param {Number} code
+        * @return {String}
+        * @memberof Utils
+        */
+        function toChar(code) {
+            return String.fromCharCode(code);
+        }
+        Utils.toChar = toChar;
     })(Utils || (Utils = {}));
 
     

@@ -4,6 +4,7 @@
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
  * @exports System
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Interrups = require('./interrupts');
@@ -16,18 +17,6 @@ import Keyboard = require('./drivers/keyboard/keyboard');
  * @extends Interrupts
  */
 class System extends Interrups {
-
-    /**
-     * document API
-     * @type Document
-     */
-    static doc = document;
-    
-    /**
-     * window API
-     * @type Window
-     */
-    static global = window;
         
     /**
      * @type Graphic
@@ -52,26 +41,26 @@ class System extends Interrups {
     
         super();
     
-        this.__graphic__ = new Graphic(this);
-        this.__keyboard__ = new Keyboard(this);
+        this.__graphic__ = this.__createGraphicDriver__();
+        this.__keyboard__ = this.__createKeyboardDriver__();
     }
 
     /**
-     * global getter
-     * @returns {Window}
-     * @public
+     * Instantiates a Graphic driver. Makes it easy to mock
+     * @returns {Graphic}
+     * @private
      */
-    get global() {
-        return System.global;
+    __createGraphicDriver__() {
+        return new Graphic(this);
     }
 
     /**
-     * doc getter
-     * @returns {Document}
-     * @public
+     * Instantiates a Keyboard driver. Makes it easy to mock
+     * @returns {Keyboard}
+     * @private
      */
-    get doc() {
-        return System.doc;
+    __createKeyboardDriver__() {
+        return new Keyboard(this);
     }
 
     /**
@@ -93,90 +82,52 @@ class System extends Interrups {
     }
 
     /**
-     * Wrapper for document.createElement method
-     * @param {String} tagName
-     * @return {HTMLElement}
-     * @public
-     */
-    createElement(tagName) {
-        return System.doc.createElement(tagName);
-    }
-
-    /**
-     * Wrapper for document.getElementById method
-     * @param {String} id
-     * @return {HTMLElement}
-     * @public
-     */
-    getElementById(id) {
-        return System.doc.getElementById(id);
-    }
-
-    /**
      * Encodes a string to be displayed properly
      * @param {String} str
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    encode(str) {
-        return this.__graphic__.htmlEncode(str);
-    }
+    encode(str) { throw Error('Implemented by the graphic card') }
 
     /**
      * Creates a new GUI
      * @param {String} gui
      * @param {Boolean} attach
      * @returns {HTMLElement}
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    createGUI(gui, attach) {
-        return attach ? this.__graphic__.appendHtmlElement(gui) : this.__graphic__.createElementByHtml(gui);
-    }
+    createGUI(gui, attach) { throw Error('Implemented by the graphic card') }
 
     /**
      * Empties only the output
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    clearOutput() {
-        this.__graphic__.empty();
-    }
+    clearOutput() { throw Error('Implemented by the graphic card') }
 
     /**
      * Clears the whole screen
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    clearScreen() {
-        this.__graphic__.empty(true);
-    }
+    clearScreen() { throw Error('Implemented by the graphic card') }
 
     /**
      * Sets the output element for content display
      * @param {HTMLElement} el
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    setOutput(el) {
-        this.__graphic__.output = el;
-    }
+    setOutput(el) { throw Error('Implemented by the graphic card') }
 
     /**
      * Sends a string to the output
      * @param {String} msg
+     * @throws {Error} Implemented by the graphic card
      * @public
      */
-    output(msg) {
-        this.__graphic__.print(msg);
-    }
-
-    /**
-     * Installs keypress listeners on an element
-     * @param {HTMLElement} [el = this.doc]
-     * @public
-     */
-    installKeypressInterrupts(el = this.doc) {
-        var keyboard = this.__keyboard__;
-        
-        this.listen('keypress', keyboard.onKeypress.bind(keyboard), el);
-        this.listen('keydown', keyboard.onKeydown.bind(keyboard), el);
-    }
+    output(msg) { throw Error('Implemented by the graphic card') }
 
 }
 

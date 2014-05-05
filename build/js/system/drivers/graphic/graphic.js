@@ -28,10 +28,15 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         function Graphic(sys, screenEl) {
             console.log('[Graphic#constructor] Initializing graphic driver...');
 
-            _super.call(this, screenEl || sys.doc.getElementById(Config.screenElemId) || sys.doc.body);
+            // fallbacks: Config.screenElemId or document.body
+            screenEl = screenEl || Utils.getElementById(Config.screenElemId) || Utils.doc.body;
+
+            _super.call(this, screenEl);
 
             this.__sys__ = sys;
             this.__output__ = this.el;
+
+            this.__setSysAPI__(sys);
         }
         Object.defineProperty(Graphic.prototype, "output", {
             /**
@@ -49,7 +54,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             * @public
             */
             set: function (output) {
-                if (Utils.isDOMElement(output)) {
+                if (Utils.isHTMLElement(output)) {
                     this.__output__ = output;
                 } else {
                     throw Error('[Graphic#set output] Wrong DOM element');
@@ -61,14 +66,41 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
 
         /**
+        * Implements general methods to be used in the system
+        * @param {System} sys
+        * @private
+        */
+        Graphic.prototype.__setSysAPI__ = function (sys) {
+            var _this = this;
+            sys.encode = function (str) {
+                return _this.htmlEncode(str);
+            };
+            sys.createGUI = function (gui, attach) {
+                return attach ? _this.appendHTMLElement(gui) : _this.createHTMLElement(gui);
+            };
+            sys.clearOutput = function () {
+                return _this.empty();
+            };
+            sys.clearScreen = function () {
+                return _this.empty(true);
+            };
+            sys.setOutput = function (el) {
+                return _this.__output__ = el;
+            };
+            sys.output = function (msg) {
+                return _this.print(msg);
+            };
+        };
+
+        /**
         * Creates DOM elements from a html strings
         * @param {String} html
         * @returns {HTMLElement}
         * @public
         */
-        Graphic.prototype.createElementByHtml = function (htmlEl) {
+        Graphic.prototype.createHTMLElement = function (htmlEl) {
             if (typeof htmlEl === "undefined") { htmlEl = ''; }
-            var tmp = this.__sys__.createElement('div');
+            var tmp = Utils.createElement('div');
             tmp.innerHTML = htmlEl;
             return tmp.firstChild;
         };
@@ -81,13 +113,13 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         * @throws {Error} Wrong parameter
         * @public
         */
-        Graphic.prototype.appendHtmlElement = function (html, appendTo) {
+        Graphic.prototype.appendHTMLElement = function (html, appendTo) {
             if (typeof appendTo === "undefined") { appendTo = this.output; }
             var el;
 
             if (Utils.isString(html)) {
-                el = this.createElementByHtml(html);
-            } else if (Utils.isDOMElement(html)) {
+                el = this.createHTMLElement(html);
+            } else if (Utils.isHTMLElement(html)) {
                 el = html;
             } else {
                 throw Error('[Graphic#appendHtmlElement] Wrong parameter');
@@ -105,11 +137,11 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         * @returns {HTMLElement}
         * @public
         */
-        Graphic.prototype.getDOMElement = function (selector, contextEl) {
+        Graphic.prototype.getHTMLElement = function (selector, contextEl) {
             var match = Graphic.rquickExpr.exec(selector), m;
 
             if ((m = match[1])) {
-                return this.__sys__.getElementById(m);
+                return Utils.getElementById(m);
             } else if (match[2]) {
                 return contextEl.getElementsByTagName(selector)[0];
             } else if ((m = match[3])) {
@@ -122,11 +154,11 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         /**
         * Returns a string with the HTML entities in order to be used in HTML literals
         * @param {String} str
-        * return {String}
+        * @return {String}
         * @public
         */
         Graphic.prototype.htmlEncode = function (str) {
-            var el = this.__sys__.createElement('div');
+            var el = Utils.createElement('div');
             el.innerText = el.textContent = str;
             return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
         };
@@ -147,9 +179,9 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             } else if (Utils.isString(message)) {
                 console.log('[Graphic#print] Printing message:', message);
 
-                var div = this.__sys__.createElement('div');
-                div.innerHTML = message.replace(/^\s/g, '&nbsp;');
-                this.appendHtmlElement(div, appendTo);
+                var div = Utils.createElement('div');
+                div.innerHTML = this.htmlEncode(message);
+                this.appendHTMLElement(div, appendTo);
             } else {
                 throw Error('[Graphic#print] Wrong message');
             }

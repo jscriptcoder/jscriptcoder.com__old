@@ -18,7 +18,7 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         function DOMWrap(el) {
             console.log('[DOMWrap#constructor] Hooking up DOM:', el);
 
-            if (Utils.isDOMElement(el)) {
+            if (Utils.isHTMLElement(el)) {
                 this.__el__ = el;
             } else {
                 throw Error('[DOMWrap#constructor] Wrong DOM element');
@@ -96,10 +96,8 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         * @public
         */
         DOMWrap.prototype.html = function (str) {
-            if (Utils.isString(str)) {
+            if (Utils.isString(str))
                 this.__el__.innerHTML = str;
-            }
-
             return this.__el__.innerHTML;
         };
 
@@ -110,14 +108,14 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         * @public
         */
         DOMWrap.prototype.find = function (selector) {
-            var match = DOMWrap.rquickExpr.exec(selector), m;
+            var el = this.__el__, match = DOMWrap.rquickExpr.exec(selector), m;
 
             if (match[2]) {
-                return this.__el__.getElementsByTagName(selector);
+                return el.getElementsByTagName(selector);
             } else if ((m = match[3])) {
-                return this.__el__.getElementsByClassName(m);
+                return el.getElementsByClassName(m);
             } else {
-                return this.__el__.querySelectorAll(selector);
+                return el.querySelectorAll(selector);
             }
         };
 

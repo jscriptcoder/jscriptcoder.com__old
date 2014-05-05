@@ -1,6 +1,7 @@
 /**
  * This module provides configuration items for the loader
  * @module bios/config
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 /**

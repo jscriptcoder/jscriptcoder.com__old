@@ -29,34 +29,26 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
 
             _super.call(this);
 
-            this.__graphic__ = new Graphic(this);
-            this.__keyboard__ = new Keyboard(this);
+            this.__graphic__ = this.__createGraphicDriver__();
+            this.__keyboard__ = this.__createKeyboardDriver__();
         }
-        Object.defineProperty(System.prototype, "global", {
-            /**
-            * global getter
-            * @returns {Window}
-            * @public
-            */
-            get: function () {
-                return System.global;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Instantiates a Graphic driver. Makes it easy to mock
+        * @returns {Graphic}
+        * @private
+        */
+        System.prototype.__createGraphicDriver__ = function () {
+            return new Graphic(this);
+        };
 
-        Object.defineProperty(System.prototype, "doc", {
-            /**
-            * doc getter
-            * @returns {Document}
-            * @public
-            */
-            get: function () {
-                return System.doc;
-            },
-            enumerable: true,
-            configurable: true
-        });
+        /**
+        * Instantiates a Keyboard driver. Makes it easy to mock
+        * @returns {Keyboard}
+        * @private
+        */
+        System.prototype.__createKeyboardDriver__ = function () {
+            return new Keyboard(this);
+        };
 
         Object.defineProperty(System.prototype, "graphic", {
             /**
@@ -85,32 +77,13 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
         });
 
         /**
-        * Wrapper for document.createElement method
-        * @param {String} tagName
-        * @return {HTMLElement}
-        * @public
-        */
-        System.prototype.createElement = function (tagName) {
-            return System.doc.createElement(tagName);
-        };
-
-        /**
-        * Wrapper for document.getElementById method
-        * @param {String} id
-        * @return {HTMLElement}
-        * @public
-        */
-        System.prototype.getElementById = function (id) {
-            return System.doc.getElementById(id);
-        };
-
-        /**
         * Encodes a string to be displayed properly
         * @param {String} str
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.encode = function (str) {
-            return this.__graphic__.htmlEncode(str);
+            throw Error('Implemented by the graphic card');
         };
 
         /**
@@ -118,61 +91,50 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
         * @param {String} gui
         * @param {Boolean} attach
         * @returns {HTMLElement}
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.createGUI = function (gui, attach) {
-            return attach ? this.__graphic__.appendHtmlElement(gui) : this.__graphic__.createElementByHtml(gui);
+            throw Error('Implemented by the graphic card');
         };
 
         /**
         * Empties only the output
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.clearOutput = function () {
-            this.__graphic__.empty();
+            throw Error('Implemented by the graphic card');
         };
 
         /**
         * Clears the whole screen
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.clearScreen = function () {
-            this.__graphic__.empty(true);
+            throw Error('Implemented by the graphic card');
         };
 
         /**
         * Sets the output element for content display
         * @param {HTMLElement} el
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.setOutput = function (el) {
-            this.__graphic__.output = el;
+            throw Error('Implemented by the graphic card');
         };
 
         /**
         * Sends a string to the output
         * @param {String} msg
+        * @throws {Error} Implemented by the graphic card
         * @public
         */
         System.prototype.output = function (msg) {
-            this.__graphic__.print(msg);
+            throw Error('Implemented by the graphic card');
         };
-
-        /**
-        * Installs keypress listeners on an element
-        * @param {HTMLElement} [el = this.doc]
-        * @public
-        */
-        System.prototype.installKeypressInterrupts = function (el) {
-            if (typeof el === "undefined") { el = this.doc; }
-            var keyboard = this.__keyboard__;
-
-            this.listen('keypress', keyboard.onKeypress.bind(keyboard), el);
-            this.listen('keydown', keyboard.onKeydown.bind(keyboard), el);
-        };
-        System.doc = document;
-
-        System.global = window;
         return System;
     })(Interrups);
 

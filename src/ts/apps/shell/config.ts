@@ -1,6 +1,7 @@
 /**
  * This module provides configuration items for the shell
  * @module apps/shell/config
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 /**

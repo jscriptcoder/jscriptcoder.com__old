@@ -1,6 +1,7 @@
 /**
  * @module system/utils
  * @exports Utils
+ * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 /**
@@ -14,6 +15,18 @@ module Utils {
      * @type Function
      */
     var toString = Object.prototype.toString;
+    
+    /**
+     * document API
+     * @type Document
+     */
+    export var doc = document;
+    
+    /**
+     * jQuery-like query selector
+     * @type Document
+     */
+    var $ = doc.querySelectorAll.bind(doc);
     
     /**
      * Whether or not the value is an array
@@ -71,7 +84,7 @@ module Utils {
      * @returns {Boolean}
      * @memberof Utils
      */
-    export function isDOMElement(value) {
+    export function isHTMLElement(value) {
         return !!(value && value.nodeName);
     }
        
@@ -83,6 +96,76 @@ module Utils {
      */
     export function isFunction(value){
         return typeof value === 'function';
+    }
+     
+    /**
+     * Wrapper for document.createElement method
+     * @param {String} tagName
+     * @return {HTMLElement}
+     * @memberof Utils
+     */
+    export function createElement(tagName) {
+        return doc.createElement(tagName);
+    }
+    
+    /**
+     * Wrapper for document.getElementById method
+     * @param {String} id
+     * @return {HTMLElement}
+     * @public
+     */
+    export function getElementById(id) {
+        return doc.getElementById(id);
+    }
+    
+    /**
+     * Wrapper for document.getElementsByTagName method
+     * @param {String} id
+     * @return {HTMLCollection}
+     * @public
+     */
+    export function getElementsByTagName(tagName) {
+        return doc.getElementsByTagName(tagName);
+    }
+       
+    /**
+     * Wrapper for document.getElementsByClassName method
+     * @param {String} id
+     * @return {HTMLCollection}
+     * @public
+     */
+    export function getElementsByClassName(className) {
+        return doc.getElementsByClassName(className);
+    }
+        
+    /**
+     * jQuery-like query selector
+     * @param {String} sel
+     * @return {HTMLCollection}
+     * @memberof Utils
+     */
+    export function query(sel) {
+        return $(sel);
+    }
+        
+    /**
+     * Queries just one element
+     * @param {String} sel
+     * @return {HTMLElement}
+     * @memberof Utils
+     */
+    export function queryOne(sel) {
+        return query(sel)[0];
+    }
+        
+    /**
+     * Returns the string representation of a charCode
+     * @param {Number} code
+     * @return {String}
+     * @memberof Utils
+     */
+    export function toChar(code) {
+        return String.fromCharCode(code);
     }
 
 }
