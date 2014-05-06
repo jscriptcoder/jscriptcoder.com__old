@@ -1,4 +1,94 @@
 /**
+ * Memory allocation
  * @module system/mem
+ * @requires system/utils
+ * @requires system/alloc
+ * @exports Mem
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
+
+import Utils = require('./utils');
+import Alloc = require('./alloc');
+
+/**
+ * Allocates memory for the system, programs, etc...
+ * @class Mem
+ * @extends Alloc
+ */
+class Mem extends Alloc {
+    
+    /**
+     * @type Object
+     * @private
+     */
+    __storage__;
+
+    /**
+     * @type Number
+     * @private
+     */
+    __length__;
+
+    /**
+     * Initializes an instance of Mem
+     * @constructor
+     */
+    constructor() {
+        console.log('[Mem#constructor] Allocating memory...');
+        super();
+        
+        this.__storage__ = {};
+        this.__length__ = 0;
+    }
+
+    /**
+     * Gets info from the memory
+     * @param {String} addr
+     * @returns {Any}
+     * @public
+     */
+    get(addr) { return this.__storage__[addr] }
+    
+    /**
+     * Stores info in memory, returning the size
+     * @param {String} addr
+     * @param {Any} info
+     * @returns {Number}
+     * @public
+     */
+    put(addr, info) {
+        if (!this.is(addr)) this.__length__++;
+        this.__storage__[addr] = info;
+        return this.__length__;
+    }
+
+    /**
+     * Deletes info from memory, returning the size
+     * @param {String} addr
+     * @returns {Number}
+     * @public
+     */
+    delete(addr) {
+        if (this.is(addr)) this.__length__--;
+        delete this.__storage__[addr];
+        return this.__length__;
+    }
+
+    /**
+     * Returns the size of taken up memory
+     * @returns {Number}
+     * @public
+     */
+    size() { return this.__length__ }
+
+    /**
+     * Indicates whether or not there is something that address
+     * @param {String} addr
+     * @returns {Boolean}
+     * @public
+     */
+    is(addr) { return Utils.isDefined(this.__storage__[addr]) }
+    
+}
+
+export = Mem;

@@ -38,6 +38,7 @@ module SysInit {
         system.clearScreen();
         
         // runs the shell
+        
         shell = new Shell(system);
         
         console.log('[SysInit.run] System up and running');

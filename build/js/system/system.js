@@ -4,6 +4,7 @@
 * @requires system/drivers/graphic/graphic
 * @requires system/drivers/keyboard/keyboard
 * @exports System
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];

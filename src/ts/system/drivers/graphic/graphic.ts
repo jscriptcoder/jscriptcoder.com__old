@@ -49,7 +49,7 @@ class Graphic extends DOMWrap {
         this.__sys__ = sys;
         this.__output__ = this.el;
     
-        this.__setSysAPI__(sys);
+        this.__setSysAPI__();
     }
 
     /**
@@ -78,10 +78,11 @@ class Graphic extends DOMWrap {
 
     /**
      * Implements general methods to be used in the system
-     * @param {System} sys
      * @private
      */
-    __setSysAPI__(sys) {
+    __setSysAPI__() {
+        var sys = this.__sys__;
+        
         sys.encode = (str) => this.htmlEncode(str);
         sys.createGUI = (gui, attach) => attach ? this.appendHTMLElement(gui) : this.createHTMLElement(gui);
         sys.clearOutput = () => this.empty();
@@ -159,7 +160,7 @@ class Graphic extends DOMWrap {
         el.innerText = el.textContent = str;
         return el.innerHTML
             .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
-            .replace(/ /g, '&nbsp;');
+            .replace(/\s/g, '&nbsp;');
     }
 
     /**
@@ -178,7 +179,7 @@ class Graphic extends DOMWrap {
             console.log('[Graphic#print] Printing message:', message);
           
             var div = Utils.createElement('div');
-            div.innerHTML = this.htmlEncode(message);
+            div.innerHTML = message.replace(/\s/, '&nbsp;');
             this.appendHTMLElement(div, appendTo);
 
         } else {

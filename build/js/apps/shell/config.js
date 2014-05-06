@@ -1,6 +1,7 @@
 /**
 * This module provides configuration items for the shell
 * @module apps/shell/config
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 define(["require", "exports"], function(require, exports) {
     /**
@@ -55,4 +56,9 @@ define(["require", "exports"], function(require, exports) {
     * @type String
     */
     exports.cursorSel = '.cursor';
+
+    /**
+    * @type Number
+    */
+    exports.historyLimit = 50;
 });

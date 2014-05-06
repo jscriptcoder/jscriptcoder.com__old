@@ -2,6 +2,7 @@
 * @module bios/bios
 * @requires bios/config
 * @exports Bios
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 define(["require", "exports", './config'], function(require, exports, Config) {
     /**

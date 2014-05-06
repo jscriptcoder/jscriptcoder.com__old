@@ -167,6 +167,17 @@ module Utils {
     export function toChar(code) {
         return String.fromCharCode(code);
     }
+        
+    /**
+     * Creates a unique ID
+     * @param {String} [pre = '']
+     * @param {String} [pos = '']
+     * @return {String}
+     * @memberof Utils
+     */
+    export function uid(pre = '', pos = '') {
+        return pre + (new Date()).getTime() + pos;
+    }
 
 }
 

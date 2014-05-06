@@ -3,6 +3,7 @@
 * @module system/drivers/keyboard/keyboard
 * @requires system/utils
 * @exports Keyboard
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 define(["require", "exports", '../../utils'], function(require, exports, Utils) {
     /**

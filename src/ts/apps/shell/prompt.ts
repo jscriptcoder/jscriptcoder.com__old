@@ -4,6 +4,7 @@
  * @requires system/utils
  * @requires system/drivers/graphic/domwrap
  * @requires apps/shell/config
+ * @requires apps/shell/history
  * @exports Prompt
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
@@ -11,6 +12,7 @@
 import Utils = require('../../system/utils');
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
 import Config = require('./config');
+import History = require('./history');
 
 /**
  * Prompt user interface
@@ -50,6 +52,12 @@ class Prompt extends DOMWrap {
     __cursor__;
     
     /**
+     * @type History
+     * @private
+     */
+    __history__;
+    
+    /**
      * Command line introduced
      * @type String
      * @private
@@ -82,7 +90,9 @@ class Prompt extends DOMWrap {
         this.__symbol__ = this.findOne(Config.symbolSel, true);
         this.__input__ = this.findOne(Config.inputSel, true);
         this.__cursor__ = this.findOne(Config.cursorSel, true);
-        
+    
+        this.__history__ = this.__createHistory__();
+    
         this.__cmd__ = '';
         this.__curPos__ = 0; // zero-base
     
@@ -97,6 +107,15 @@ class Prompt extends DOMWrap {
      */
     get cmd() {
         return this.__cmd__;
+    }
+
+    /**
+     * Instantiates a History object. Makes it easy to mock
+     * @returns {History}
+     * @private
+     */
+    __createHistory__() {
+        return new History();
     }
 
     /**
@@ -137,7 +156,7 @@ class Prompt extends DOMWrap {
      * @returns {String}
      * @public
      */
-    toString() { return this.__el__.innerText }
+    toString() { return this.__el__.innerText || this.__el__.textContent }
 
     /**
      * Inserts a new character in the input
@@ -197,6 +216,22 @@ class Prompt extends DOMWrap {
     moveCursorEnd() { this.moveCursorTo(this.__cmd__.length) }
 
     /**
+     * Shows the previous command in the input
+     * @public
+     */
+    showPreviousCmd() {
+        //TODO
+    }
+
+    /**
+     * Shows the next command in the input
+     * @public
+     */
+    showNextCmd() {
+        //TODO
+    }
+
+    /**
      * Clears the command line
      * @public
      */
@@ -248,7 +283,7 @@ class Prompt extends DOMWrap {
      */
     enter() {
         this.__onEnter__(this.__cmd__);
-        //this.__storeCmdHistory__();
+        this.__history__.add(this.__cmd__);
         this.clear();
     }
 
@@ -272,9 +307,8 @@ class Prompt extends DOMWrap {
     arrow(which) {
         switch(which){
                 
-            case 'up':
-            case 'down':
-                //TODO: history
+            case 'up': this.showPreviousCmd(); break;
+            case 'down': this.showNextCmd(); break;
                 break;
                 
             case 'left': this.moveCursorBackward(); break;

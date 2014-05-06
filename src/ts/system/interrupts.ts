@@ -2,11 +2,13 @@
  * Implementes, or rather emulate, interruptions functionality
  * @module @module system/interrupts
  * @requires system/utils
+ * @requires system/mem
  * @exports Interrupts
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('./utils');
+import Mem = require('./mem');
 
 /**
  * Provides a basic pubsub pattern for communication between drivers and apps
@@ -15,19 +17,28 @@ import Utils = require('./utils');
 class Interrupts {
     
     /**
-     * Stores the list of interruptions
-     * @type Object
+     * Stores lists of interruptions
+     * @type Mem
      * @private
      */
-    __ints__;
+    __table__;
     
     /**
      * @constructor
      */
     constructor() {
-        this.__ints__ = {};
+        this.__table__ = this.__allocateMem__();
     }
-    
+
+    /**
+     * Allocates memory for the interruptions
+     * @returns {Mem}
+     * @private
+     */
+    __allocateMem__() {
+        return new Mem();
+    }
+
     /**
      * Listens to interruptions
      * @param {String} type
@@ -40,8 +51,15 @@ class Interrupts {
             // for document and other HTMLElement events
             context.addEventListener(type, handler);
         } else {
-            this.__ints__[type] = this.__ints__[type] || [];
-            this.__ints__[type].push({ handler: handler, context: context });   
+            var table = this.__table__, ints;
+            
+            if (!table.is(type)) {
+                table.put(type,  ints = []);
+            } else {
+                ints = table.get(type);
+            }
+            
+            ints.push({ handler: handler, context: context });   
         }
     }
     
@@ -52,7 +70,7 @@ class Interrupts {
      * @public
      */
     interrupt(type, ...args) {
-        var ints = this.__ints__[type];
+        var ints = this.__table__.get(type);
         if (Utils.isArray(ints)) {
             ints.forEach((int) => int.handler.apply(int.context, args));
         }
@@ -66,7 +84,7 @@ class Interrupts {
      * @public
      */
     unlisten(type, handler?, context?) {
-        var ints = this.__ints__[type], idx;
+        var ints = this.__table__.get(type), idx;
              
         if (Utils.isHTMLElement(context)) {
             // for document and other HTMLElements
@@ -75,10 +93,13 @@ class Interrupts {
              
             if (!handler) {
                 // deletes all the inturrpuptions for this type
-                delete this.__ints__[type];
+                this.__table__.delete(type);
             } else if (Utils.isArray(ints)) {
+             
                 // deletes the interruption with that handler
-                this.__ints__[type] = ints.filter((int, i) => int.handler !== handler);
+                var newInts = ints.filter((int, i) => int.handler !== handler);
+                this.__table__.put(type, newInts);
+             
             }
              
         }

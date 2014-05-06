@@ -2,6 +2,7 @@
 * @module system/init
 * @requires system/system
 * @requires apps/shell/shell
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 define(["require", "exports", './system', '../apps/shell/shell'], function(require, exports, System, Shell) {
     /**

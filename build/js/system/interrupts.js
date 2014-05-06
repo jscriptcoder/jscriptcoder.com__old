@@ -2,9 +2,11 @@
 * Implementes, or rather emulate, interruptions functionality
 * @module @module system/interrupts
 * @requires system/utils
+* @requires system/mem
 * @exports Interrupts
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", './utils'], function(require, exports, Utils) {
+define(["require", "exports", './utils', './mem'], function(require, exports, Utils, Mem) {
     /**
     * Provides a basic pubsub pattern for communication between drivers and apps
     * @class Interrupts
@@ -14,8 +16,17 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
         * @constructor
         */
         function Interrupts() {
-            this.__ints__ = {};
+            this.__table__ = this.__allocateMem__();
         }
+        /**
+        * Allocates memory for the interruptions
+        * @returns {Mem}
+        * @private
+        */
+        Interrupts.prototype.__allocateMem__ = function () {
+            return new Mem();
+        };
+
         /**
         * Listens to interruptions
         * @param {String} type
@@ -29,8 +40,15 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
                 // for document and other HTMLElement events
                 context.addEventListener(type, handler);
             } else {
-                this.__ints__[type] = this.__ints__[type] || [];
-                this.__ints__[type].push({ handler: handler, context: context });
+                var table = this.__table__, ints;
+
+                if (!table.is(type)) {
+                    table.put(type, ints = []);
+                } else {
+                    ints = table.get(type);
+                }
+
+                ints.push({ handler: handler, context: context });
             }
         };
 
@@ -45,7 +63,7 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
             for (var _i = 0; _i < (arguments.length - 1); _i++) {
                 args[_i] = arguments[_i + 1];
             }
-            var ints = this.__ints__[type];
+            var ints = this.__table__.get(type);
             if (Utils.isArray(ints)) {
                 ints.forEach(function (int) {
                     return int.handler.apply(int.context, args);
@@ -61,7 +79,7 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
         * @public
         */
         Interrupts.prototype.unlisten = function (type, handler, context) {
-            var ints = this.__ints__[type], idx;
+            var ints = this.__table__.get(type), idx;
 
             if (Utils.isHTMLElement(context)) {
                 // for document and other HTMLElements
@@ -69,12 +87,13 @@ define(["require", "exports", './utils'], function(require, exports, Utils) {
             } else {
                 if (!handler) {
                     // deletes all the inturrpuptions for this type
-                    delete this.__ints__[type];
+                    this.__table__.delete(type);
                 } else if (Utils.isArray(ints)) {
                     // deletes the interruption with that handler
-                    this.__ints__[type] = ints.filter(function (int, i) {
+                    var newInts = ints.filter(function (int, i) {
                         return int.handler !== handler;
                     });
+                    this.__table__.put(type, newInts);
                 }
             }
         };

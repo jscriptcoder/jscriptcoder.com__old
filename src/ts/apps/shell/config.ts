@@ -56,3 +56,8 @@ export var inputSel = '.input';
  * @type String
  */
 export var cursorSel = '.cursor';
+
+/**
+ * @type Number
+ */
+export var historyLimit = 50;

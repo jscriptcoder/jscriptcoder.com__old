@@ -1,6 +1,7 @@
 /**
 * @module system/utils
 * @exports Utils
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 define(["require", "exports"], function(require, exports) {
     /**
@@ -180,6 +181,20 @@ define(["require", "exports"], function(require, exports) {
             return String.fromCharCode(code);
         }
         Utils.toChar = toChar;
+
+        /**
+        * Creates a unique ID
+        * @param {String} [pre = '']
+        * @param {String} [pos = '']
+        * @return {String}
+        * @memberof Utils
+        */
+        function uid(pre, pos) {
+            if (typeof pre === "undefined") { pre = ''; }
+            if (typeof pos === "undefined") { pos = ''; }
+            return pre + (new Date()).getTime() + pos;
+        }
+        Utils.uid = uid;
     })(Utils || (Utils = {}));
 
     

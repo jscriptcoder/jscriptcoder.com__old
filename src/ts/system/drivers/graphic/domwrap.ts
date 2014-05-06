@@ -124,7 +124,7 @@ class DOMWrap {
      * Gets back a single DOM element - wrapped in the DOMWrap is specified
      * @param {String} selector
      * @param {Boolean} [wrap]
-     * @returns {HTMLElement}
+     * @returns {HTMLElement|DOMWrap}
      * @public
      */
     findOne(selector, wrap?): any {

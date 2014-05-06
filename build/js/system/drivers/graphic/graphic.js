@@ -5,6 +5,7 @@
 * @requires system/drivers/graphic/domwrap
 * @requires system/drivers/graphic/config
 * @exports Graphic
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -36,7 +37,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             this.__sys__ = sys;
             this.__output__ = this.el;
 
-            this.__setSysAPI__(sys);
+            this.__setSysAPI__();
         }
         Object.defineProperty(Graphic.prototype, "output", {
             /**
@@ -67,11 +68,12 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
         /**
         * Implements general methods to be used in the system
-        * @param {System} sys
         * @private
         */
-        Graphic.prototype.__setSysAPI__ = function (sys) {
+        Graphic.prototype.__setSysAPI__ = function () {
             var _this = this;
+            var sys = this.__sys__;
+
             sys.encode = function (str) {
                 return _this.htmlEncode(str);
             };
@@ -160,7 +162,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         Graphic.prototype.htmlEncode = function (str) {
             var el = Utils.createElement('div');
             el.innerText = el.textContent = str;
-            return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/ /g, '&nbsp;');
+            return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/\s/g, '&nbsp;');
         };
 
         /**
@@ -180,7 +182,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
                 console.log('[Graphic#print] Printing message:', message);
 
                 var div = Utils.createElement('div');
-                div.innerHTML = this.htmlEncode(message);
+                div.innerHTML = message.replace(/\s/, '&nbsp;');
                 this.appendHTMLElement(div, appendTo);
             } else {
                 throw Error('[Graphic#print] Wrong message');

@@ -4,7 +4,9 @@
 * @requires system/utils
 * @requires system/drivers/graphic/domwrap
 * @requires apps/shell/config
+* @requires apps/shell/history
 * @exports Prompt
+* @author Francisco Ramos <fran@jscriptcoder.com>
 */
 var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -12,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config'], function(require, exports, Utils, DOMWrap, Config) {
+define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config', './history'], function(require, exports, Utils, DOMWrap, Config, History) {
     /**
     * Prompt user interface
     * @class Prompt
@@ -40,6 +42,8 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__input__ = this.findOne(Config.inputSel, true);
             this.__cursor__ = this.findOne(Config.cursorSel, true);
 
+            this.__history__ = this.__createHistory__();
+
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
 
@@ -58,6 +62,15 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * Instantiates a History object. Makes it easy to mock
+        * @returns {History}
+        * @private
+        */
+        Prompt.prototype.__createHistory__ = function () {
+            return new History();
+        };
 
         /**
         * Gets back the left and right (to the cursor) parts of the command
@@ -94,7 +107,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.toString = function () {
-            return this.__el__.innerText;
+            return this.__el__.innerText || this.__el__.textContent;
         };
 
         /**
@@ -160,6 +173,22 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Shows the previous command in the input
+        * @public
+        */
+        Prompt.prototype.showPreviousCmd = function () {
+            //TODO
+        };
+
+        /**
+        * Shows the next command in the input
+        * @public
+        */
+        Prompt.prototype.showNextCmd = function () {
+            //TODO
+        };
+
+        /**
         * Clears the command line
         * @public
         */
@@ -210,8 +239,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         */
         Prompt.prototype.enter = function () {
             this.__onEnter__(this.__cmd__);
-
-            //this.__storeCmdHistory__();
+            this.__history__.add(this.__cmd__);
             this.clear();
         };
 
@@ -239,7 +267,11 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         Prompt.prototype.arrow = function (which) {
             switch (which) {
                 case 'up':
+                    this.showPreviousCmd();
+                    break;
                 case 'down':
+                    this.showNextCmd();
+                    break;
                     break;
 
                 case 'left':
