@@ -57,7 +57,16 @@ define(["require", "exports", '../../system/mem', '../../system/utils', './confi
         */
         History.prototype.get = function (idx) {
             if (typeof idx === "undefined") { idx = this.index; }
-            _super.prototype.get.call(this, this.__addrs__[idx]);
+            return _super.prototype.get.call(this, this.__addrs__[idx]) || '';
+        };
+
+        /**
+        * Gets the first command in the history
+        * @returns {Any}
+        * @public
+        */
+        History.prototype.first = function () {
+            return this.get(0);
         };
 
         /**
@@ -66,7 +75,7 @@ define(["require", "exports", '../../system/mem', '../../system/utils', './confi
         * @public
         */
         History.prototype.next = function () {
-            var idx = this.__index__, limit = this.__addrs__.length - 1;
+            var idx = this.__index__, limit = this.__addrs__.length;
             this.__index__ = idx < limit ? idx + 1 : limit;
             return this.get();
         };
@@ -83,15 +92,28 @@ define(["require", "exports", '../../system/mem', '../../system/utils', './confi
         };
 
         /**
+        * Gets the last command in the history
+        * @returns {Any}
+        * @public
+        */
+        History.prototype.last = function () {
+            return this.get(this.__addrs__.length - 1);
+        };
+
+        /**
         * Adds a new command to the list
         * @param {String} cmd
         * @return {Number}
         * @public
         */
         History.prototype.add = function (cmd) {
-            // we skip the storing if the string is empty
+            // we skip the storing if the cmd is empty
             if (Utils.isString(cmd) && !cmd)
-                return;
+                return this.__addrs__.length;
+
+            // we skip the storing if the cmd is the same as the last one
+            if (cmd === this.last())
+                return this.__addrs__.length;
 
             var addr = Utils.uid(History.prefix);
             this.put(addr, cmd);
@@ -103,8 +125,7 @@ define(["require", "exports", '../../system/mem', '../../system/utils', './confi
                 this.delete(addr);
             }
 
-            this.__index__ = this.__addrs__.length - 1;
-            return this.__addrs__.length;
+            return this.__index__ = this.__addrs__.length;
         };
         History.prefix = 'CMD_';
         return History;

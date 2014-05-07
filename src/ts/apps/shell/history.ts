@@ -61,9 +61,7 @@ class History extends Mem {
      * @returns {Number}
      * @public
      */
-    get index() {
-        return this.__index__;
-    }
+    get index() { return this.__index__ }
 
     /**
      * Gets a command in that index
@@ -71,9 +69,14 @@ class History extends Mem {
      * @return {Any}
      * @public
      */
-    get(idx = this.index) {
-        super.get(this.__addrs__[idx]);
-    }
+    get(idx = this.index) { return super.get(this.__addrs__[idx]) || '' }
+
+    /**
+     * Gets the first command in the history
+     * @returns {Any}
+     * @public
+     */
+    first() { return this.get(0) }
 
     /**
      * Gets next command
@@ -81,7 +84,7 @@ class History extends Mem {
      * @public
      */
     next() {
-        var idx = this.__index__, limit = this.__addrs__.length - 1;
+        var idx = this.__index__, limit = this.__addrs__.length;
         this.__index__ = idx < limit ? idx + 1 : limit;
         return this.get();
     }
@@ -98,14 +101,24 @@ class History extends Mem {
     }
 
     /**
+     * Gets the last command in the history
+     * @returns {Any}
+     * @public
+     */
+    last() { return this.get(this.__addrs__.length - 1) }
+
+    /**
      * Adds a new command to the list
      * @param {String} cmd
      * @return {Number}
      * @public
      */
     add(cmd) {
-        // we skip the storing if the string is empty
-        if (Utils.isString(cmd) && !cmd) return;
+        // we skip the storing if the cmd is empty
+        if (Utils.isString(cmd) && !cmd) return this.__addrs__.length;
+        
+        // we skip the storing if the cmd is the same as the last one
+        if (cmd === this.last()) return this.__addrs__.length;
         
         var addr = Utils.uid(History.prefix);
         this.put(addr, cmd);
@@ -116,9 +129,8 @@ class History extends Mem {
             addr = this.__addrs__.shift();
             this.delete(addr);
         }
-        
-        this.__index__ = this.__addrs__.length - 1;
-        return this.__addrs__.length;
+
+        return this.__index__ = this.__addrs__.length;
     }
 
 }

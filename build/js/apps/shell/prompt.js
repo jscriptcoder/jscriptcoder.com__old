@@ -177,7 +177,8 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.showPreviousCmd = function () {
-            //TODO
+            this.__cmd__ = this.__history__.previous();
+            this.moveCursorEnd();
         };
 
         /**
@@ -185,7 +186,8 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.showNextCmd = function () {
-            //TODO
+            this.__cmd__ = this.__history__.next();
+            this.moveCursorEnd();
         };
 
         /**

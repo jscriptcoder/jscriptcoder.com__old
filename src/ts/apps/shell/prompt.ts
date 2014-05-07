@@ -220,7 +220,8 @@ class Prompt extends DOMWrap {
      * @public
      */
     showPreviousCmd() {
-        //TODO
+        this.__cmd__ = this.__history__.previous();
+        this.moveCursorEnd();
     }
 
     /**
@@ -228,7 +229,8 @@ class Prompt extends DOMWrap {
      * @public
      */
     showNextCmd() {
-        //TODO
+        this.__cmd__ = this.__history__.next();
+        this.moveCursorEnd();
     }
 
     /**

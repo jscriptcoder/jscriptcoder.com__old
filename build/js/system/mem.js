@@ -38,7 +38,7 @@ define(["require", "exports", './utils', './alloc'], function(require, exports, 
         * @public
         */
         Mem.prototype.get = function (addr) {
-            return this.__storage__[addr];
+            return addr ? this.__storage__[addr] : void (0);
         };
 
         /**
