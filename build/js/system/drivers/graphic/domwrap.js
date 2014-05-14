@@ -133,6 +133,24 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
                 el = new DOMWrap(el);
             return el;
         };
+
+        /**
+        * Detaches the element from the DOM
+        * @public
+        */
+        DOMWrap.prototype.detach = function () {
+            var el = this.__el__;
+            el.parentNode.removeChild(el);
+        };
+
+        /**
+        * Wrapper for firstChild property
+        * @return {HTMLElement}
+        * @public
+        */
+        DOMWrap.prototype.first = function () {
+            return this.__el__.firstChild;
+        };
         DOMWrap.rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
         return DOMWrap;
     })();

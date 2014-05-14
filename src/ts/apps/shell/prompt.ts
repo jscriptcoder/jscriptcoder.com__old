@@ -58,6 +58,27 @@ class Prompt extends DOMWrap {
     __history__;
     
     /**
+     * @type Selection
+     * @see Selection {@link https://developer.mozilla.org/en-US/docs/Web/API/Selection}
+     * @private
+     */
+    __selection__;
+    
+    /**
+     * @type Range
+     * @see Range {@link https://developer.mozilla.org/en-US/docs/Web/API/Range}
+     * @private
+     */
+    __range__;
+    
+    /**
+     * Indicates whether or not we're in selection mode
+     * @type Boolean
+     * @private
+     */
+    __isSel__;
+    
+    /**
      * Command line introduced
      * @type String
      * @private
@@ -92,7 +113,10 @@ class Prompt extends DOMWrap {
         this.__cursor__ = this.findOne(Config.cursorSel, true);
     
         this.__history__ = this.__createHistory__();
+        this.__selection__ = this.__getSelection__();
+        this.__range__ = this.__createRange__();
     
+        this.__isSel__ = false;
         this.__cmd__ = '';
         this.__curPos__ = 0; // zero-base
     
@@ -116,6 +140,24 @@ class Prompt extends DOMWrap {
      */
     __createHistory__() {
         return new History();
+    }
+
+    /**
+     * Returns a Selection object
+     * @returns {Selection}
+     * @private
+     */
+    __getSelection__() {
+        return Utils.getSelection();
+    }
+
+    /**
+     * Creates a Range object
+     * @returns {Range}
+     * @private
+     */
+    __createRange__() {
+        return Utils.createRange();
     }
 
     /**
@@ -148,6 +190,36 @@ class Prompt extends DOMWrap {
         tmp.innerHTML += sys.encode(right.substr(1));
         
         this.__input__.html(tmp.innerHTML);
+        
+    }
+
+    /**
+     * Removes the cursor from the input
+     * @private
+     */
+    __removeCursor__() {
+        this.__input__.html(this.__sys__.encode(this.__cmd__));
+    }
+
+    /**
+     * Prepares for selection of a single character
+     * @private
+     */
+    __charSelection__() {
+        
+        if (!this.__isSel__) {
+            this.__isSel__ = true;
+            
+            this.__removeCursor__();
+            this.__selection__.removeAllRanges();
+            
+            var cmdNode = this.__input__.first();
+
+            this.__range__.setStart(cmdNode, this.__curPos__);
+            this.__range__.setEnd(cmdNode, this.__curPos__);
+
+            this.__selection__.addRange(this.__range__);
+        }
         
     }
 
@@ -234,6 +306,50 @@ class Prompt extends DOMWrap {
     }
 
     /**
+     * Selects a range of characters to the left
+     * @public
+     */
+    selectLeftRange() { while(this.selectLeftChar()); }
+
+    /**
+     * Selects a range of characters to the right
+     * @public
+     */
+    selectRightRange() { while (this.selectRightChar()); }
+
+    /**
+     * Selects characters from the left on
+     * @returns {Boolean} indicates the beginning of the cmd
+     * @public
+     */
+    selectLeftChar() {
+        if (this.__curPos__ > 0) {
+            this.__charSelection__();
+            this.__selection__.modify('extend', 'backward', 'character');
+            this.__curPos__--;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Selects characters from the right on
+     * @returns {Boolean} indicates the end of the cmd
+     * @public
+     */
+    selectRightChar() {
+        if (this.__curPos__ < this.__cmd__.length) {
+            this.__charSelection__();
+            this.__selection__.modify('extend', 'forward', 'character');
+            this.__curPos__++;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Clears the command line
      * @public
      */
@@ -261,8 +377,14 @@ class Prompt extends DOMWrap {
                         parts[0] = part.slice(0, -1); this.__curPos__--;
                         break;
                     case 'del':
+                        
                         // deletes first char from the right part
-                        parts[1] = part[0] + part.substr(2);
+                        if (part.length > 1) {
+                            parts[1] = part[0] + part.substr(2);
+                        } else {
+                            parts[1] = ''; this.__cursor__.html('&nbsp;');
+                        }
+                        
                         break;
                 }
                 
@@ -291,30 +413,52 @@ class Prompt extends DOMWrap {
 
     /**
      * Sends HOME/END keys
-     * @param {String} where (end|home);
+     * @param {String} where (end|home)
+     * @param {Boolean} shift
      * @public
      */
-    move(where) {
+    jump(where, shift) {
         switch(where){
-            case 'home': this.moveCursorHome(); break;
-            case 'end': this.moveCursorEnd(); break;
+            case 'home':
+                
+                if (shift) { this.selectLeftRange() }
+                else { this.moveCursorHome() }
+                
+                break;
+            case 'end':
+                
+                if (shift) { this.selectRightRange() }
+                else { this.moveCursorEnd() }
+                
+                break;
         }
     }
 
     /**
      * Sends arrows
      * @param {String} which [up|down|left|right]
+     * @param {Boolean} shift
      * @public
      */
-    arrow(which) {
+    arrow(which, shift) {
         switch(which){
                 
             case 'up': this.showPreviousCmd(); break;
             case 'down': this.showNextCmd(); break;
                 break;
                 
-            case 'left': this.moveCursorBackward(); break;
-            case 'right': this.moveCursorForward(); break;
+            case 'left': 
+                
+                if (shift) { this.selectLeftChar() }
+                else { this.moveCursorBackward() }
+                
+                break;
+            case 'right': 
+                
+                if (shift) { this.selectRightChar() }
+                else { this.moveCursorForward() }
+
+                break;
                 
         }
     }
@@ -327,14 +471,21 @@ class Prompt extends DOMWrap {
     char(c) { this.insert(c) }
 
     /**
+     * Copies selected text to the clipboard
+     * @public
+     */
+    copy() {}
+
+    /**
      * Gets triggered on keypress
      * @param {String} type
      * @param {String} key
+     * @param {Any} extra
      * @event
      */
-    onKeypress(type, key) {
+    onKeypress(type, key, extra) {
         if (Utils.isFunction(this[type])) {
-            this[type](key);
+            this[type](key, extra);
         }
     }
 }

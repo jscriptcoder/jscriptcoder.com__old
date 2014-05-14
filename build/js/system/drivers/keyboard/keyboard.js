@@ -74,7 +74,7 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
                     e.preventDefault();
                     console.log('HOME/END');
 
-                    sys.interrupt('keypress', 'move', Keyboard.SPECIAL_KEYS[e.which]);
+                    sys.interrupt('keypress', 'jump', Keyboard.SPECIAL_KEYS[e.which], e.shiftKey);
 
                     break;
                 case 37:
@@ -84,14 +84,14 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
                     e.preventDefault();
                     console.log('ARROW');
 
-                    sys.interrupt('keypress', 'arrow', Keyboard.SPECIAL_KEYS[e.which]);
+                    sys.interrupt('keypress', 'arrow', Keyboard.SPECIAL_KEYS[e.which], e.shiftKey);
 
                     break;
                 case 67:
-                case 86:
                     if (e.ctrlKey) {
                         e.preventDefault();
-                        console.log('COPY/PASTE');
+                        console.log('COPY');
+                        sys.interrupt('keypress', 'copy');
                     }
 
                     break;

@@ -132,6 +132,22 @@ class DOMWrap {
         if (wrap) el = new DOMWrap(el);
         return el;
     }
+    
+    /**
+     * Detaches the element from the DOM
+     * @public
+     */
+    detach() {
+        var el = this.__el__;
+        el.parentNode.removeChild(el);
+    }
+
+    /**
+     * Wrapper for firstChild property
+     * @return {HTMLElement}
+     * @public
+     */
+    first() { return this.__el__.firstChild }
 
 }
 

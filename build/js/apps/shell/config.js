@@ -21,7 +21,7 @@ define(["require", "exports"], function(require, exports) {
     */
     exports.msgHeader = [
         '/**',
-        ' * The adventure begins in here. Type <strong>help()</strong> to see the available commands...',
+        ' * The adventure begins here. Type <strong>help()</strong> to see the available commands...',
         ' * Remember, this is all about coding in JavaScript, and you\'ll discover an amazing world ;-)',
         ' *',
         ' * <strong>@author</strong> Francisco Ramos <<a href="mailto:fran@jscriptcoder.com">fran@jscriptcoder.com</a>>',

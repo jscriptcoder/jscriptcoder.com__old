@@ -47,7 +47,7 @@ class Keyboard {
         console.log('[Keyboard#constructor] Initializing keyboard driver...');
         this.__sys__ = sys;
         
-        var doc = Utils.doc;
+        var doc = Utils.doc; 
         
         sys.listen('keypress', this.onKeypress.bind(this), doc);
         sys.listen('keydown', this.onKeydown.bind(this), doc);
@@ -103,7 +103,7 @@ class Keyboard {
                 e.preventDefault();
                 console.log('HOME/END');
                 
-                sys.interrupt('keypress', 'move', Keyboard.SPECIAL_KEYS[e.which]);
+                sys.interrupt('keypress', 'jump', Keyboard.SPECIAL_KEYS[e.which], e.shiftKey);
                 
                 break;
             case 37: // LEFT
@@ -113,14 +113,14 @@ class Keyboard {
                 e.preventDefault();
                 console.log('ARROW');
                 
-                sys.interrupt('keypress', 'arrow', Keyboard.SPECIAL_KEYS[e.which]);
+                sys.interrupt('keypress', 'arrow', Keyboard.SPECIAL_KEYS[e.which], e.shiftKey);
                 
                 break;
             case 67: // C
-            case 86: // V
                 if (e.ctrlKey) {
                     e.preventDefault();
-                    console.log('COPY/PASTE');
+                    console.log('COPY');
+                    sys.interrupt('keypress', 'copy');
                 }
                 
                 break;

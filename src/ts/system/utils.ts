@@ -178,6 +178,26 @@ module Utils {
     export function uid(pre = '', pos = '') {
         return pre + (new Date()).getTime() + pos;
     }
+        
+    /**
+     * Wrapper for document.getSelection method
+     * @return {Selection}
+     * @see Selection {@link https://developer.mozilla.org/en-US/docs/Web/API/Selection}
+     * @public
+     */
+    export function getSelection() {
+        return doc.getSelection();
+    }
+        
+    /**
+     * Wrapper for document.createRange method
+     * @return {Selection}
+     * @see Range {@link https://developer.mozilla.org/en-US/docs/Web/API/Range}
+     * @public
+     */
+    export function createRange() {
+        return doc.createRange();
+    }
 
 }
 

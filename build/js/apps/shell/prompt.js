@@ -43,7 +43,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cursor__ = this.findOne(Config.cursorSel, true);
 
             this.__history__ = this.__createHistory__();
+            this.__selection__ = this.__getSelection__();
+            this.__range__ = this.__createRange__();
 
+            this.__isSel__ = false;
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
 
@@ -73,6 +76,24 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Returns a Selection object
+        * @returns {Selection}
+        * @private
+        */
+        Prompt.prototype.__getSelection__ = function () {
+            return Utils.getSelection();
+        };
+
+        /**
+        * Creates a Range object
+        * @returns {Range}
+        * @private
+        */
+        Prompt.prototype.__createRange__ = function () {
+            return Utils.createRange();
+        };
+
+        /**
         * Gets back the left and right (to the cursor) parts of the command
         * @returns {String[]}
         * @private
@@ -99,6 +120,34 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             tmp.innerHTML += sys.encode(right.substr(1));
 
             this.__input__.html(tmp.innerHTML);
+        };
+
+        /**
+        * Removes the cursor from the input
+        * @private
+        */
+        Prompt.prototype.__removeCursor__ = function () {
+            this.__input__.html(this.__sys__.encode(this.__cmd__));
+        };
+
+        /**
+        * Prepares for selection of a single character
+        * @private
+        */
+        Prompt.prototype.__charSelection__ = function () {
+            if (!this.__isSel__) {
+                this.__isSel__ = true;
+
+                this.__removeCursor__();
+                this.__selection__.removeAllRanges();
+
+                var cmdNode = this.__input__.first();
+
+                this.__range__.setStart(cmdNode, this.__curPos__);
+                this.__range__.setEnd(cmdNode, this.__curPos__);
+
+                this.__selection__.addRange(this.__range__);
+            }
         };
 
         /**
@@ -191,6 +240,56 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Selects a range of characters to the left
+        * @public
+        */
+        Prompt.prototype.selectLeftRange = function () {
+            while (this.selectLeftChar())
+                ;
+        };
+
+        /**
+        * Selects a range of characters to the right
+        * @public
+        */
+        Prompt.prototype.selectRightRange = function () {
+            while (this.selectRightChar())
+                ;
+        };
+
+        /**
+        * Selects characters from the left on
+        * @returns {Boolean} indicates the beginning of the cmd
+        * @public
+        */
+        Prompt.prototype.selectLeftChar = function () {
+            if (this.__curPos__ > 0) {
+                this.__charSelection__();
+                this.__selection__.modify('extend', 'backward', 'character');
+                this.__curPos__--;
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        /**
+        * Selects characters from the right on
+        * @returns {Boolean} indicates the end of the cmd
+        * @public
+        */
+        Prompt.prototype.selectRightChar = function () {
+            if (this.__curPos__ < this.__cmd__.length) {
+                this.__charSelection__();
+                this.__selection__.modify('extend', 'forward', 'character');
+                this.__curPos__++;
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+        /**
         * Clears the command line
         * @public
         */
@@ -218,7 +317,13 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
                             break;
                         case 'del':
                             // deletes first char from the right part
-                            parts[1] = part[0] + part.substr(2);
+                            if (part.length > 1) {
+                                parts[1] = part[0] + part.substr(2);
+                            } else {
+                                parts[1] = '';
+                                this.__cursor__.html('&nbsp;');
+                            }
+
                             break;
                     }
 
@@ -247,16 +352,27 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
 
         /**
         * Sends HOME/END keys
-        * @param {String} where (end|home);
+        * @param {String} where (end|home)
+        * @param {Boolean} shift
         * @public
         */
-        Prompt.prototype.move = function (where) {
+        Prompt.prototype.jump = function (where, shift) {
             switch (where) {
                 case 'home':
-                    this.moveCursorHome();
+                    if (shift) {
+                        this.selectLeftRange();
+                    } else {
+                        this.moveCursorHome();
+                    }
+
                     break;
                 case 'end':
-                    this.moveCursorEnd();
+                    if (shift) {
+                        this.selectRightRange();
+                    } else {
+                        this.moveCursorEnd();
+                    }
+
                     break;
             }
         };
@@ -264,9 +380,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         /**
         * Sends arrows
         * @param {String} which [up|down|left|right]
+        * @param {Boolean} shift
         * @public
         */
-        Prompt.prototype.arrow = function (which) {
+        Prompt.prototype.arrow = function (which, shift) {
             switch (which) {
                 case 'up':
                     this.showPreviousCmd();
@@ -277,10 +394,20 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
                     break;
 
                 case 'left':
-                    this.moveCursorBackward();
+                    if (shift) {
+                        this.selectLeftChar();
+                    } else {
+                        this.moveCursorBackward();
+                    }
+
                     break;
                 case 'right':
-                    this.moveCursorForward();
+                    if (shift) {
+                        this.selectRightChar();
+                    } else {
+                        this.moveCursorForward();
+                    }
+
                     break;
             }
         };
@@ -295,14 +422,22 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Copies selected text to the clipboard
+        * @public
+        */
+        Prompt.prototype.copy = function () {
+        };
+
+        /**
         * Gets triggered on keypress
         * @param {String} type
         * @param {String} key
+        * @param {Any} extra
         * @event
         */
-        Prompt.prototype.onKeypress = function (type, key) {
+        Prompt.prototype.onKeypress = function (type, key, extra) {
             if (Utils.isFunction(this[type])) {
-                this[type](key);
+                this[type](key, extra);
             }
         };
         return Prompt;

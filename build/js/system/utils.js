@@ -195,6 +195,28 @@ define(["require", "exports"], function(require, exports) {
             return pre + (new Date()).getTime() + pos;
         }
         Utils.uid = uid;
+
+        /**
+        * Wrapper for document.getSelection method
+        * @return {Selection}
+        * @see Selection {@link https://developer.mozilla.org/en-US/docs/Web/API/Selection}
+        * @public
+        */
+        function getSelection() {
+            return Utils.doc.getSelection();
+        }
+        Utils.getSelection = getSelection;
+
+        /**
+        * Wrapper for document.createRange method
+        * @return {Selection}
+        * @see Range {@link https://developer.mozilla.org/en-US/docs/Web/API/Range}
+        * @public
+        */
+        function createRange() {
+            return Utils.doc.createRange();
+        }
+        Utils.createRange = createRange;
     })(Utils || (Utils = {}));
 
     
