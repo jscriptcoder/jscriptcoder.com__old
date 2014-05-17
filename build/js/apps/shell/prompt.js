@@ -151,6 +151,52 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         };
 
         /**
+        * Deletes selected text
+        * @private
+        */
+        Prompt.prototype.__deleteSelection__ = function () {
+            var range = this.__selection__.getRangeAt(0), cmd = this.__cmd__, selected = cmd.slice(range.startOffset, range.endOffset);
+
+            // deletes the selected text from the command
+            this.__cmd__ = cmd.replace(selected, '');
+
+            // by setting the cursor position to the beginning of the selection
+            // we put everything back together including cursor in the right position
+            this.moveCursorTo(range.startOffset);
+        };
+
+        /**
+        * Deletes selected character
+        * @param {String} key [backspace|del]
+        * @private
+        */
+        Prompt.prototype.__deleteCharacter__ = function (key) {
+            var parts = this.__getCmdParts__(), part = key === 'backspace' ? parts[0] : parts[1];
+
+            if (part !== '') {
+                switch (key) {
+                    case 'backspace':
+                        // deletes last char from the left part
+                        parts[0] = part.slice(0, -1);
+                        this.__curPos__--;
+                        break;
+                    case 'del':
+                        // deletes first char from the right part
+                        if (part.length > 1) {
+                            parts[1] = part[0] + part.substr(2);
+                        } else {
+                            parts[1] = '';
+                            this.__cursor__.html('&nbsp;');
+                        }
+
+                        break;
+                }
+
+                this.__joinCmdAndInsert__(parts);
+            }
+        };
+
+        /**
         * Returns the string representation of the prompt
         * @returns {String}
         * @public
@@ -165,6 +211,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.insert = function (char) {
+            // if there is selection, delete first
+            if (this.__isSel__)
+                this.__deleteSelection__();
+
             var parts = this.__getCmdParts__();
 
             // adds a char to the left part
@@ -187,6 +237,9 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cursor__.html(curChar ? this.__sys__.encode(curChar) : '&nbsp;');
 
             this.__joinCmdAndInsert__(parts);
+
+            // let's always end selection time here
+            this.__isSel__ = false;
         };
 
         /**
@@ -246,6 +299,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         Prompt.prototype.selectLeftRange = function () {
             while (this.selectLeftChar())
                 ;
+            console.log('[Prompt#selectLeftRange] Range selected: "' + this.__selection__ + '"');
         };
 
         /**
@@ -255,6 +309,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         Prompt.prototype.selectRightRange = function () {
             while (this.selectRightChar())
                 ;
+            console.log('[Prompt#selectRightRange] Range selected: "' + this.__selection__ + '"');
         };
 
         /**
@@ -306,28 +361,10 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         */
         Prompt.prototype.delete = function (key) {
             if (this.__cmd__ !== '') {
-                var parts = this.__getCmdParts__(), part = key === 'backspace' ? parts[0] : parts[1];
-
-                if (part !== '') {
-                    switch (key) {
-                        case 'backspace':
-                            // deletes last char from the left part
-                            parts[0] = part.slice(0, -1);
-                            this.__curPos__--;
-                            break;
-                        case 'del':
-                            // deletes first char from the right part
-                            if (part.length > 1) {
-                                parts[1] = part[0] + part.substr(2);
-                            } else {
-                                parts[1] = '';
-                                this.__cursor__.html('&nbsp;');
-                            }
-
-                            break;
-                    }
-
-                    this.__joinCmdAndInsert__(parts);
+                if (this.__isSel__) {
+                    this.__deleteSelection__();
+                } else {
+                    this.__deleteCharacter__(key);
                 }
             }
         };
@@ -390,7 +427,6 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
                     break;
                 case 'down':
                     this.showNextCmd();
-                    break;
                     break;
 
                 case 'left':

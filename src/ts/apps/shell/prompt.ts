@@ -129,36 +129,28 @@ class Prompt extends DOMWrap {
      * @returns {String}
      * @public
      */
-    get cmd() {
-        return this.__cmd__;
-    }
+    get cmd() { return this.__cmd__ }
 
     /**
      * Instantiates a History object. Makes it easy to mock
      * @returns {History}
      * @private
      */
-    __createHistory__() {
-        return new History();
-    }
+    __createHistory__() { return new History() }
 
     /**
      * Returns a Selection object
      * @returns {Selection}
      * @private
      */
-    __getSelection__() {
-        return Utils.getSelection();
-    }
+    __getSelection__() { return Utils.getSelection() }
 
     /**
      * Creates a Range object
      * @returns {Range}
      * @private
      */
-    __createRange__() {
-        return Utils.createRange();
-    }
+    __createRange__() { return Utils.createRange() }
 
     /**
      * Gets back the left and right (to the cursor) parts of the command
@@ -224,6 +216,59 @@ class Prompt extends DOMWrap {
     }
 
     /**
+     * Deletes selected text
+     * @private
+     */
+    __deleteSelection__() {
+        var range = this.__selection__.getRangeAt(0), 
+            cmd = this.__cmd__,
+            selected = cmd.slice(range.startOffset, range.endOffset);
+        
+        // deletes the selected text from the command
+        this.__cmd__ = cmd.replace(selected, '');
+        
+        // by setting the cursor position to the beginning of the selection
+        // we put everything back together including cursor in the right position
+        this.moveCursorTo(range.startOffset);
+        
+    }
+
+    /**
+     * Deletes selected character
+     * @param {String} key [backspace|del]
+     * @private
+     */
+    __deleteCharacter__(key) {
+        
+        var parts = this.__getCmdParts__(), 
+            part = key === 'backspace' ? parts[0] : parts[1];
+
+        if (part !== '') { // do nothing if there is nothing to delete
+
+            switch(key) {
+                case 'backspace':
+                    // deletes last char from the left part
+                    parts[0] = part.slice(0, -1); this.__curPos__--;
+                    break;
+                case 'del':
+
+                    // deletes first char from the right part
+                    if (part.length > 1) {
+                        parts[1] = part[0] + part.substr(2);
+                    } else {
+                        parts[1] = ''; this.__cursor__.html('&nbsp;');
+                    }
+
+                    break;
+            }
+
+            this.__joinCmdAndInsert__(parts);
+
+        }
+        
+    }
+
+    /**
      * Returns the string representation of the prompt
      * @returns {String}
      * @public
@@ -236,6 +281,10 @@ class Prompt extends DOMWrap {
      * @public
      */
     insert(char) {
+        
+        // if there is selection, delete first
+        if (this.__isSel__) this.__deleteSelection__();
+        
         var parts = this.__getCmdParts__();
         
         // adds a char to the left part
@@ -260,6 +309,9 @@ class Prompt extends DOMWrap {
         this.__cursor__.html(curChar ? this.__sys__.encode(curChar) : '&nbsp;');
         
         this.__joinCmdAndInsert__(parts);
+        
+        // let's always end selection time here
+        this.__isSel__ = false;
         
     }
 
@@ -309,13 +361,19 @@ class Prompt extends DOMWrap {
      * Selects a range of characters to the left
      * @public
      */
-    selectLeftRange() { while(this.selectLeftChar()); }
+    selectLeftRange() {
+        while(this.selectLeftChar());
+        console.log('[Prompt#selectLeftRange] Range selected: "' + this.__selection__ + '"');
+    }
 
     /**
      * Selects a range of characters to the right
      * @public
      */
-    selectRightRange() { while (this.selectRightChar()); }
+    selectRightRange() {
+        while (this.selectRightChar());
+        console.log('[Prompt#selectRightRange] Range selected: "' + this.__selection__ + '"');
+    }
 
     /**
      * Selects characters from the left on
@@ -366,31 +424,9 @@ class Prompt extends DOMWrap {
      */
     delete(key) {
         if (this.__cmd__ !== '') {
-            var parts = this.__getCmdParts__(), 
-                part = key === 'backspace' ? parts[0] : parts[1];
             
-            if (part !== '') { // do nothing if there is nothing to delete
-
-                switch(key) {
-                    case 'backspace':
-                        // deletes last char from the left part
-                        parts[0] = part.slice(0, -1); this.__curPos__--;
-                        break;
-                    case 'del':
-                        
-                        // deletes first char from the right part
-                        if (part.length > 1) {
-                            parts[1] = part[0] + part.substr(2);
-                        } else {
-                            parts[1] = ''; this.__cursor__.html('&nbsp;');
-                        }
-                        
-                        break;
-                }
-                
-                this.__joinCmdAndInsert__(parts);
-                
-            }
+            if (this.__isSel__) { this.__deleteSelection__() }
+            else { this.__deleteCharacter__(key) }
 
         }
     }
@@ -445,8 +481,7 @@ class Prompt extends DOMWrap {
                 
             case 'up': this.showPreviousCmd(); break;
             case 'down': this.showNextCmd(); break;
-                break;
-                
+
             case 'left': 
                 
                 if (shift) { this.selectLeftChar() }
