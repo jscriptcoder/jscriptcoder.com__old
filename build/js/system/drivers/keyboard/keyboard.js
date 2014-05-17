@@ -66,7 +66,7 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
                     e.preventDefault();
                     console.log('ENTER');
 
-                    sys.interrupt('keypress', 'enter');
+                    sys.interrupt('keypress', 'enter', e.shiftKey);
 
                     break;
                 case 35:

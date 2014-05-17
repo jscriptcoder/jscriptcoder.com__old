@@ -14,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config', './history'], function(require, exports, Utils, DOMWrap, Config, History) {
+define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config', './history', './program'], function(require, exports, Utils, DOMWrap, Config, History, Program) {
     /**
     * Prompt user interface
     * @class Prompt
@@ -43,6 +43,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cursor__ = this.findOne(Config.cursorSel, true);
 
             this.__history__ = this.__createHistory__();
+            this.__program__ = this.__createProgram__();
             this.__selection__ = this.__getSelection__();
             this.__range__ = this.__createRange__();
 
@@ -51,6 +52,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__curPos__ = 0; // zero-base
 
             this.__sys__.listen('keypress', this.onKeypress.bind(this));
+            this.__sys__.listen('documentclick', this.onDocumentClick.bind(this));
         }
         Object.defineProperty(Prompt.prototype, "cmd", {
             /**
@@ -73,6 +75,15 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         */
         Prompt.prototype.__createHistory__ = function () {
             return new History();
+        };
+
+        /**
+        * Instantiates a Program object
+        * @returns {Program}
+        * @private
+        */
+        Prompt.prototype.__createProgram__ = function () {
+            return new Program();
         };
 
         /**
@@ -371,20 +382,58 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
 
         /**
         * Sends a tab
+        * @param {Number} [n = 1]
         * @public
         */
-        Prompt.prototype.tab = function () {
-            this.insert('\t');
+        Prompt.prototype.tab = function (n) {
+            if (typeof n === "undefined") { n = 1; }
+            while (n--)
+                this.insert('\t');
         };
 
         /**
         * Sends enter
+        * @param {Boolean} shift
         * @public
         */
-        Prompt.prototype.enter = function () {
-            this.__onEnter__(this.__cmd__);
-            this.__history__.add(this.__cmd__);
+        Prompt.prototype.enter = function (shift) {
+            var cmd = this.__cmd__, program = this.__program__, endProg;
+
+            // being a in a block (having at least one '{')
+            // or opening one, is the same as shift+enter
+            shift = shift || !!cmd.match(Program.BEGIN_BLK) || program.isBlock;
+
+            // now, if we're closing a block while being in
+            // the last one then it's like just pressing enter
+            shift = shift && !(program.isLastBlock && !!cmd.match(Program.END_BLK));
+
+            // ends the program is shift wasn't pressed
+            if (!shift && program.is) {
+                program.addLine(cmd); // add the last cmd
+                cmd = program.get();
+                program.clear();
+                endProg = true;
+            }
+
+            this.__onEnter__(cmd, shift);
+            this.__history__.add(cmd);
+
             this.clear();
+
+            if (shift) {
+                program.addLine(cmd);
+
+                // hides the symbol at the beginning of a program
+                if (program.numLines === 1)
+                    this.__symbol__.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+
+                // sends as many tabs as there are in the previous line
+                if (program.numTabs)
+                    this.tab(program.numTabs);
+            }
+
+            // returns the symbol at the end of the program
+            (endProg && this.__symbol__.html(Config.symbol));
         };
 
         /**
@@ -475,6 +524,14 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             if (Utils.isFunction(this[type])) {
                 this[type](key, extra);
             }
+        };
+
+        /**
+        * Gets triggered on document click
+        * @event
+        */
+        Prompt.prototype.onDocumentClick = function () {
+            this.moveCursorTo(this.__curPos__);
         };
         return Prompt;
     })(DOMWrap);

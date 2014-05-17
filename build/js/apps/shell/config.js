@@ -5,13 +5,19 @@
 */
 define(["require", "exports"], function(require, exports) {
     /**
+    * Symbol shown in the prompt: js>
+    * @type String
+    */
+    exports.symbol = 'js&gt;&nbsp;';
+
+    /**
     * @type String
     */
     exports.template = [
         '<div id="shell" class="shell">',
         '<div class="output"></div>',
         '<div class="prompt">',
-        '<span class="symbol">js&gt;&nbsp;</span><span class="input"><span class="cursor blink">&nbsp;</span></span>',
+        '<span class="symbol">' + exports.symbol + '</span><span class="input"><span class="cursor blink">&nbsp;</span></span>',
         '</div>',
         '</div>'
     ].join('');

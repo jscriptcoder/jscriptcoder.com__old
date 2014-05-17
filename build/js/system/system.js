@@ -3,6 +3,7 @@
 * @requires system/interrupts
 * @requires system/drivers/graphic/graphic
 * @requires system/drivers/keyboard/keyboard
+* @requires system/utils
 * @exports System
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
@@ -12,7 +13,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard'], function(require, exports, Interrups, Graphic, Keyboard) {
+define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './utils'], function(require, exports, Interrups, Graphic, Keyboard, Utils) {
     /**
     * Contains the System API and acts as a mediator between drivers and apps
     * @class System
@@ -32,6 +33,8 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
 
             this.__graphic__ = this.__createGraphicDriver__();
             this.__keyboard__ = this.__createKeyboardDriver__();
+
+            this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
         }
         /**
         * Instantiates a Graphic driver. Makes it easy to mock
@@ -49,6 +52,15 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
         */
         System.prototype.__createKeyboardDriver__ = function () {
             return new Keyboard(this);
+        };
+
+        /**
+        * Gets triggered when the user clicks on the document
+        * @param {Event} e
+        * @event
+        */
+        System.prototype.__onDocumentClick__ = function (e) {
+            this.interrupt('documentclick', e);
         };
 
         Object.defineProperty(System.prototype, "graphic", {

@@ -3,6 +3,7 @@
  * @requires system/interrupts
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
+ * @requires system/utils
  * @exports System
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
@@ -10,6 +11,7 @@
 import Interrups = require('./interrupts');
 import Graphic = require('./drivers/graphic/graphic');
 import Keyboard = require('./drivers/keyboard/keyboard');
+import Utils = require('./utils');
 
 /**
  * Contains the System API and acts as a mediator between drivers and apps
@@ -43,6 +45,8 @@ class System extends Interrups {
     
         this.__graphic__ = this.__createGraphicDriver__();
         this.__keyboard__ = this.__createKeyboardDriver__();
+    
+        this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
     }
 
     /**
@@ -50,36 +54,35 @@ class System extends Interrups {
      * @returns {Graphic}
      * @private
      */
-    __createGraphicDriver__() {
-        return new Graphic(this);
-    }
+    __createGraphicDriver__() { return new Graphic(this) }
 
     /**
      * Instantiates a Keyboard driver. Makes it easy to mock
      * @returns {Keyboard}
      * @private
      */
-    __createKeyboardDriver__() {
-        return new Keyboard(this);
-    }
+    __createKeyboardDriver__() { return new Keyboard(this) }
+
+    /**
+     * Gets triggered when the user clicks on the document
+     * @param {Event} e
+     * @event
+     */
+    __onDocumentClick__(e) { this.interrupt('documentclick', e) }
 
     /**
      * graphic getter
      * @returns {Graphic}
      * @public
      */
-    get graphic() {
-        return this.__graphic__;
-    }
+    get graphic() { return this.__graphic__ }
 
     /**
      * keyboard getter
      * @returns {Keyboard}
      * @public
      */
-    get keyboard() {
-        return this.__keyboard__;
-    }
+    get keyboard() { return this.__keyboard__ }
 
     /**
      * Encodes a string to be displayed properly

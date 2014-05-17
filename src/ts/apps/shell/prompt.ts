@@ -13,6 +13,7 @@ import Utils = require('../../system/utils');
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
 import Config = require('./config');
 import History = require('./history');
+import Program = require('./program');
 
 /**
  * Prompt user interface
@@ -56,6 +57,12 @@ class Prompt extends DOMWrap {
      * @private
      */
     __history__;
+    
+    /**
+     * @type Program
+     * @private
+     */
+    __program__;
     
     /**
      * @type Selection
@@ -113,14 +120,16 @@ class Prompt extends DOMWrap {
         this.__cursor__ = this.findOne(Config.cursorSel, true);
     
         this.__history__ = this.__createHistory__();
+        this.__program__ = this.__createProgram__();
         this.__selection__ = this.__getSelection__();
         this.__range__ = this.__createRange__();
-    
+        
         this.__isSel__ = false;
         this.__cmd__ = '';
         this.__curPos__ = 0; // zero-base
     
         this.__sys__.listen('keypress', this.onKeypress.bind(this));
+        this.__sys__.listen('documentclick', this.onDocumentClick.bind(this));
     }
 
     /**
@@ -137,6 +146,13 @@ class Prompt extends DOMWrap {
      * @private
      */
     __createHistory__() { return new History() }
+
+    /**
+     * Instantiates a Program object
+     * @returns {Program}
+     * @private
+     */
+    __createProgram__() { return new Program() }
 
     /**
      * Returns a Selection object
@@ -433,18 +449,54 @@ class Prompt extends DOMWrap {
 
     /**
      * Sends a tab
+     * @param {Number} [n = 1]
      * @public
      */
-    tab() { this.insert('\t') }
+    tab(n = 1) { while(n--) this.insert('\t') }
 
     /**
      * Sends enter
+     * @param {Boolean} shift
      * @public
      */
-    enter() {
-        this.__onEnter__(this.__cmd__);
-        this.__history__.add(this.__cmd__);
+    enter(shift) {
+        var cmd = this.__cmd__, 
+            program = this.__program__, 
+            endProg;
+
+        // being a in a block (having at least one '{') 
+        // or opening one, is the same as shift+enter
+        shift = shift || !!cmd.match(Program.BEGIN_BLK) || program.isBlock;
+        
+        // now, if we're closing a block while being in 
+        // the last one then it's like just pressing enter
+        shift = shift && !(program.isLastBlock && !!cmd.match(Program.END_BLK));
+        
+        // ends the program is shift wasn't pressed
+        if (!shift && program.is) {
+            program.addLine(cmd); // add the last cmd
+            cmd = program.get();
+            program.clear();
+            endProg = true;
+        }
+        
+        this.__onEnter__(cmd, shift);
+        this.__history__.add(cmd);
+        
         this.clear();
+        
+        if (shift) {
+            program.addLine(cmd);
+            
+            // hides the symbol at the beginning of a program
+            if (program.numLines === 1) this.__symbol__.html('&nbsp;&nbsp;&nbsp;&nbsp;');
+
+            // sends as many tabs as there are in the previous line
+            if (program.numTabs) this.tab(program.numTabs);
+        }
+        
+        // returns the symbol at the end of the program
+        (endProg && this.__symbol__.html(Config.symbol));
     }
 
     /**
@@ -523,6 +575,12 @@ class Prompt extends DOMWrap {
             this[type](key, extra);
         }
     }
+
+    /**
+     * Gets triggered on document click
+     * @event
+     */
+    onDocumentClick() { this.moveCursorTo(this.__curPos__) }
 }
 
 export = Prompt;

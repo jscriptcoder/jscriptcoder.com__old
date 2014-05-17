@@ -110,9 +110,10 @@ class Shell extends DOMWrap {
     /**
      * Gets trigger when the user sends the js command by pressing enter
      * @param {String} cmd
+     * @param {Boolean} shift
      * @event
      */
-    onCommand(cmd) {
+    onCommand(cmd, shift) {
         console.log('[Shell#onCommand] command:', cmd);
         this.__output__.print(this.__prompt__.toString());
     }

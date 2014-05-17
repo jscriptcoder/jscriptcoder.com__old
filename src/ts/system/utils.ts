@@ -198,6 +198,17 @@ module Utils {
     export function createRange() {
         return doc.createRange();
     }
+        
+    /**
+     * Wrapper for RegExp instance
+     * @param {String} pattern
+     * @param {String} [mods]
+     * @return {RegExp}
+     * @public
+     */
+    export function createRegExp(pattern, mods = '') {
+        return new RegExp(pattern, mods);
+    }
 
 }
 

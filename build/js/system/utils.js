@@ -217,6 +217,19 @@ define(["require", "exports"], function(require, exports) {
             return Utils.doc.createRange();
         }
         Utils.createRange = createRange;
+
+        /**
+        * Wrapper for RegExp instance
+        * @param {String} pattern
+        * @param {String} [mods]
+        * @return {RegExp}
+        * @public
+        */
+        function createRegExp(pattern, mods) {
+            if (typeof mods === "undefined") { mods = ''; }
+            return new RegExp(pattern, mods);
+        }
+        Utils.createRegExp = createRegExp;
     })(Utils || (Utils = {}));
 
     

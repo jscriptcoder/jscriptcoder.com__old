@@ -151,6 +151,16 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         DOMWrap.prototype.first = function () {
             return this.__el__.firstChild;
         };
+
+        DOMWrap.prototype.visible = function (is) {
+            if (typeof is === "undefined") { is = true; }
+            this.__el__.style.visibility = is ? 'visible' : 'hidden';
+        };
+
+        DOMWrap.prototype.display = function (is) {
+            if (typeof is === "undefined") { is = true; }
+            this.__el__.style.display = is ? 'block' : 'none';
+        };
         DOMWrap.rquickExpr = /^(?:#([\w-]+)|(\w+)|\.([\w-]+))$/;
         return DOMWrap;
     })();

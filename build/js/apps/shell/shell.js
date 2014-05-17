@@ -102,9 +102,10 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         /**
         * Gets trigger when the user sends the js command by pressing enter
         * @param {String} cmd
+        * @param {Boolean} shift
         * @event
         */
-        Shell.prototype.onCommand = function (cmd) {
+        Shell.prototype.onCommand = function (cmd, shift) {
             console.log('[Shell#onCommand] command:', cmd);
             this.__output__.print(this.__prompt__.toString());
         };

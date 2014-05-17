@@ -95,7 +95,7 @@ class Keyboard {
                 e.preventDefault();
                 console.log('ENTER');
                 
-                sys.interrupt('keypress', 'enter');
+                sys.interrupt('keypress', 'enter', e.shiftKey);
                 
                 break;
             case 35: // END

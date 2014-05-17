@@ -149,6 +149,10 @@ class DOMWrap {
      */
     first() { return this.__el__.firstChild }
 
+    visible(is = true) { this.__el__.style.visibility = is ? 'visible' : 'hidden' }
+
+    display(is = true) { this.__el__.style.display = is ? 'block' : 'none' }
+
 }
 
 export = DOMWrap;
