@@ -67,4 +67,9 @@ define(["require", "exports"], function(require, exports) {
     * @type Number
     */
     exports.historyLimit = 50;
+
+    /**
+    * @type String
+    */
+    exports.tab = '    ';
 });

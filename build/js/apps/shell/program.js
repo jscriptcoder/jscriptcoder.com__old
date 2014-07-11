@@ -2,10 +2,11 @@
 * Program lines
 * @module apps/shell/program
 * @requires system/utils
+* @requires apps/shell/config
 * @exports Program
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", '../../system/utils'], function(require, exports, Utils) {
+define(["require", "exports", '../../system/utils', './config'], function(require, exports, Utils, Config) {
     /**
     * Keeps track of lines of program. Used when writing blocks {}
     * or using shift+enter
@@ -115,14 +116,27 @@ define(["require", "exports", '../../system/utils'], function(require, exports, 
         };
 
         /**
+        * Helper method that returns the number of tabs at the beginning of the line
+        * @returns {Number[]}
+        * @private
+        */
+        Program.prototype.__getNumInitTabs__ = function (line) {
+            var initSpaces = line.match(/^(\s+)/g);
+            if (initSpaces)
+                return initSpaces[0].match(Program.TABS_RE);
+            else
+                return null;
+        };
+
+        /**
         * Adds a line to the program
         * @param {String} line
         * @public
         */
         Program.prototype.addLine = function (line) {
-            var tabMatches = line.match(Program.TABS_RE);
+            var tabMatches = this.__getNumInitTabs__(line);
 
-            if (line.match(Program.BEGIN_BLK)) {
+            if (line.match(Program.BEGIN_BLK_RE)) {
                 this.__brackets__.push(true);
                 this.__tabs__ = (tabMatches ? tabMatches.length : 0) + 1;
             } else {
@@ -131,7 +145,7 @@ define(["require", "exports", '../../system/utils'], function(require, exports, 
 
             this.__lines__.push(line);
 
-            if (line.match(Program.END_BLK))
+            if (line.match(Program.END_BLK_RE))
                 this.__brackets__.pop();
         };
 
@@ -144,11 +158,13 @@ define(["require", "exports", '../../system/utils'], function(require, exports, 
             this.__brackets__.length = 0;
             this.__tabs__ = 0;
         };
-        Program.TABS_RE = Utils.createRegExp('\t', 'g');
+        Program.INIT_SPACES_RE = Utils.createRegExp('^\\s+');
 
-        Program.BEGIN_BLK = Utils.createRegExp('\{$');
+        Program.TABS_RE = Utils.createRegExp('\\s{' + Config.tab.length + '}', 'g');
 
-        Program.END_BLK = Utils.createRegExp('\}$');
+        Program.BEGIN_BLK_RE = Utils.createRegExp('\\{$');
+
+        Program.END_BLK_RE = Utils.createRegExp('\\}$');
         return Program;
     })();
 

@@ -67,3 +67,8 @@ export var cursorSel = '.cursor';
  * @type Number
  */
 export var historyLimit = 50;
+
+/**
+ * @type String
+ */
+export var tab = '    ';

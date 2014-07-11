@@ -230,7 +230,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
 
             // adds a char to the left part
             parts[0] += char;
-            this.__curPos__++;
+            this.__curPos__ += char.length;
 
             this.__joinCmdAndInsert__(parts);
         };
@@ -388,7 +388,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         Prompt.prototype.tab = function (n) {
             if (typeof n === "undefined") { n = 1; }
             while (n--)
-                this.insert('\t');
+                this.insert(Config.tab);
         };
 
         /**
@@ -401,11 +401,11 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
 
             // being a in a block (having at least one '{')
             // or opening one, is the same as shift+enter
-            shift = shift || !!cmd.match(Program.BEGIN_BLK) || program.isBlock;
+            shift = shift || !!cmd.match(Program.BEGIN_BLK_RE) || program.isBlock;
 
             // now, if we're closing a block while being in
             // the last one then it's like just pressing enter
-            shift = shift && !(program.isLastBlock && !!cmd.match(Program.END_BLK));
+            shift = shift && !(program.isLastBlock && !!cmd.match(Program.END_BLK_RE));
 
             // ends the program is shift wasn't pressed
             if (!shift && program.is) {

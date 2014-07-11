@@ -2,11 +2,13 @@
  * Program lines
  * @module apps/shell/program
  * @requires system/utils
+ * @requires apps/shell/config
  * @exports Program
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('../../system/utils');
+import Config = require('./config');
 
 /**
  * Keeps track of lines of program. Used when writing blocks {} 
@@ -20,21 +22,28 @@ class Program {
      * @type RegExp
      * @static
      */
-    static TABS_RE = Utils.createRegExp('\t', 'g');
+    static INIT_SPACES_RE = Utils.createRegExp('^\\s+');
+    
+    /**
+     * Matches tabs
+     * @type RegExp
+     * @static
+     */
+    static TABS_RE = Utils.createRegExp('\\s{' + Config.tab.length + '}', 'g');
     
     /**
      * Matches open bracket
      * @type RegExp
      * @static
      */
-    static BEGIN_BLK = Utils.createRegExp('\{$');
+    static BEGIN_BLK_RE = Utils.createRegExp('\\{$');
     
     /**
      * Matches closing bracket
      * @type RegExp
      * @static
      */
-    static END_BLK = Utils.createRegExp('\}$');
+    static END_BLK_RE = Utils.createRegExp('\\}$');
     
     /**
      * @type String[]
@@ -111,15 +120,26 @@ class Program {
     get() { return this.__lines__.join('').replace(Program.TABS_RE, '') }
 
     /**
+     * Helper method that returns the number of tabs at the beginning of the line
+     * @returns {Number[]}
+     * @private
+     */
+	__getNumInitTabs__(line) {
+        var initSpaces = line.match(/^(\s+)/g);
+        if (initSpaces) return initSpaces[0].match(Program.TABS_RE);
+        else return null;
+    }
+
+    /**
      * Adds a line to the program
      * @param {String} line
      * @public
      */
     addLine(line) {
         
-        var tabMatches = line.match(Program.TABS_RE);
+        var tabMatches = this.__getNumInitTabs__(line);
 
-        if (line.match(Program.BEGIN_BLK)) {
+        if (line.match(Program.BEGIN_BLK_RE)) {
             this.__brackets__.push(true);
             this.__tabs__ = (tabMatches ? tabMatches.length : 0) + 1;
         } else {
@@ -128,7 +148,7 @@ class Program {
         
         this.__lines__.push(line);
         
-        if (line.match(Program.END_BLK)) this.__brackets__.pop()
+        if (line.match(Program.END_BLK_RE)) this.__brackets__.pop();
     }
 
     /**
