@@ -124,7 +124,7 @@ class Program {
      * @returns {Number[]}
      * @private
      */
-	__getNumInitTabs__(line) {
+	__getTabMatches__(line) {
         var initSpaces = line.match(/^(\s+)/g);
         if (initSpaces) return initSpaces[0].match(Program.TABS_RE);
         else return null;
@@ -137,18 +137,24 @@ class Program {
      */
     addLine(line) {
         
-        var tabMatches = this.__getNumInitTabs__(line);
+        //var tabMatches = this.__getTabMatches__(line);
 
         if (line.match(Program.BEGIN_BLK_RE)) {
+            
             this.__brackets__.push(true);
-            this.__tabs__ = (tabMatches ? tabMatches.length : 0) + 1;
+            //this.__tabs__ = = (tabMatches ? tabMatches.length : 0) + 1;
+            this.__tabs__++;
+            
         } else {
-            this.__tabs__ = tabMatches ? tabMatches.length : 0;
+            //this.__tabs__ = tabMatches ? tabMatches.length : 0;
         }
         
         this.__lines__.push(line);
         
-        if (line.match(Program.END_BLK_RE)) this.__brackets__.pop();
+        if (line.match(Program.END_BLK_RE)) {
+            this.__brackets__.pop();
+            this.__tabs__--;
+        }
     }
 
     /**

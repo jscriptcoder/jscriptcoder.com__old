@@ -399,7 +399,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         Prompt.prototype.enter = function (shift) {
             var cmd = this.__cmd__, program = this.__program__, endProg;
 
-            // being a in a block (having at least one '{')
+            // being in a block (having at least one '{')
             // or opening one, is the same as shift+enter
             shift = shift || !!cmd.match(Program.BEGIN_BLK_RE) || program.isBlock;
 
