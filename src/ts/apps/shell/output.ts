@@ -34,7 +34,8 @@ class Output extends DOMWrap {
         super(el);
 
         this.__sys__ = sys;
-        this.__sys__.setOutput(this.el);
+        
+    	sys.graphic.output = this.el;
     }
 
     /**
@@ -43,7 +44,7 @@ class Output extends DOMWrap {
      * @public
      */
     print(message) {
-        this.__sys__.output(message);
+        this.__sys__.interrupt('output', message);
     }
 
 }

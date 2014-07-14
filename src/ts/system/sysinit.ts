@@ -35,7 +35,7 @@ module SysInit {
         
         console.log('[SysInit.run] Clearing screen');
         
-        system.clearScreen();
+        system.interrupt('clearscreen');
         
         // runs the shell
         

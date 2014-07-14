@@ -32,7 +32,8 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
             _super.call(this, el);
 
             this.__sys__ = sys;
-            this.__sys__.setOutput(this.el);
+
+            sys.graphic.output = this.el;
         }
         /**
         * Sends a message to the output
@@ -40,7 +41,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
         * @public
         */
         Output.prototype.print = function (message) {
-            this.__sys__.output(message);
+            this.__sys__.interrupt('output', message);
         };
         return Output;
     })(DOMWrap);

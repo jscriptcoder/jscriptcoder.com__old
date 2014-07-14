@@ -34,8 +34,16 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
             this.__graphic__ = this.__createGraphicDriver__();
             this.__keyboard__ = this.__createKeyboardDriver__();
 
-            this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
+            this.__listen__();
         }
+        /**
+        * Installs necessary interruption-listeners
+        * @private
+        */
+        System.prototype.__listen__ = function () {
+            this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
+        };
+
         /**
         * Instantiates a Graphic driver. Makes it easy to mock
         * @returns {Graphic}
@@ -88,66 +96,6 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
             enumerable: true,
             configurable: true
         });
-
-        /**
-        * Encodes a string to be displayed properly
-        * @param {String} str
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.encode = function (str) {
-            throw Error('Implemented by the graphic card');
-        };
-
-        /**
-        * Creates a new GUI
-        * @param {String} gui
-        * @param {Boolean} attach
-        * @returns {HTMLElement}
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.createGUI = function (gui, attach) {
-            throw Error('Implemented by the graphic card');
-        };
-
-        /**
-        * Empties only the output
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.clearOutput = function () {
-            throw Error('Implemented by the graphic card');
-        };
-
-        /**
-        * Clears the whole screen
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.clearScreen = function () {
-            throw Error('Implemented by the graphic card');
-        };
-
-        /**
-        * Sets the output element for content display
-        * @param {HTMLElement} el
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.setOutput = function (el) {
-            throw Error('Implemented by the graphic card');
-        };
-
-        /**
-        * Sends a string to the output
-        * @param {String} msg
-        * @throws {Error} Implemented by the graphic card
-        * @public
-        */
-        System.prototype.output = function (msg) {
-            throw Error('Implemented by the graphic card');
-        };
         return System;
     })(Interrups);
 

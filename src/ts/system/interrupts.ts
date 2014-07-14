@@ -47,6 +47,8 @@ class Interrupts {
      * @public
      */
     listen(type, handler, context = null) {
+        console.log('[Interrupts#listen] type:', type);
+        
         if (Utils.isHTMLElement(context)) {
             // for document and other HTMLElement events
             context.addEventListener(type, handler);
@@ -70,6 +72,8 @@ class Interrupts {
      * @public
      */
     interrupt(type, ...args) {
+        console.log('[Interrupts#interrupt] type:', type);
+        
         var ints = this.__table__.get(type);
         if (Utils.isArray(ints)) {
             ints.forEach((int) => int.handler.apply(int.context, args));
@@ -84,6 +88,8 @@ class Interrupts {
      * @public
      */
     unlisten(type, handler?, context?) {
+		console.log('[Interrupts#unlisten] type:', type);
+             
         var ints = this.__table__.get(type), idx;
              
         if (Utils.isHTMLElement(context)) {

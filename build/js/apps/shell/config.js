@@ -32,8 +32,8 @@ define(["require", "exports"], function(require, exports) {
         ' *',
         ' * <strong>@author</strong> Francisco Ramos <<a href="mailto:fran@jscriptcoder.com">fran@jscriptcoder.com</a>>',
         ' * <strong>@version</strong> 0.1.0',
-        ' * <strong>@see</strong> <a href="https://github.com/jscriptcoder/jscriptcoder.com">GitHub</a>',
-        ' * <strong>@see</strong> <a href="https://codio.com/jscriptcoder/jscriptcoder-com/">Codio.com</a>',
+        ' * <strong>@see</strong> <a href="https://github.com/jscriptcoder/jscriptcoder.com" target="_blank">GitHub</a>',
+        ' * <strong>@see</strong> <a href="https://codio.com/jscriptcoder/jscriptcoder-com/" target="_blank">Codio.com</a>',
         ' */',
         ' '
     ];

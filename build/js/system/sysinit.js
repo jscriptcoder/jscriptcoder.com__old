@@ -31,7 +31,7 @@ define(["require", "exports", './system', '../apps/shell/shell'], function(requi
 
             console.log('[SysInit.run] Clearing screen');
 
-            system.clearScreen();
+            system.interrupt('clearscreen');
 
             // runs the shell
             shell = new Shell(system);

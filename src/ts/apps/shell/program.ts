@@ -18,7 +18,7 @@ import Config = require('./config');
 class Program {
     
     /**
-     * Matches tabs
+     * Matches initial spaces
      * @type RegExp
      * @static
      */
@@ -97,6 +97,18 @@ class Program {
     get numTabs() { return this.__tabs__; }
 
     /**
+     * Returns tabs-spaces
+     * @readonly
+     * @returns {String}
+     * @public
+     */
+    get strTabs() {
+        var tabs = '';
+        for(var i = this.__tabs__; i > 0; i--) tabs += Config.tab;
+        return tabs;
+    }
+
+    /**
      * numLines getter
      * @readonly
      * @returns {Number}
@@ -117,17 +129,9 @@ class Program {
      * @returns {String}
      * @public
      */
-    get() { return this.__lines__.join('').replace(Program.TABS_RE, '') }
-
-    /**
-     * Helper method that returns the number of tabs at the beginning of the line
-     * @returns {Number[]}
-     * @private
-     */
-	__getTabMatches__(line) {
-        var initSpaces = line.match(/^(\s+)/g);
-        if (initSpaces) return initSpaces[0].match(Program.TABS_RE);
-        else return null;
+    get() {
+        //return this.__lines__.join('').replace(Program.TABS_RE, '')
+        return this.__lines__.join('');
     }
 
     /**
@@ -136,21 +140,16 @@ class Program {
      * @public
      */
     addLine(line) {
-        
-        //var tabMatches = this.__getTabMatches__(line);
 
+        // beginning of a block
         if (line.match(Program.BEGIN_BLK_RE)) {
-            
             this.__brackets__.push(true);
-            //this.__tabs__ = = (tabMatches ? tabMatches.length : 0) + 1;
             this.__tabs__++;
-            
-        } else {
-            //this.__tabs__ = tabMatches ? tabMatches.length : 0;
         }
         
         this.__lines__.push(line);
         
+        // end of a block
         if (line.match(Program.END_BLK_RE)) {
             this.__brackets__.pop();
             this.__tabs__--;

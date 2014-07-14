@@ -51,8 +51,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.__cmd__ = '';
             this.__curPos__ = 0; // zero-base
 
-            this.__sys__.listen('keypress', this.onKeypress.bind(this));
-            this.__sys__.listen('documentclick', this.onDocumentClick.bind(this));
+            this.__listen__(sys);
         }
         Object.defineProperty(Prompt.prototype, "cmd", {
             /**
@@ -67,6 +66,16 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             enumerable: true,
             configurable: true
         });
+
+        /**
+        * Installs necessary interruption-listeners
+        * @param {System} sys
+        * @private
+        */
+        Prompt.prototype.__listen__ = function (sys) {
+            sys.listen('keypress', this.onKeypress.bind(this));
+            sys.listen('documentclick', this.onDocumentClick.bind(this));
+        };
 
         /**
         * Instantiates a History object. Makes it easy to mock
@@ -122,13 +131,13 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @private
         */
         Prompt.prototype.__joinCmdAndInsert__ = function (parts) {
-            var left = parts[0], right = parts[1], sys = this.__sys__, tmp = Utils.createElement('div');
+            var left = parts[0], right = parts[1], graphic = this.__sys__.graphic, tmp = Utils.createElement('div');
 
             this.__cmd__ = left + right;
 
-            tmp.innerHTML = sys.encode(left);
+            tmp.innerHTML = graphic.htmlEncode(left);
             tmp.appendChild(this.__cursor__.el);
-            tmp.innerHTML += sys.encode(right.substr(1));
+            tmp.innerHTML += graphic.htmlEncode(right.substr(1));
 
             this.__input__.html(tmp.innerHTML);
         };
@@ -138,7 +147,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @private
         */
         Prompt.prototype.__removeCursor__ = function () {
-            this.__input__.html(this.__sys__.encode(this.__cmd__));
+            this.__input__.html(this.__sys__.graphic.htmlEncode(this.__cmd__));
         };
 
         /**
@@ -245,7 +254,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
 
             var parts = this.__getCmdParts__(), curChar = parts[1].charAt(0);
 
-            this.__cursor__.html(curChar ? this.__sys__.encode(curChar) : '&nbsp;');
+            this.__cursor__.html(curChar ? this.__sys__.graphic.htmlEncode(curChar) : '&nbsp;');
 
             this.__joinCmdAndInsert__(parts);
 
@@ -290,7 +299,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.showPreviousCmd = function () {
-            this.__cmd__ = this.__history__.previous();
+            this.__cmd__ = this.__program__.strTabs + this.__history__.previous();
             this.moveCursorEnd();
         };
 
@@ -299,7 +308,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.showNextCmd = function () {
-            this.__cmd__ = this.__history__.next();
+            this.__cmd__ = this.__program__.strTabs + this.__history__.next();
             this.moveCursorEnd();
         };
 
@@ -397,21 +406,21 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.enter = function (shift) {
-            var cmd = this.__cmd__, program = this.__program__, endProg;
+            var cmd = this.__cmd__.replace(Program.INIT_SPACES_RE, ''), prog = this.__program__, endProg;
 
             // being in a block (having at least one '{')
             // or opening one, is the same as shift+enter
-            shift = shift || !!cmd.match(Program.BEGIN_BLK_RE) || program.isBlock;
+            shift = shift || !!cmd.match(Program.BEGIN_BLK_RE) || prog.isBlock;
 
             // now, if we're closing a block while being in
             // the last one then it's like just pressing enter
-            shift = shift && !(program.isLastBlock && !!cmd.match(Program.END_BLK_RE));
+            shift = shift && !(prog.isLastBlock && !!cmd.match(Program.END_BLK_RE));
 
             // ends the program is shift wasn't pressed
-            if (!shift && program.is) {
-                program.addLine(cmd); // add the last cmd
-                cmd = program.get();
-                program.clear();
+            if (!shift && prog.is) {
+                prog.addLine(cmd); // add the last cmd
+                cmd = prog.get();
+                prog.clear();
                 endProg = true;
             }
 
@@ -421,15 +430,15 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
             this.clear();
 
             if (shift) {
-                program.addLine(cmd);
+                prog.addLine(cmd);
 
                 // hides the symbol at the beginning of a program
-                if (program.numLines === 1)
+                if (prog.numLines === 1)
                     this.__symbol__.html('&nbsp;&nbsp;&nbsp;&nbsp;');
 
                 // sends as many tabs as there are in the previous line
-                if (program.numTabs)
-                    this.tab(program.numTabs);
+                if (prog.numTabs)
+                    this.tab(prog.numTabs);
             }
 
             // returns the symbol at the end of the program

@@ -78,6 +78,23 @@ define(["require", "exports", '../../system/utils', './config'], function(requir
             configurable: true
         });
 
+        Object.defineProperty(Program.prototype, "strTabs", {
+            /**
+            * Returns tabs-spaces
+            * @readonly
+            * @returns {String}
+            * @public
+            */
+            get: function () {
+                var tabs = '';
+                for (var i = this.__tabs__; i > 0; i--)
+                    tabs += Config.tab;
+                return tabs;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         Object.defineProperty(Program.prototype, "numLines", {
             /**
             * numLines getter
@@ -112,20 +129,8 @@ define(["require", "exports", '../../system/utils', './config'], function(requir
         * @public
         */
         Program.prototype.get = function () {
-            return this.__lines__.join('').replace(Program.TABS_RE, '');
-        };
-
-        /**
-        * Helper method that returns the number of tabs at the beginning of the line
-        * @returns {Number[]}
-        * @private
-        */
-        Program.prototype.__getTabMatches__ = function (line) {
-            var initSpaces = line.match(/^(\s+)/g);
-            if (initSpaces)
-                return initSpaces[0].match(Program.TABS_RE);
-            else
-                return null;
+            //return this.__lines__.join('').replace(Program.TABS_RE, '')
+            return this.__lines__.join('');
         };
 
         /**
@@ -134,18 +139,15 @@ define(["require", "exports", '../../system/utils', './config'], function(requir
         * @public
         */
         Program.prototype.addLine = function (line) {
-            //var tabMatches = this.__getTabMatches__(line);
+            // beginning of a block
             if (line.match(Program.BEGIN_BLK_RE)) {
                 this.__brackets__.push(true);
-
-                //this.__tabs__ = = (tabMatches ? tabMatches.length : 0) + 1;
                 this.__tabs__++;
-            } else {
-                //this.__tabs__ = tabMatches ? tabMatches.length : 0;
             }
 
             this.__lines__.push(line);
 
+            // end of a block
             if (line.match(Program.END_BLK_RE)) {
                 this.__brackets__.pop();
                 this.__tabs__--;

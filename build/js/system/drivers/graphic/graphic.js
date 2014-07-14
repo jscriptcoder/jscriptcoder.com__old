@@ -36,8 +36,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
             this.__sys__ = sys;
             this.__output__ = this.el;
-
-            this.__setSysAPI__();
+            this.__listen__(sys);
         }
         Object.defineProperty(Graphic.prototype, "output", {
             /**
@@ -67,31 +66,21 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
 
 
         /**
-        * Implements general methods to be used in the system
+        * Installs necessary interruption-listeners
+        * @param {System} sys
         * @private
         */
-        Graphic.prototype.__setSysAPI__ = function () {
+        Graphic.prototype.__listen__ = function (sys) {
             var _this = this;
-            var sys = this.__sys__;
-
-            sys.encode = function (str) {
-                return _this.htmlEncode(str);
-            };
-            sys.createGUI = function (gui, attach) {
-                return attach ? _this.appendHTMLElement(gui) : _this.createHTMLElement(gui);
-            };
-            sys.clearOutput = function () {
-                return _this.empty();
-            };
-            sys.clearScreen = function () {
+            sys.listen('clearscreen', function () {
                 return _this.empty(true);
-            };
-            sys.setOutput = function (el) {
-                return _this.__output__ = el;
-            };
-            sys.output = function (msg) {
+            });
+            sys.listen('clearoutput', function () {
+                return _this.empty();
+            });
+            sys.listen('output', function (msg) {
                 return _this.print(msg);
-            };
+            });
         };
 
         /**
@@ -133,6 +122,17 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         };
 
         /**
+        * Creates the GUI, and attach it if indicated, based on a DOM element
+        * @param {String|HTMLElement} gui
+        * @param Boolean} attach
+        * @returns {HTMLElement}
+        * @public
+        */
+        Graphic.prototype.createGUI = function (gui, attach) {
+            return attach ? this.appendHTMLElement(gui) : this.createHTMLElement(gui);
+        };
+
+        /**
         * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
         * @param {String} selector
         * @param {HTMLElement} contextEl
@@ -162,7 +162,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         Graphic.prototype.htmlEncode = function (str) {
             var el = Utils.createElement('div');
             el.innerText = el.textContent = str;
-            return el.innerHTML.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/\s/g, '&nbsp;');
+            return el.innerHTML.replace(Graphic.TABS_RE, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(Graphic.SPACES_RE, '&nbsp;');
         };
 
         /**
@@ -179,10 +179,10 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
                     return _this.print(line);
                 });
             } else if (Utils.isString(message)) {
-                console.log('[Graphic#print] Printing message:', message);
+                console.log('[Graphic#print] Printing message:', message.replace(/^\s+/, ''));
 
                 var div = Utils.createElement('div');
-                div.innerHTML = message.replace(/\s/, '&nbsp;');
+                div.innerHTML = message.replace(Graphic.SPACES_RE, '&nbsp;');
                 this.appendHTMLElement(div, appendTo);
             } else {
                 throw Error('[Graphic#print] Wrong message');
@@ -202,6 +202,9 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
                 this.output.innerHTML = '';
             }
         };
+        Graphic.SPACES_RE = Utils.createRegExp('\\s', 'g');
+
+        Graphic.TABS_RE = Utils.createRegExp('\\t', 'g');
         return Graphic;
     })(DOMWrap);
 

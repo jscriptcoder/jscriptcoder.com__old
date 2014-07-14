@@ -36,6 +36,8 @@ define(["require", "exports", './utils', './mem'], function(require, exports, Ut
         */
         Interrupts.prototype.listen = function (type, handler, context) {
             if (typeof context === "undefined") { context = null; }
+            console.log('[Interrupts#listen] type:', type);
+
             if (Utils.isHTMLElement(context)) {
                 // for document and other HTMLElement events
                 context.addEventListener(type, handler);
@@ -63,6 +65,8 @@ define(["require", "exports", './utils', './mem'], function(require, exports, Ut
             for (var _i = 0; _i < (arguments.length - 1); _i++) {
                 args[_i] = arguments[_i + 1];
             }
+            console.log('[Interrupts#interrupt] type:', type);
+
             var ints = this.__table__.get(type);
             if (Utils.isArray(ints)) {
                 ints.forEach(function (int) {
@@ -79,6 +83,8 @@ define(["require", "exports", './utils', './mem'], function(require, exports, Ut
         * @public
         */
         Interrupts.prototype.unlisten = function (type, handler, context) {
+            console.log('[Interrupts#unlisten] type:', type);
+
             var ints = this.__table__.get(type), idx;
 
             if (Utils.isHTMLElement(context)) {

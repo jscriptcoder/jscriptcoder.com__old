@@ -46,7 +46,16 @@ class System extends Interrups {
         this.__graphic__ = this.__createGraphicDriver__();
         this.__keyboard__ = this.__createKeyboardDriver__();
     
-        this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
+    	this.__listen__();
+    
+    }
+
+    /**
+     * Installs necessary interruption-listeners
+     * @private
+     */
+	__listen__() {
+		this.listen('click', this.__onDocumentClick__.bind(this), Utils.doc);
     }
 
     /**
@@ -83,54 +92,6 @@ class System extends Interrups {
      * @public
      */
     get keyboard() { return this.__keyboard__ }
-
-    /**
-     * Encodes a string to be displayed properly
-     * @param {String} str
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    encode(str) { throw Error('Implemented by the graphic card') }
-
-    /**
-     * Creates a new GUI
-     * @param {String} gui
-     * @param {Boolean} attach
-     * @returns {HTMLElement}
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    createGUI(gui, attach) { throw Error('Implemented by the graphic card') }
-
-    /**
-     * Empties only the output
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    clearOutput() { throw Error('Implemented by the graphic card') }
-
-    /**
-     * Clears the whole screen
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    clearScreen() { throw Error('Implemented by the graphic card') }
-
-    /**
-     * Sets the output element for content display
-     * @param {HTMLElement} el
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    setOutput(el) { throw Error('Implemented by the graphic card') }
-
-    /**
-     * Sends a string to the output
-     * @param {String} msg
-     * @throws {Error} Implemented by the graphic card
-     * @public
-     */
-    output(msg) { throw Error('Implemented by the graphic card') }
 
 }
 

@@ -46,8 +46,8 @@ class Shell extends DOMWrap {
     constructor(sys) {
     
         console.log('[Terminal#constructor] Initializing terminal app...');
-    
-        super(sys.createGUI(Config.template, true));
+    	
+        super(sys.graphic.createGUI(Config.template, true));
     
         this.__sys__ = sys;
         this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
@@ -114,8 +114,15 @@ class Shell extends DOMWrap {
      * @event
      */
     onCommand(cmd, shift) {
-        console.log('[Shell#onCommand] command:', cmd);
         this.__output__.print(this.__prompt__.toString());
+
+		if (shift) {
+            console.log('[Shell#onCommand] line:', cmd);
+        } else {
+        	console.log('[Shell#onCommand] command:', cmd);
+            //this.__sys__.exec(cmd);
+        }
+        
     }
     
 }

@@ -19,6 +19,20 @@ import Config = require('./config');
 class Graphic extends DOMWrap {
 
     /**
+     * Matches spaces
+     * @type RegExp
+     * @static
+     */
+    static SPACES_RE = Utils.createRegExp('\\s', 'g');
+    
+    /**
+     * Matches tabs
+     * @type RegExp
+     * @static
+     */
+    static TABS_RE = Utils.createRegExp('\\t', 'g');
+    
+    /**
      * @type System
      * @private
      */
@@ -48,8 +62,7 @@ class Graphic extends DOMWrap {
     
         this.__sys__ = sys;
         this.__output__ = this.el;
-    
-        this.__setSysAPI__();
+    	this.__listen__(sys);
     }
 
     /**
@@ -77,18 +90,15 @@ class Graphic extends DOMWrap {
     }
 
     /**
-     * Implements general methods to be used in the system
+     * Installs necessary interruption-listeners
+     * @param {System} sys
      * @private
      */
-    __setSysAPI__() {
-        var sys = this.__sys__;
+	__listen__(sys) {
+        sys.listen('clearscreen', () => this.empty(true));
+        sys.listen('clearoutput', () => this.empty());
+        sys.listen('output', (msg) => this.print(msg));
         
-        sys.encode = (str) => this.htmlEncode(str);
-        sys.createGUI = (gui, attach) => attach ? this.appendHTMLElement(gui) : this.createHTMLElement(gui);
-        sys.clearOutput = () => this.empty();
-        sys.clearScreen = () => this.empty(true);
-        sys.setOutput = (el) => this.__output__ = el;
-        sys.output = (msg) => this.print(msg);
     }
 
     /**
@@ -128,6 +138,17 @@ class Graphic extends DOMWrap {
     }
 
     /**
+     * Creates the GUI, and attach it if indicated, based on a DOM element
+     * @param {String|HTMLElement} gui
+     * @param Boolean} attach
+     * @returns {HTMLElement}
+     * @public
+     */
+	createGUI(gui, attach) {
+        return attach ? this.appendHTMLElement(gui) : this.createHTMLElement(gui);
+    }
+
+    /**
      * Gets back a DOM element by #id, tag or .class (implementation inspired by Sizzle)
      * @param {String} selector
      * @param {HTMLElement} contextEl
@@ -159,8 +180,8 @@ class Graphic extends DOMWrap {
         var el = Utils.createElement('div');
         el.innerText = el.textContent = str;
         return el.innerHTML
-            .replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;')
-            .replace(/\s/g, '&nbsp;');
+            .replace(Graphic.TABS_RE, '&nbsp;&nbsp;&nbsp;&nbsp;')
+            .replace(Graphic.SPACES_RE, '&nbsp;');
     }
 
     /**
@@ -176,10 +197,10 @@ class Graphic extends DOMWrap {
             message.forEach((line) => this.print(line));
         } else if (Utils.isString(message)) { // single line
           
-            console.log('[Graphic#print] Printing message:', message);
+            console.log('[Graphic#print] Printing message:', message.replace(/^\s+/, ''));
           
             var div = Utils.createElement('div');
-            div.innerHTML = message.replace(/\s/, '&nbsp;');
+            div.innerHTML = message.replace(Graphic.SPACES_RE, '&nbsp;');
             this.appendHTMLElement(div, appendTo);
 
         } else {

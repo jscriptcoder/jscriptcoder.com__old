@@ -45,9 +45,19 @@ class Keyboard {
      */
     constructor(sys) {
         console.log('[Keyboard#constructor] Initializing keyboard driver...');
-        this.__sys__ = sys;
         
-        var doc = Utils.doc; 
+        this.__sys__ = sys;
+        this.__listen__(sys);
+
+    }
+
+    /**
+     * Installs necessary interruption-listeners
+     * @param {System} sys
+     * @private
+     */
+	__listen__(sys) {
+        var doc = Utils.doc;
         
         sys.listen('keypress', this.onKeypress.bind(this), doc);
         sys.listen('keydown', this.onKeydown.bind(this), doc);

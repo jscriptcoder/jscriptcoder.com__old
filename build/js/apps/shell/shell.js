@@ -29,7 +29,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         function Shell(sys) {
             console.log('[Terminal#constructor] Initializing terminal app...');
 
-            _super.call(this, sys.createGUI(Config.template, true));
+            _super.call(this, sys.graphic.createGUI(Config.template, true));
 
             this.__sys__ = sys;
             this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
@@ -106,8 +106,14 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
         * @event
         */
         Shell.prototype.onCommand = function (cmd, shift) {
-            console.log('[Shell#onCommand] command:', cmd);
             this.__output__.print(this.__prompt__.toString());
+
+            if (shift) {
+                console.log('[Shell#onCommand] line:', cmd);
+            } else {
+                console.log('[Shell#onCommand] command:', cmd);
+                //this.__sys__.exec(cmd);
+            }
         };
         return Shell;
     })(DOMWrap);
