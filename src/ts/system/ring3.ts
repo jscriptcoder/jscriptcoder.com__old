@@ -22,8 +22,12 @@ class Ring3 extends Ring {
     	super(sys);
 	}
 
-	
-	help() { return 'HELP!!!' }
+	/**
+	 * Shows all the available commands for this ring
+	 * @returns {String}
+	 * @public
+	 */
+	help() { return "Please, be patient... I'm still working on it" }
     
 }
 

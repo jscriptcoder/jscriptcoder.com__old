@@ -25,8 +25,13 @@ define(["require", "exports", './ring'], function(require, exports, Ring) {
             console.info('[Ring3#constructor] Instantiating...');
             _super.call(this, sys);
         }
+        /**
+        * Shows all the available commands for this ring
+        * @returns {String}
+        * @public
+        */
         Ring3.prototype.help = function () {
-            return 'HELP!!!';
+            return "Please, be patient... I'm still working on it";
         };
         return Ring3;
     })(Ring);
