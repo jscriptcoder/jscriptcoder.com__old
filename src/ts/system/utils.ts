@@ -11,16 +11,41 @@
 module Utils {
 
     /**
-     * Will be used for type checking
-     * @type Function
+     * Matches spaces
+     * @type RegExp
      */
-    var toString = Object.prototype.toString;
+    export var SPACES_RE = createRegExp('\\s', 'g');
+    
+    /**
+     * Matches initial spaces
+     * @type RegExp
+     */
+    export var INIT_SPACES_RE = createRegExp('^\\s+');
+    
+    /**
+     * Matches tabs
+     * @type RegExp
+     * @static
+     */
+    export var TABS_RE = createRegExp('\\t', 'g');
+    
+    /**
+     * window API
+     * @type Window
+     */
+    export var win = window;
     
     /**
      * document API
      * @type Document
      */
     export var doc = document;
+
+    /**
+     * Will be used for type checking
+     * @type Function
+     */
+    var toString = Object.prototype.toString;
     
     /**
      * jQuery-like query selector

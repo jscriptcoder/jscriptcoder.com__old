@@ -18,20 +18,6 @@ import Config = require('./config');
 class Program {
     
     /**
-     * Matches initial spaces
-     * @type RegExp
-     * @static
-     */
-    static INIT_SPACES_RE = Utils.createRegExp('^\\s+');
-    
-    /**
-     * Matches tabs
-     * @type RegExp
-     * @static
-     */
-    static TABS_RE = Utils.createRegExp('\\s{' + Config.tab.length + '}', 'g');
-    
-    /**
      * Matches open bracket
      * @type RegExp
      * @static
@@ -129,10 +115,7 @@ class Program {
      * @returns {String}
      * @public
      */
-    get() {
-        //return this.__lines__.join('').replace(Program.TABS_RE, '')
-        return this.__lines__.join('');
-    }
+    get() { return this.__lines__.join('') }
 
     /**
      * Adds a line to the program

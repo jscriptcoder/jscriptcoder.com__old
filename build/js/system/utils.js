@@ -11,16 +11,41 @@ define(["require", "exports"], function(require, exports) {
     var Utils;
     (function (Utils) {
         /**
-        * Will be used for type checking
-        * @type Function
+        * Matches spaces
+        * @type RegExp
         */
-        var toString = Object.prototype.toString;
+        Utils.SPACES_RE = createRegExp('\\s', 'g');
+
+        /**
+        * Matches initial spaces
+        * @type RegExp
+        */
+        Utils.INIT_SPACES_RE = createRegExp('^\\s+');
+
+        /**
+        * Matches tabs
+        * @type RegExp
+        * @static
+        */
+        Utils.TABS_RE = createRegExp('\\t', 'g');
+
+        /**
+        * window API
+        * @type Window
+        */
+        Utils.win = window;
 
         /**
         * document API
         * @type Document
         */
         Utils.doc = document;
+
+        /**
+        * Will be used for type checking
+        * @type Function
+        */
+        var toString = Object.prototype.toString;
 
         /**
         * jQuery-like query selector

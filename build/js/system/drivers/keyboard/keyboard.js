@@ -17,7 +17,7 @@ define(["require", "exports", '../../utils'], function(require, exports, Utils) 
         * @constructor
         */
         function Keyboard(sys) {
-            console.log('[Keyboard#constructor] Initializing keyboard driver...');
+            console.info('[Keyboard#constructor] Initializing keyboard driver...');
 
             this.__sys__ = sys;
             this.__listen__(sys);

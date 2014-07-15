@@ -129,7 +129,6 @@ define(["require", "exports", '../../system/utils', './config'], function(requir
         * @public
         */
         Program.prototype.get = function () {
-            //return this.__lines__.join('').replace(Program.TABS_RE, '')
             return this.__lines__.join('');
         };
 
@@ -163,10 +162,6 @@ define(["require", "exports", '../../system/utils', './config'], function(requir
             this.__brackets__.length = 0;
             this.__tabs__ = 0;
         };
-        Program.INIT_SPACES_RE = Utils.createRegExp('^\\s+');
-
-        Program.TABS_RE = Utils.createRegExp('\\s{' + Config.tab.length + '}', 'g');
-
         Program.BEGIN_BLK_RE = Utils.createRegExp('\\{$');
 
         Program.END_BLK_RE = Utils.createRegExp('\\}$');

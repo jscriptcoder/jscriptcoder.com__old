@@ -112,7 +112,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
                 console.log('[Shell#onCommand] line:', cmd);
             } else {
                 console.log('[Shell#onCommand] command:', cmd);
-                //this.__sys__.exec(cmd);
+                this.__sys__.interrupt('command', cmd);
             }
         };
         return Shell;

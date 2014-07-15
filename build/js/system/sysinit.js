@@ -29,14 +29,14 @@ define(["require", "exports", './system', '../apps/shell/shell'], function(requi
             // initializes the system
             system = new System();
 
-            console.log('[SysInit.run] Clearing screen');
+            console.info('[SysInit.run] Clearing screen');
 
             system.interrupt('clearscreen');
 
             // runs the shell
             shell = new Shell(system);
 
-            console.log('[SysInit.run] System up and running');
+            console.info('[SysInit.run] System up and running');
         }
         SysInit.run = run;
     })(SysInit || (SysInit = {}));

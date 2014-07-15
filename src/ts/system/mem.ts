@@ -34,7 +34,7 @@ class Mem extends Alloc {
      * @constructor
      */
     constructor() {
-        console.log('[Mem#constructor] Allocating memory...');
+        console.info('[Mem#constructor] Allocating memory...');
         super();
         
         this.__storage__ = {};
@@ -57,6 +57,8 @@ class Mem extends Alloc {
      * @public
      */
     put(addr, info) {
+        console.log('[Mem#put] Adding', info, 'into', addr);
+
         if (!this.is(addr)) this.__length__++;
         this.__storage__[addr] = info;
         return this.__length__;
@@ -69,6 +71,8 @@ class Mem extends Alloc {
      * @public
      */
     delete(addr) {
+        console.log('[Mem#delete] Deleging', addr);
+        
         if (this.is(addr)) this.__length__--;
         delete this.__storage__[addr];
         return this.__length__;

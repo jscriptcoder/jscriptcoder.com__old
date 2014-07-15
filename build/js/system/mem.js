@@ -25,7 +25,7 @@ define(["require", "exports", './utils', './alloc'], function(require, exports, 
         * @constructor
         */
         function Mem() {
-            console.log('[Mem#constructor] Allocating memory...');
+            console.info('[Mem#constructor] Allocating memory...');
             _super.call(this);
 
             this.__storage__ = {};
@@ -49,6 +49,8 @@ define(["require", "exports", './utils', './alloc'], function(require, exports, 
         * @public
         */
         Mem.prototype.put = function (addr, info) {
+            console.log('[Mem#put] Adding', info, 'into', addr);
+
             if (!this.is(addr))
                 this.__length__++;
             this.__storage__[addr] = info;
@@ -62,6 +64,8 @@ define(["require", "exports", './utils', './alloc'], function(require, exports, 
         * @public
         */
         Mem.prototype.delete = function (addr) {
+            console.log('[Mem#delete] Deleging', addr);
+
             if (this.is(addr))
                 this.__length__--;
             delete this.__storage__[addr];

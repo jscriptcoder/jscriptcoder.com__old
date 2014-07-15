@@ -3,6 +3,7 @@
 * @requires system/interrupts
 * @requires system/drivers/graphic/graphic
 * @requires system/drivers/keyboard/keyboard
+* @requires system/ring3
 * @requires system/utils
 * @exports System
 * @author Francisco Ramos <fran@jscriptcoder.com>
@@ -13,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './utils'], function(require, exports, Interrups, Graphic, Keyboard, Utils) {
+define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './ring3', './utils'], function(require, exports, Interrups, Graphic, Keyboard, Ring3, Utils) {
     /**
     * Contains the System API and acts as a mediator between drivers and apps
     * @class System
@@ -27,12 +28,13 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
         * @constructor
         */
         function System() {
-            console.log('[System#constructor] Initializing system and drivers...');
+            console.info('[System#constructor] Initializing system and drivers...');
 
             _super.call(this);
 
             this.__graphic__ = this.__createGraphicDriver__();
             this.__keyboard__ = this.__createKeyboardDriver__();
+            this.__ring__ = this.__createRing__();
 
             this.__listen__();
         }
@@ -60,6 +62,15 @@ define(["require", "exports", './interrupts', './drivers/graphic/graphic', './dr
         */
         System.prototype.__createKeyboardDriver__ = function () {
             return new Keyboard(this);
+        };
+
+        /**
+        * Instantiates the first ring level
+        * @returns {Ring}
+        * @private
+        */
+        System.prototype.__createRing__ = function () {
+            return new Ring3(this);
         };
 
         /**

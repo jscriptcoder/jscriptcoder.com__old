@@ -17,20 +17,6 @@ import Config = require('./config');
  * @extends DOMWrap
  */
 class Graphic extends DOMWrap {
-
-    /**
-     * Matches spaces
-     * @type RegExp
-     * @static
-     */
-    static SPACES_RE = Utils.createRegExp('\\s', 'g');
-    
-    /**
-     * Matches tabs
-     * @type RegExp
-     * @static
-     */
-    static TABS_RE = Utils.createRegExp('\\t', 'g');
     
     /**
      * @type System
@@ -53,7 +39,7 @@ class Graphic extends DOMWrap {
      */
     constructor(sys, screenEl?) {
     
-        console.log('[Graphic#constructor] Initializing graphic driver...');
+        console.info('[Graphic#constructor] Initializing graphic driver...');
     
         // fallbacks: Config.screenElemId or document.body
         screenEl = screenEl || Utils.getElementById(Config.screenElemId) || Utils.doc.body;
@@ -97,7 +83,7 @@ class Graphic extends DOMWrap {
 	__listen__(sys) {
         sys.listen('clearscreen', () => this.empty(true));
         sys.listen('clearoutput', () => this.empty());
-        sys.listen('output', (msg) => this.print(msg));
+        sys.listen('output', (msg, type) => this.print(msg, type));
         
     }
 
@@ -179,29 +165,30 @@ class Graphic extends DOMWrap {
     htmlEncode(str) {
         var el = Utils.createElement('div');
         el.innerText = el.textContent = str;
-        return el.innerHTML
-            .replace(Graphic.TABS_RE, '&nbsp;&nbsp;&nbsp;&nbsp;')
-            .replace(Graphic.SPACES_RE, '&nbsp;');
+        return el.innerHTML.replace(Utils.SPACES_RE, '&nbsp;');
     }
 
     /**
      * Prints a message wrapping it in a div
      * @param {String|String[]} message
-     * @param {HTMLElement} [appendTo = this.output]
+     * @param {String} [type]
      * @throws {Error} Wrong message
      * @public
      */
-    print(message, appendTo?) {
+    print(message, type?) {
           
         if (Utils.isArray(message)) { // there are more than one line
             message.forEach((line) => this.print(line));
         } else if (Utils.isString(message)) { // single line
           
-            console.log('[Graphic#print] Printing message:', message.replace(/^\s+/, ''));
+            console.log('[Graphic#print] Printing message:', message.replace(Utils.INIT_SPACES_RE, ''));
           
             var div = Utils.createElement('div');
-            div.innerHTML = message.replace(Graphic.SPACES_RE, '&nbsp;');
-            this.appendHTMLElement(div, appendTo);
+            div.innerHTML = message;
+          
+          	if (typeof type === 'string') div.className = type;
+          
+            this.appendHTMLElement(div);
 
         } else {
             

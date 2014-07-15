@@ -3,6 +3,7 @@
  * @requires system/interrupts
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
+ * @requires system/ring3
  * @requires system/utils
  * @exports System
  * @author Francisco Ramos <fran@jscriptcoder.com>
@@ -11,6 +12,7 @@
 import Interrups = require('./interrupts');
 import Graphic = require('./drivers/graphic/graphic');
 import Keyboard = require('./drivers/keyboard/keyboard');
+import Ring3 = require('./ring3');
 import Utils = require('./utils');
 
 /**
@@ -33,18 +35,25 @@ class System extends Interrups {
     __keyboard__;
     
     /**
+     * @type Ring
+     * @private
+     */
+    __ring__;
+    
+    /**
      * Initializes the system, drivers, etc...
      * @param {HTMLElement} doc
      * @constructor
      */
     constructor() {
     
-        console.log('[System#constructor] Initializing system and drivers...');
+        console.info('[System#constructor] Initializing system and drivers...');
     
         super();
     
         this.__graphic__ = this.__createGraphicDriver__();
         this.__keyboard__ = this.__createKeyboardDriver__();
+    	this.__ring__ = this.__createRing__();
     
     	this.__listen__();
     
@@ -71,6 +80,13 @@ class System extends Interrups {
      * @private
      */
     __createKeyboardDriver__() { return new Keyboard(this) }
+
+    /**
+     * Instantiates the first ring level
+     * @returns {Ring}
+     * @private
+     */
+    __createRing__() { return new Ring3(this) }
 
     /**
      * Gets triggered when the user clicks on the document

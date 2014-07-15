@@ -471,7 +471,7 @@ class Prompt extends DOMWrap {
      * @public
      */
     enter(shift) {
-        var cmd = this.__cmd__.replace(Program.INIT_SPACES_RE, ''), 
+        var cmd = this.__cmd__.replace(Utils.INIT_SPACES_RE, ''), 
             prog = this.__program__, 
             endProg;
 

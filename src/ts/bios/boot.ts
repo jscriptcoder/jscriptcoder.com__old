@@ -61,13 +61,13 @@ module Boot {
      */
     export function start() {
         
-        console.log('[Boot.start] Starting jscriptcoder.com...');
+        console.info('[Boot.start] Starting jscriptcoder.com...');
         
         cursorMode(CURSOR_MODE.type);
         
         Bios.print(Config.loadingMsg, txtEl)
             .then(() => {
-                console.log('[Promise#then] Starting the system...');
+                console.info('[Promise#then] Starting the system...');
         
                 cursorMode(CURSOR_MODE.blink);
         

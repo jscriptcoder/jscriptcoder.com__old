@@ -27,7 +27,7 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         * @constructor
         */
         function Graphic(sys, screenEl) {
-            console.log('[Graphic#constructor] Initializing graphic driver...');
+            console.info('[Graphic#constructor] Initializing graphic driver...');
 
             // fallbacks: Config.screenElemId or document.body
             screenEl = screenEl || Utils.getElementById(Config.screenElemId) || Utils.doc.body;
@@ -78,8 +78,8 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
             sys.listen('clearoutput', function () {
                 return _this.empty();
             });
-            sys.listen('output', function (msg) {
-                return _this.print(msg);
+            sys.listen('output', function (msg, type) {
+                return _this.print(msg, type);
             });
         };
 
@@ -162,28 +162,32 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
         Graphic.prototype.htmlEncode = function (str) {
             var el = Utils.createElement('div');
             el.innerText = el.textContent = str;
-            return el.innerHTML.replace(Graphic.TABS_RE, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(Graphic.SPACES_RE, '&nbsp;');
+            return el.innerHTML.replace(Utils.SPACES_RE, '&nbsp;');
         };
 
         /**
         * Prints a message wrapping it in a div
         * @param {String|String[]} message
-        * @param {HTMLElement} [appendTo = this.output]
+        * @param {String} [type]
         * @throws {Error} Wrong message
         * @public
         */
-        Graphic.prototype.print = function (message, appendTo) {
+        Graphic.prototype.print = function (message, type) {
             var _this = this;
             if (Utils.isArray(message)) {
                 message.forEach(function (line) {
                     return _this.print(line);
                 });
             } else if (Utils.isString(message)) {
-                console.log('[Graphic#print] Printing message:', message.replace(/^\s+/, ''));
+                console.log('[Graphic#print] Printing message:', message.replace(Utils.INIT_SPACES_RE, ''));
 
                 var div = Utils.createElement('div');
-                div.innerHTML = message.replace(Graphic.SPACES_RE, '&nbsp;');
-                this.appendHTMLElement(div, appendTo);
+                div.innerHTML = message;
+
+                if (typeof type === 'string')
+                    div.className = type;
+
+                this.appendHTMLElement(div);
             } else {
                 throw Error('[Graphic#print] Wrong message');
             }
@@ -202,9 +206,6 @@ define(["require", "exports", '../../utils', './domwrap', './config'], function(
                 this.output.innerHTML = '';
             }
         };
-        Graphic.SPACES_RE = Utils.createRegExp('\\s', 'g');
-
-        Graphic.TABS_RE = Utils.createRegExp('\\t', 'g');
         return Graphic;
     })(DOMWrap);
 

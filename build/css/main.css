@@ -1451,3 +1451,12 @@ body {
   background-color: #44d544;
   color: #000000;
 }
+.shell .output .result {
+  color: #428bca;
+}
+.shell .output .warning {
+  color: #f0ad4e;
+}
+.shell .output .error {
+  color: #d9534f;
+}

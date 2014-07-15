@@ -406,7 +406,7 @@ define(["require", "exports", '../../system/utils', '../../system/drivers/graphi
         * @public
         */
         Prompt.prototype.enter = function (shift) {
-            var cmd = this.__cmd__.replace(Program.INIT_SPACES_RE, ''), prog = this.__program__, endProg;
+            var cmd = this.__cmd__.replace(Utils.INIT_SPACES_RE, ''), prog = this.__program__, endProg;
 
             // being in a block (having at least one '{')
             // or opening one, is the same as shift+enter
