@@ -255,6 +255,19 @@ define(["require", "exports"], function(require, exports) {
             return new RegExp(pattern, mods);
         }
         Utils.createRegExp = createRegExp;
+
+        /**
+        * Wrapper for setTimeout function
+        * @param {Function} fn
+        * @param {Number} [delay=0]
+        * @return {Number}
+        * @public
+        */
+        function async(fn, delay) {
+            if (typeof delay === "undefined") { delay = 0; }
+            return setTimeout(fn, delay);
+        }
+        Utils.async = async;
     })(Utils || (Utils = {}));
 
     

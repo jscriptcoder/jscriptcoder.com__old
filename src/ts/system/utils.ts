@@ -234,6 +234,17 @@ module Utils {
     export function createRegExp(pattern, mods = '') {
         return new RegExp(pattern, mods);
     }
+        
+    /**
+     * Wrapper for setTimeout function
+     * @param {Function} fn
+     * @param {Number} [delay=0]
+     * @return {Number}
+     * @public
+     */
+    export function async(fn, delay = 0) {
+        return setTimeout(fn, delay);
+    }
 
 }
 

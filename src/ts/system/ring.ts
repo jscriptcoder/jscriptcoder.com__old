@@ -45,39 +45,35 @@ class Ring {
 	__listen__(sys) { sys.listen('command', this.__onCommand__.bind(this)) }
 
     /**
-     * Executes a command in the global scope on the ring Object using "with" statement
-     * @param {String} cmd
-     * @private
-     */
-	__exec__(cmd) {
-        var ret, 
-            win = Utils.win,
-            e = win['eval']; // indirect eval call, eval'ing in global scope
-        
-        // we put the instance in the global scope since the evaluation will take place there
-        win['__ring__'] = this;
-
-        ret = e('with(__ring__) { ' + cmd + ' }');
-        if (typeof ret !== 'undefined') this.__sys__.interrupt('output', ret + '', 'result');
-
-        // we no longer need this temporal variable
-        delete win['__ring__'];
-    }
-
-    /**
      * Gets trigger when a command is being sent to the ring
      * @param {String} cmd
      * @event
      */
     __onCommand__(cmd) {
-        try {
-            // the magic happens here ;-)
-            setTimeout(() => this.__exec__(cmd), 0);
-        }
-        catch (e) {
-            console.warn('[Ring#__onCommand__] Error:', e);
-            this.__sys__.interrupt('output', e.toString(), 'error');
-        }
+
+        Utils.async(() => {
+            var ret, 
+                win = Utils.win,
+                e = win['eval']; // indirect eval call, eval'ing in global scope
+
+            // we put the instance in the global scope since the evaluation will take place there
+            win['__ring__'] = this;
+
+			try {
+				// the magic happens here ;-)
+            	ret = e('with(__ring__) { ' + cmd + ' }');
+            	if (typeof ret !== 'undefined') this.__sys__.interrupt('output', ret + '', 'result');
+			} catch (e) {
+        		console.warn('[Ring#__onCommand__] Error:', e);
+        		this.__sys__.interrupt('output', e.toString(), 'error');
+        	}
+
+			// we no longer need this temporal variable
+			delete win['__ring__'];
+
+		});
+
+
     }
     
 }
