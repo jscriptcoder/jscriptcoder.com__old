@@ -1,13 +1,13 @@
 /**
  * Program lines
  * @module apps/shell/program
- * @requires system/utils
+ * @requires system/utils/utils
  * @requires apps/shell/config
  * @exports Program
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('../../system/utils');
+import Utils = require('../../system/utils/utils');
 import Config = require('./config');
 
 /**

@@ -1,15 +1,15 @@
 /**
  * Input history
  * @module apps/shell/history
- * @requires system/mem
- * @requires system/utils
+ * @requires system/mem/mem
+ * @requires system/utils/utils
  * @requires apps/shell/config
  * @exports History
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Mem = require('../../system/mem');
-import Utils = require('../../system/utils');
+import Mem = require('../../system/mem/mem');
+import Utils = require('../../system/utils/utils');
 import Config = require('./config');
 
 /**

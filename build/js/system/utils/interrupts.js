@@ -1,12 +1,12 @@
 /**
 * Implementes, or rather emulate, interruptions functionality
 * @module @module system/interrupts
-* @requires system/utils
-* @requires system/mem
+* @requires system/utils/utils
+* @requires system/mem/mem
 * @exports Interrupts
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", './utils', './mem'], function(require, exports, Utils, Mem) {
+define(["require", "exports", './utils', '../mem/mem'], function(require, exports, Utils, Mem) {
     /**
     * Provides a basic pubsub pattern for communication between drivers and apps
     * @class Interrupts

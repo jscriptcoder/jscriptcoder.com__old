@@ -1,7 +1,7 @@
 /**
  * Shell prompt
  * @module apps/shell/prompt
- * @requires system/utils
+ * @requires system/utils/utils
  * @requires system/drivers/graphic/domwrap
  * @requires apps/shell/config
  * @requires apps/shell/history
@@ -9,7 +9,7 @@
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('../../system/utils');
+import Utils = require('../../system/utils/utils');
 import DOMWrap = require('../../system/drivers/graphic/domwrap');
 import Config = require('./config');
 import History = require('./history');

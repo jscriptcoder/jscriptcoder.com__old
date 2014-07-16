@@ -1,12 +1,12 @@
 /**
  * Keyboard driver
  * @module system/drivers/keyboard/keyboard
- * @requires system/utils
+ * @requires system/utils/utils
  * @exports Keyboard
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('../../utils');
+import Utils = require('../../utils/utils');
 
 /**
  * @class Keyboard

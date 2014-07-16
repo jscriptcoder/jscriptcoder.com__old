@@ -1,14 +1,14 @@
 /**
  * Implementes, or rather emulate, interruptions functionality
  * @module @module system/interrupts
- * @requires system/utils
- * @requires system/mem
+ * @requires system/utils/utils
+ * @requires system/mem/mem
  * @exports Interrupts
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
 import Utils = require('./utils');
-import Mem = require('./mem');
+import Mem = require('../mem/mem');
 
 /**
  * Provides a basic pubsub pattern for communication between drivers and apps

@@ -1,10 +1,10 @@
 /**
 * @module system/drivers/graphic/domwrap
-* @requires system/utils
+* @requires system/utils/utils
 * @exports DOMWrap
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", '../../utils'], function(require, exports, Utils) {
+define(["require", "exports", '../../utils/utils'], function(require, exports, Utils) {
     /**
     * jQuery-like wrapper for HTMLElements
     * @class DOMWrap

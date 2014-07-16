@@ -1,12 +1,12 @@
 /**
 * Program lines
 * @module apps/shell/program
-* @requires system/utils
+* @requires system/utils/utils
 * @requires apps/shell/config
 * @exports Program
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", '../../system/utils', './config'], function(require, exports, Utils, Config) {
+define(["require", "exports", '../../system/utils/utils', './config'], function(require, exports, Utils, Config) {
     /**
     * Keeps track of lines of program. Used when writing blocks {}
     * or using shift+enter

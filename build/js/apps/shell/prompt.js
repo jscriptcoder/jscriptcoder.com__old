@@ -1,7 +1,7 @@
 /**
 * Shell prompt
 * @module apps/shell/prompt
-* @requires system/utils
+* @requires system/utils/utils
 * @requires system/drivers/graphic/domwrap
 * @requires apps/shell/config
 * @requires apps/shell/history
@@ -14,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/utils', '../../system/drivers/graphic/domwrap', './config', './history', './program'], function(require, exports, Utils, DOMWrap, Config, History, Program) {
+define(["require", "exports", '../../system/utils/utils', '../../system/drivers/graphic/domwrap', './config', './history', './program'], function(require, exports, Utils, DOMWrap, Config, History, Program) {
     /**
     * Prompt user interface
     * @class Prompt

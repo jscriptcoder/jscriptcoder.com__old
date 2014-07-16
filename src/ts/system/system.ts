@@ -1,19 +1,19 @@
 /**
  * @module system/system
- * @requires system/interrupts
+ * @requires system/utils/interrupts
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
- * @requires system/ring3
- * @requires system/utils
+ * @requires system/rings/ring3
+ * @requires system/utils/utils
  * @exports System
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Interrups = require('./interrupts');
+import Interrups = require('./utils/interrupts');
 import Graphic = require('./drivers/graphic/graphic');
 import Keyboard = require('./drivers/keyboard/keyboard');
-import Ring3 = require('./ring3');
-import Utils = require('./utils');
+import Ring3 = require('./rings/ring3');
+import Utils = require('./utils/utils');
 
 /**
  * Contains the System API and acts as a mediator between drivers and apps

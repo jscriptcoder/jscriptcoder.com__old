@@ -1,7 +1,7 @@
 /**
 * HTML graphic driver
 * @module system/drivers/graphic/graphic
-* @requires system/utils
+* @requires system/utils/utils
 * @requires system/drivers/graphic/domwrap
 * @requires system/drivers/graphic/config
 * @exports Graphic
@@ -13,7 +13,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../utils', './domwrap', './config'], function(require, exports, Utils, DOMWrap, Config) {
+define(["require", "exports", '../../utils/utils', './domwrap', './config'], function(require, exports, Utils, DOMWrap, Config) {
     /**
     * @class Graphic
     * @extends DOMWrap

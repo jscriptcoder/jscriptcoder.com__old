@@ -1,11 +1,11 @@
 /**
 * Keyboard driver
 * @module system/drivers/keyboard/keyboard
-* @requires system/utils
+* @requires system/utils/utils
 * @exports Keyboard
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", '../../utils'], function(require, exports, Utils) {
+define(["require", "exports", '../../utils/utils'], function(require, exports, Utils) {
     /**
     * @class Keyboard
     * @extends DOMWrap

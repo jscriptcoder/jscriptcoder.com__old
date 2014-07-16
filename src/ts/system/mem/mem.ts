@@ -1,13 +1,13 @@
 /**
  * Memory allocation
- * @module system/mem
- * @requires system/utils
- * @requires system/alloc
+ * @module system/mem/mem
+ * @requires system/utils/utils
+ * @requires system/mem/alloc
  * @exports Mem
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('./utils');
+import Utils = require('../utils/utils');
 import Alloc = require('./alloc');
 
 /**

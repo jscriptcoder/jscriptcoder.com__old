@@ -1,8 +1,8 @@
 /**
 * Input history
 * @module apps/shell/history
-* @requires system/mem
-* @requires system/utils
+* @requires system/mem/mem
+* @requires system/utils/utils
 * @requires apps/shell/config
 * @exports History
 * @author Francisco Ramos <fran@jscriptcoder.com>
@@ -13,7 +13,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", '../../system/mem', '../../system/utils', './config'], function(require, exports, Mem, Utils, Config) {
+define(["require", "exports", '../../system/mem/mem', '../../system/utils/utils', './config'], function(require, exports, Mem, Utils, Config) {
     /**
     * Keeps track of a history of commands. Yes I know, pointless stuff.
     * I should use an array instead of an object/hashtable for this purpose

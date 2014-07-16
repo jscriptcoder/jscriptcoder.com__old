@@ -1,5 +1,5 @@
 /**
-* @module system/alloc
+* @module system/mem/alloc
 * @exports Alloc
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */

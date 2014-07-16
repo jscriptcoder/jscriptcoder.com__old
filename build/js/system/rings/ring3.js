@@ -1,6 +1,6 @@
 /**
-* @module system/ring3
-* @requires system/ring
+* @module system/rings/ring3
+* @requires system/rings/ring
 * @exports Ring3
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */

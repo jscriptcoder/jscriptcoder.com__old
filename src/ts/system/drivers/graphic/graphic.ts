@@ -1,14 +1,14 @@
 /**
  * HTML graphic driver
  * @module system/drivers/graphic/graphic
- * @requires system/utils
+ * @requires system/utils/utils
  * @requires system/drivers/graphic/domwrap
  * @requires system/drivers/graphic/config
  * @exports Graphic
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('../../utils');
+import Utils = require('../../utils/utils');
 import DOMWrap = require('./domwrap');
 import Config = require('./config');
 

@@ -1,13 +1,13 @@
 /**
- * @module system/ring
+ * @module system/rings/ring
  * @exports Ring
- * @requires system/mem
- * @requires system/utils
+ * @requires system/mem/mem
+ * @requires system/utils/utils
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Mem = require('./mem');
-import Utils = require('./utils');
+import Mem = require('../mem/mem');
+import Utils = require('../utils/utils');
 
 /**
  * Basic functionality to be inherited by the rings API

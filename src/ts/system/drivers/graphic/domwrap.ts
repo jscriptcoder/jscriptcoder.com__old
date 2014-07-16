@@ -1,11 +1,11 @@
 /**
  * @module system/drivers/graphic/domwrap
- * @requires system/utils
+ * @requires system/utils/utils
  * @exports DOMWrap
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-import Utils = require('../../utils');
+import Utils = require('../../utils/utils');
 
 /**
  * jQuery-like wrapper for HTMLElements

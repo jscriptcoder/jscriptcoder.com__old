@@ -1,5 +1,5 @@
 /**
-* @module system/utils
+* @module system/utils/utils
 * @exports Utils
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */

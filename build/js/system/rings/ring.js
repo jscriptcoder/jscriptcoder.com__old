@@ -1,11 +1,11 @@
 /**
-* @module system/ring
+* @module system/rings/ring
 * @exports Ring
-* @requires system/mem
-* @requires system/utils
+* @requires system/mem/mem
+* @requires system/utils/utils
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
-define(["require", "exports", './mem', './utils'], function(require, exports, Mem, Utils) {
+define(["require", "exports", '../mem/mem', '../utils/utils'], function(require, exports, Mem, Utils) {
     /**
     * Basic functionality to be inherited by the rings API
     * @class Ring

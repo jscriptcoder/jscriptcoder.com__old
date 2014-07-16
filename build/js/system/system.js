@@ -1,10 +1,10 @@
 /**
 * @module system/system
-* @requires system/interrupts
+* @requires system/utils/interrupts
 * @requires system/drivers/graphic/graphic
 * @requires system/drivers/keyboard/keyboard
-* @requires system/ring3
-* @requires system/utils
+* @requires system/rings/ring3
+* @requires system/utils/utils
 * @exports System
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
@@ -14,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './ring3', './utils'], function(require, exports, Interrups, Graphic, Keyboard, Ring3, Utils) {
+define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './rings/ring3', './utils/utils'], function(require, exports, Interrups, Graphic, Keyboard, Ring3, Utils) {
     /**
     * Contains the System API and acts as a mediator between drivers and apps
     * @class System

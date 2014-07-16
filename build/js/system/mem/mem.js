@@ -1,8 +1,8 @@
 /**
 * Memory allocation
-* @module system/mem
-* @requires system/utils
-* @requires system/alloc
+* @module system/mem/mem
+* @requires system/utils/utils
+* @requires system/mem/alloc
 * @exports Mem
 * @author Francisco Ramos <fran@jscriptcoder.com>
 */
@@ -12,7 +12,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './utils', './alloc'], function(require, exports, Utils, Alloc) {
+define(["require", "exports", '../utils/utils', './alloc'], function(require, exports, Utils, Alloc) {
     /**
     * Allocates memory for the system, programs, etc...
     * @class Mem
