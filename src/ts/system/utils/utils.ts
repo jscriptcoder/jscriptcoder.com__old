@@ -245,6 +245,22 @@ module Utils {
     export function async(fn, delay = 0) {
         return setTimeout(fn, delay);
     }
+        
+    /**
+     * Replaces values, from a key/value object, in a string
+     * @param {String} str
+     * @param {Objec5} [rep]
+     * @return {String}
+     * @public
+     */
+	export function replace(str, rep = {}) {
+		for (var key in rep) {
+            if (rep.hasOwnProperty(key)) {
+                str = str.replace(new RegExp('$' + key, 'g'), rep[key]);
+            }
+        }
+        return str;
+    }
 
 }
 

@@ -1,4 +1,5 @@
 /**
+* Base class that needs to be extended
 * @module system/rings/ring
 * @exports Ring
 * @requires system/mem/mem
@@ -45,7 +46,7 @@ define(["require", "exports", '../mem/mem', '../utils/utils'], function(require,
                     // the magic happens here ;-)
                     ret = e('with(__ring__) { ' + cmd + ' }');
                     if (typeof ret !== 'undefined')
-                        _this.__sys__.interrupt('output', ret + '', 'result');
+                        _this.__sys__.interrupt('output', ret, 'result');
                 } catch (e) {
                     console.warn('[Ring#__onCommand__] Error:', e);
                     _this.__sys__.interrupt('output', e.toString(), 'error');

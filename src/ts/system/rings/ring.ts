@@ -1,4 +1,5 @@
 /**
+ * Base class that needs to be extended
  * @module system/rings/ring
  * @exports Ring
  * @requires system/mem/mem
@@ -62,7 +63,7 @@ class Ring {
 			try {
 				// the magic happens here ;-)
             	ret = e('with(__ring__) { ' + cmd + ' }');
-            	if (typeof ret !== 'undefined') this.__sys__.interrupt('output', ret + '', 'result');
+            	if (typeof ret !== 'undefined') this.__sys__.interrupt('output', ret, 'result');
 			} catch (e) {
         		console.warn('[Ring#__onCommand__] Error:', e);
         		this.__sys__.interrupt('output', e.toString(), 'error');

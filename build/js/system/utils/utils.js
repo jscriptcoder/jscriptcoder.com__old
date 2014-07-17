@@ -268,6 +268,24 @@ define(["require", "exports"], function(require, exports) {
             return setTimeout(fn, delay);
         }
         Utils.async = async;
+
+        /**
+        * Replaces values, from a key/value object, in a string
+        * @param {String} str
+        * @param {Objec5} [rep]
+        * @return {String}
+        * @public
+        */
+        function replace(str, rep) {
+            if (typeof rep === "undefined") { rep = {}; }
+            for (var key in rep) {
+                if (rep.hasOwnProperty(key)) {
+                    str = str.replace(new RegExp('$' + key, 'g'), rep[key]);
+                }
+            }
+            return str;
+        }
+        Utils.replace = replace;
     })(Utils || (Utils = {}));
 
     

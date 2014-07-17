@@ -176,10 +176,10 @@ define(["require", "exports", '../../utils/utils', './domwrap', './config'], fun
             var _this = this;
             if (Utils.isArray(message)) {
                 message.forEach(function (line) {
-                    return _this.print(line);
+                    return _this.print(line, type);
                 });
-            } else if (Utils.isString(message)) {
-                console.log('[Graphic#print] Printing message:', message.replace(Utils.INIT_SPACES_RE, ''));
+            } else {
+                console.log('[Graphic#print] Printing message:', (message + '').replace(Utils.INIT_SPACES_RE, ''));
 
                 var div = Utils.createElement('div');
                 div.innerHTML = message;
@@ -188,8 +188,6 @@ define(["require", "exports", '../../utils/utils', './domwrap', './config'], fun
                     div.className = type;
 
                 this.appendHTMLElement(div);
-            } else {
-                throw Error('[Graphic#print] Wrong message');
             }
         };
 

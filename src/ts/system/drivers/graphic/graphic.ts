@@ -178,10 +178,10 @@ class Graphic extends DOMWrap {
     print(message, type?) {
           
         if (Utils.isArray(message)) { // there are more than one line
-            message.forEach((line) => this.print(line));
-        } else if (Utils.isString(message)) { // single line
+            message.forEach((line) => this.print(line, type));
+        } else {
           
-            console.log('[Graphic#print] Printing message:', message.replace(Utils.INIT_SPACES_RE, ''));
+            console.log('[Graphic#print] Printing message:', (message + '').replace(Utils.INIT_SPACES_RE, ''));
           
             var div = Utils.createElement('div');
             div.innerHTML = message;
@@ -190,10 +190,6 @@ class Graphic extends DOMWrap {
           
             this.appendHTMLElement(div);
 
-        } else {
-            
-            throw Error('[Graphic#print] Wrong message');
-            
         }
 
     }

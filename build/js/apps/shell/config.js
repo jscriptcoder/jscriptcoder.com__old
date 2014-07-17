@@ -27,13 +27,13 @@ define(["require", "exports"], function(require, exports) {
     */
     exports.msgHeader = [
         '/**',
-        '&nbsp;* The adventure begins here. Type <strong>help()</strong> to see the available commands...',
+        '&nbsp;* The adventure begins here. Type <i>help()</i> to see the available commands...',
         '&nbsp;* Remember, this is all about coding in JavaScript, and you\'ll discover an amazing world ;-)',
         '&nbsp;*',
-        '&nbsp;* <strong>@author</strong> Francisco Ramos <<a href="mailto:fran@jscriptcoder.com">fran@jscriptcoder.com</a>>',
-        '&nbsp;* <strong>@version</strong> 0.1.0',
-        '&nbsp;* <strong>@see</strong> <a href="https://github.com/jscriptcoder/jscriptcoder.com" target="_blank">GitHub</a>',
-        '&nbsp;* <strong>@see</strong> <a href="https://codio.com/jscriptcoder/jscriptcoder-com/" target="_blank">Codio.com</a>',
+        '&nbsp;* <strong>@author</strong> <i>Francisco Ramos <<a href="mailto:fran@jscriptcoder.com">fran@jscriptcoder.com</a>></i>',
+        '&nbsp;* <strong>@version</strong> <i>0.1.0</i>',
+        '&nbsp;* <strong>@see</strong> <i><a href="https://github.com/jscriptcoder/jscriptcoder.com" target="_blank">GitHub</a></i>',
+        '&nbsp;* <strong>@see</strong> <i><a href="https://codio.com/jscriptcoder/jscriptcoder-com/" target="_blank">Codio.com</a></i>',
         '&nbsp;*/',
         '&nbsp;'
     ];
