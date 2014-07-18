@@ -11,7 +11,7 @@ import Bios = require('./bios');
 /**
  * Booting functionality
  * @namespace Boot
- */
+ */ 
 module Boot {
 
     /**

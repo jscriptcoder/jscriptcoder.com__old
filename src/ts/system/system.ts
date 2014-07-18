@@ -3,6 +3,7 @@
  * @requires system/utils/interrupts
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
+ * @requires system/drivers/storage/storage
  * @requires system/rings/ring3
  * @requires system/utils/utils
  * @exports System
@@ -12,11 +13,12 @@
 import Interrups = require('./utils/interrupts');
 import Graphic = require('./drivers/graphic/graphic');
 import Keyboard = require('./drivers/keyboard/keyboard');
+import Storage = require('./drivers/storage/storage');
 import Ring3 = require('./rings/ring3');
 import Utils = require('./utils/utils');
 
 /**
- * Contains the System API and acts as a mediator between drivers and apps
+ * Mediator between drivers and apps
  * @class System
  * @extends Interrupts
  */
@@ -33,6 +35,12 @@ class System extends Interrups {
      * @private
      */
     __keyboard__;
+    
+    /**
+     * @type Storage
+     * @private
+     */
+    __storage__;
     
     /**
      * @type Ring
@@ -53,6 +61,7 @@ class System extends Interrups {
     
         this.__graphic__ = this.__createGraphicDriver__();
         this.__keyboard__ = this.__createKeyboardDriver__();
+    	this.__storage__ = this.__createStorageDriver__();
     	this.__ring__ = this.__createRing__();
     
     	this.__listen__();
@@ -82,6 +91,13 @@ class System extends Interrups {
     __createKeyboardDriver__() { return new Keyboard(this) }
 
     /**
+     * Instantiates a Storage driver
+     * @returns {Keyboard}
+     * @private
+     */
+    __createStorageDriver__() { return new Storage(this) }
+
+    /**
      * Instantiates the first ring level
      * @returns {Ring}
      * @private
@@ -108,6 +124,13 @@ class System extends Interrups {
      * @public
      */
     get keyboard() { return this.__keyboard__ }
+
+    /**
+     * storage getter
+     * @returns {Storage}
+     * @public
+     */
+    get storage() { return this.__storage__ }
 
 }
 
