@@ -12,7 +12,7 @@ import Alloc = require('../../mem/alloc');
 import Config = require('./config');
 
 /**
- * @class Storage
+ * @class Storage. Internally it uses Firebase as a storage in the cloud
  * @extends Alloc
  */
 class Storage extends Alloc {
@@ -33,7 +33,6 @@ class Storage extends Alloc {
     /**
      * Initializes an instance of Storage
      * @param {System} sys
-     * @param {HTMLElement} [screenEl = <div id="screen" />]
      * @constructor
      */
     constructor(sys) {
@@ -53,7 +52,27 @@ class Storage extends Alloc {
      * @returns {Any}
      * @public
      */
-    get(addr) { }
+    get(addr) {
+        console.log('[Storage#get] Getting data from', addr);
+        
+        return new Promise((resolve, reject) => {
+            
+            this.__firebase__.child(addr).once('value', 
+                
+                (data) => {
+                    console.info('[Storage#get] Got data:', data);
+                    resolve(data.val())
+                }, 
+                
+                () => {
+                    console.warn('[Storage#get] Error: Permission denied');
+                    reject('No permissions');
+                }
+            );
+        
+        });
+        
+    }
     
     /**
      * Stores info permanently, returning the size
@@ -84,7 +103,7 @@ class Storage extends Alloc {
     size() { }
 
     /**
-     * Indicates whether or not there is something that address
+     * Indicates whether or not there is something in that address
      * @param {String} addr
      * @returns {Boolean}
      * @public

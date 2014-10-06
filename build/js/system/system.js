@@ -4,6 +4,7 @@
 * @requires system/drivers/graphic/graphic
 * @requires system/drivers/keyboard/keyboard
 * @requires system/drivers/storage/storage
+* @requires system/drivers/filesystem/filesystem
 * @requires system/rings/ring3
 * @requires system/utils/utils
 * @exports System
@@ -15,7 +16,7 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
-define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './drivers/storage/storage', './rings/ring3', './utils/utils'], function(require, exports, Interrups, Graphic, Keyboard, Storage, Ring3, Utils) {
+define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic', './drivers/keyboard/keyboard', './drivers/storage/storage', './drivers/filesystem/filesystem', './rings/ring3', './utils/utils'], function(require, exports, Interrups, Graphic, Keyboard, Storage, Filesystem, Ring3, Utils) {
     /**
     * Mediator between drivers and apps
     * @class System
@@ -36,6 +37,7 @@ define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic',
             this.__graphic__ = this.__createGraphicDriver__();
             this.__keyboard__ = this.__createKeyboardDriver__();
             this.__storage__ = this.__createStorageDriver__();
+            this.__filesystem__ = this.__createFilesystemDriver__();
             this.__ring__ = this.__createRing__();
 
             this.__listen__();
@@ -68,11 +70,20 @@ define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic',
 
         /**
         * Instantiates a Storage driver
-        * @returns {Keyboard}
+        * @returns {Storage}
         * @private
         */
         System.prototype.__createStorageDriver__ = function () {
             return new Storage(this);
+        };
+
+        /**
+        * Instantiates a Filesystem driver
+        * @returns {Filesystem}
+        * @private
+        */
+        System.prototype.__createFilesystemDriver__ = function () {
+            return new Filesystem(this);
         };
 
         /**
@@ -127,6 +138,19 @@ define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic',
             */
             get: function () {
                 return this.__storage__;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        Object.defineProperty(System.prototype, "filesystem", {
+            /**
+            * filesystem getter
+            * @returns {Filesystem}
+            * @public
+            */
+            get: function () {
+                return this.__filesystem__;
             },
             enumerable: true,
             configurable: true

@@ -47,7 +47,11 @@ class Mem extends Alloc {
      * @returns {Any}
      * @public
      */
-    get(addr) { return addr ? this.__storage__[addr] : void(0) }
+    get(addr) {
+        console.log('[Mem#get] Getting info from', addr);
+        
+        return addr ? this.__storage__[addr] : void(0);
+    }
     
     /**
      * Stores info in memory, returning the size

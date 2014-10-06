@@ -38,6 +38,8 @@ define(["require", "exports", '../utils/utils', './alloc'], function(require, ex
         * @public
         */
         Mem.prototype.get = function (addr) {
+            console.log('[Mem#get] Getting info from', addr);
+
             return addr ? this.__storage__[addr] : void (0);
         };
 

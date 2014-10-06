@@ -1,0 +1,18 @@
+<pre>
+/*
+..:: Welcome to jscriptcoder.com::..
+====================================
+
+The goal is to hack the system, but remember, you can only code in JavaScript ;-)
+If you want to have a look at the source of this app, go to my <a href="https://github.com/jscriptcoder/jscriptcoder.com" target="_blank">GitHub</a>
+
+Technologies used:
+    1. <strong>TypeScript 1.0</strong> as a language
+    2. <strong>RequireJS 2.1.11</strong> in development and <strong>Almond 0.2.9</strong> in production as a AMD API
+    3. <strong>Firebase 1.0.17</strong> as a storage in the cloud
+    4. <strong>LESS 1.7</strong> as a css preprocessor
+    5. <strong>Bootstrap 3.1.1</strong> as a css framework
+    6. <strong>Gulp 3.6.2</strong> as a task runner
+    7. <strong>Bower 1.3.3</strong> as a package manager
+*/
+</pre>

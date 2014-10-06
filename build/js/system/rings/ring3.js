@@ -41,7 +41,7 @@ define(["require", "exports", './config', './ring'], function(require, exports, 
 
             for (member in this) {
                 if (member !== 'constructor' && !member.match(priv_re)) {
-                    info.push(member + '()');
+                    info.push(member + '();');
                 }
             }
 
@@ -57,6 +57,24 @@ define(["require", "exports", './config', './ring'], function(require, exports, 
             if (arg === '-h')
                 return Config.help.clear;
             this.__sys__.interrupt('clearoutput');
+        };
+
+        /**
+        * Presents information about this app
+        * @param {String} [arg]
+        * @public
+        */
+        Ring3.prototype.about = function (arg) {
+            var _this = this;
+            if (arg === '-h')
+                return Config.help.about;
+
+            this.__sys__.filesystem.read('about.txt').then(function (data) {
+                return _this.__sys__.interrupt('output', data, 'result');
+            }).catch(function (reason) {
+                console.warn('Error:', reason);
+                _this.__sys__.interrupt('output', reason, 'error');
+            });
         };
         return Ring3;
     })(Ring);

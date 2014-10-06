@@ -14,7 +14,7 @@ var __extends = this.__extends || function (d, b) {
 };
 define(["require", "exports", '../../mem/alloc', './config', "/bower_components/firebase/firebase.js"], function(require, exports, Alloc, Config) {
     /**
-    * @class Storage
+    * @class Storage. Internally it uses Firebase as a storage in the cloud
     * @extends Alloc
     */
     var Storage = (function (_super) {
@@ -22,7 +22,6 @@ define(["require", "exports", '../../mem/alloc', './config', "/bower_components/
         /**
         * Initializes an instance of Storage
         * @param {System} sys
-        * @param {HTMLElement} [screenEl = <div id="screen" />]
         * @constructor
         */
         function Storage(sys) {
@@ -42,6 +41,18 @@ define(["require", "exports", '../../mem/alloc', './config', "/bower_components/
         * @public
         */
         Storage.prototype.get = function (addr) {
+            var _this = this;
+            console.log('[Storage#get] Getting data from', addr);
+
+            return new Promise(function (resolve, reject) {
+                _this.__firebase__.child(addr).once('value', function (data) {
+                    console.info('[Storage#get] Got data:', data);
+                    resolve(data.val());
+                }, function () {
+                    console.warn('[Storage#get] Error: Permission denied');
+                    reject('No permissions');
+                });
+            });
         };
 
         /**
@@ -74,7 +85,7 @@ define(["require", "exports", '../../mem/alloc', './config', "/bower_components/
         };
 
         /**
-        * Indicates whether or not there is something that address
+        * Indicates whether or not there is something in that address
         * @param {String} addr
         * @returns {Boolean}
         * @public

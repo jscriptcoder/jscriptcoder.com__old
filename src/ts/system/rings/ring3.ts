@@ -41,7 +41,7 @@ class Ring3 extends Ring {
         // loops over all the members, except constructor and private ones
         for(member in this) {
             if (member !== 'constructor' && !member.match(priv_re)) {
-                info.push(member + '()');
+                info.push(member + '();');
             }
         }
         
@@ -56,6 +56,25 @@ class Ring3 extends Ring {
 	clear(arg) {
         if (arg === '-h') return Config.help.clear;
         this.__sys__.interrupt('clearoutput');
+    }
+    
+    
+	/**
+	 * Presents information about this app
+	 * @param {String} [arg]
+	 * @public
+	 */
+	about(arg) {
+        if (arg === '-h') return Config.help.about;
+        
+        this.__sys__.filesystem
+            .read('about.txt')
+            .then((data) => this.__sys__.interrupt('output', data, 'result'))
+            .catch((reason) => {
+                console.warn('Error:', reason);
+                this.__sys__.interrupt('output', reason, 'error');
+            });
+        
     }
     
 }

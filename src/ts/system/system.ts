@@ -4,6 +4,7 @@
  * @requires system/drivers/graphic/graphic
  * @requires system/drivers/keyboard/keyboard
  * @requires system/drivers/storage/storage
+ * @requires system/drivers/filesystem/filesystem
  * @requires system/rings/ring3
  * @requires system/utils/utils
  * @exports System
@@ -14,6 +15,7 @@ import Interrups = require('./utils/interrupts');
 import Graphic = require('./drivers/graphic/graphic');
 import Keyboard = require('./drivers/keyboard/keyboard');
 import Storage = require('./drivers/storage/storage');
+import Filesystem = require('./drivers/filesystem/filesystem');
 import Ring3 = require('./rings/ring3');
 import Utils = require('./utils/utils');
 
@@ -43,6 +45,12 @@ class System extends Interrups {
     __storage__;
     
     /**
+     * @type Filesystem
+     * @private
+     */
+    __filesystem__;
+    
+    /**
      * @type Ring
      * @private
      */
@@ -62,6 +70,7 @@ class System extends Interrups {
         this.__graphic__ = this.__createGraphicDriver__();
         this.__keyboard__ = this.__createKeyboardDriver__();
     	this.__storage__ = this.__createStorageDriver__();
+        this.__filesystem__ = this.__createFilesystemDriver__();
     	this.__ring__ = this.__createRing__();
     
     	this.__listen__();
@@ -92,10 +101,17 @@ class System extends Interrups {
 
     /**
      * Instantiates a Storage driver
-     * @returns {Keyboard}
+     * @returns {Storage}
      * @private
      */
     __createStorageDriver__() { return new Storage(this) }
+    
+    /**
+     * Instantiates a Filesystem driver
+     * @returns {Filesystem}
+     * @private
+     */
+    __createFilesystemDriver__() { return new Filesystem(this) }
 
     /**
      * Instantiates the first ring level
@@ -131,6 +147,13 @@ class System extends Interrups {
      * @public
      */
     get storage() { return this.__storage__ }
+    
+    /**
+     * filesystem getter
+     * @returns {Filesystem}
+     * @public
+     */
+    get filesystem() { return this.__filesystem__ }
 
 }
 

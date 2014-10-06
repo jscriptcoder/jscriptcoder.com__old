@@ -4,4 +4,4 @@
  * @author Francisco Ramos <fran@jscriptcoder.com>
  */
 
-export var firebaseUrl = 'https://jscriptcoder.firebaseio.com/' 
+export var firebaseUrl = 'https://jscriptcoder.firebaseio.com/';
