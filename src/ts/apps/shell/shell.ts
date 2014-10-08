@@ -52,8 +52,8 @@ class Shell extends DOMWrap {
         this.__sys__ = sys;
         this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
         this.__prompt__ = this.__createPrompt__(this.findOne(Config.promptSel));
-    
-        this.__output__.print(Config.msgHeader);
+        
+        this.__printHeader__();
         
     }
 
@@ -87,6 +87,22 @@ class Shell extends DOMWrap {
         return this.__prompt__;
     }
 
+    __printHeader__() {
+        
+        this.prompt.hide();
+        
+        this.__sys__.filesystem
+        
+            .read('apps/shell/header.txt')
+        
+            .then((data) => this.__output__.print(data))
+        
+            .catch((reason) => {
+                console.warn('Error:', reason);
+                this.__sys__.interrupt('output', reason, 'error');
+            });
+    }
+    
     /**
      * Instantiates an Output object. Makes it easy to mock
      * @param {HTMLElement} el

@@ -1369,14 +1369,18 @@ pre code {
   position: fixed;
 }
 /**
- * Screen stype configuration
+ * Screen style configuration
  */
 /**
- * Terminal stype configuration
+ * Terminal style configuration
  */
 html,
 body {
   height: 100%;
+}
+pre {
+  background-color: #000000;
+  border: 0;
 }
 @keyframes blink {
   0%,
@@ -1451,8 +1455,14 @@ body {
   background-color: #44d544;
   color: #000000;
 }
+.shell .output pre {
+  color: #44d544;
+}
 .shell .output .result {
   color: #428bca;
+}
+.shell .output .result pre {
+  color: #a9a9a9;
 }
 .shell .output .warning {
   color: #f0ad4e;

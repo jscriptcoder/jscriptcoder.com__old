@@ -1,0 +1,11 @@
+<pre>
+/**
+ * The adventure begins here. Type <i>help()</i> to see the available commands...
+ * Remember, this is all about coding in JavaScript, and you'll discover an amazing world ;-)
+ *
+ * <strong>@author</strong> <i>Francisco Ramos <<a href="mailto:fran@jscriptcoder.com">fran@jscriptcoder.com</a>></i>
+ * <strong>@version</strong> <i>0.1.0</i>
+ * <strong>@see</strong> <i><a href="https://github.com/jscriptcoder/jscriptcoder.com" target="_blank">GitHub</a></i>
+ * <strong>@see</strong> <i><a href="https://codio.com/jscriptcoder/jscriptcoder-com/" target="_blank">Codio.com</a></i>
+ */
+</pre>

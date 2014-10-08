@@ -83,7 +83,13 @@ class Graphic extends DOMWrap {
 	__listen__(sys) {
         sys.listen('clearscreen', () => this.empty(true));
         sys.listen('clearoutput', () => this.empty());
-        sys.listen('output', (msg, type) => this.print(msg, type));
+        sys.listen('output', (msg, type) => {
+            this.print(msg, type);
+            
+            // this could be the result of an asynchronous operation
+            // let's inform about the end of it
+            sys.interrupt('outputdone');
+        });
         
     }
 

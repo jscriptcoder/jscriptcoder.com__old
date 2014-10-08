@@ -44,7 +44,7 @@ define(["require", "exports", '../../system/utils/utils', './config'], function(
             * @public
             */
             get: function () {
-                return this.__lines__.length;
+                return !!this.__lines__.length;
             },
             enumerable: true,
             configurable: true
@@ -140,17 +140,42 @@ define(["require", "exports", '../../system/utils/utils', './config'], function(
         Program.prototype.addLine = function (line) {
             // beginning of a block
             if (line.match(Program.BEGIN_BLK_RE)) {
-                this.__brackets__.push(true);
-                this.__tabs__++;
+                this.beginBlock();
             }
 
             this.__lines__.push(line);
 
             // end of a block
             if (line.match(Program.END_BLK_RE)) {
-                this.__brackets__.pop();
-                this.__tabs__--;
+                this.endBlock();
             }
+        };
+
+        /**
+        * Initialises a block
+        * @public
+        */
+        Program.prototype.beginBlock = function () {
+            this.__brackets__.push(true);
+            this.__tabs__++;
+        };
+
+        /**
+        * Ends a block
+        * @public
+        */
+        Program.prototype.endBlock = function () {
+            this.__brackets__.pop();
+            this.__tabs__--;
+        };
+
+        /**
+        * Returns the last line of the program
+        * @returns {String}
+        * @public
+        */
+        Program.prototype.getLastLine = function () {
+            return this.__lines__[this.__lines__.length - 1];
         };
 
         /**

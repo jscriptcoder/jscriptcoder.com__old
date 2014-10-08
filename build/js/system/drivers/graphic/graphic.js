@@ -79,7 +79,11 @@ define(["require", "exports", '../../utils/utils', './domwrap', './config'], fun
                 return _this.empty();
             });
             sys.listen('output', function (msg, type) {
-                return _this.print(msg, type);
+                _this.print(msg, type);
+
+                // this could be the result of an asynchronous operation
+                // let's inform about the end of it
+                sys.interrupt('outputdone');
             });
         };
 

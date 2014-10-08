@@ -38,10 +38,11 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap'], function(
         /**
         * Sends a message to the output
         * @param {String|String[]} message
+        * @param {string} [type]
         * @public
         */
-        Output.prototype.print = function (message) {
-            this.__sys__.interrupt('output', message);
+        Output.prototype.print = function (message, type) {
+            this.__sys__.interrupt('output', message, type);
         };
         return Output;
     })(DOMWrap);

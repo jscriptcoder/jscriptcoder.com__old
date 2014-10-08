@@ -69,7 +69,9 @@ define(["require", "exports", './config', './ring'], function(require, exports, 
             if (arg === '-h')
                 return Config.help.about;
 
-            this.__sys__.filesystem.read('about.txt').then(function (data) {
+            this.__sys__.graphic;
+
+            this.__sys__.filesystem.read('system/rings/about.txt').then(function (data) {
                 return _this.__sys__.interrupt('output', data, 'result');
             }).catch(function (reason) {
                 console.warn('Error:', reason);

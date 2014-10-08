@@ -35,7 +35,7 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             this.__output__ = this.__createOutput__(this.findOne(Config.outputSel));
             this.__prompt__ = this.__createPrompt__(this.findOne(Config.promptSel));
 
-            this.__output__.print(Config.msgHeader);
+            this.__printHeader__();
         }
         Object.defineProperty(Shell.prototype, "sys", {
             /**
@@ -78,6 +78,18 @@ define(["require", "exports", '../../system/drivers/graphic/domwrap', './config'
             enumerable: true,
             configurable: true
         });
+
+        Shell.prototype.__printHeader__ = function () {
+            var _this = this;
+            this.prompt.hide();
+
+            this.__sys__.filesystem.read('apps/shell/header.txt').then(function (data) {
+                return _this.__output__.print(data);
+            }).catch(function (reason) {
+                console.warn('Error:', reason);
+                _this.__sys__.interrupt('output', reason, 'error');
+            });
+        };
 
         /**
         * Instantiates an Output object. Makes it easy to mock

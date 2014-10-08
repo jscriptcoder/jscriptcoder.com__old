@@ -64,7 +64,7 @@ class Program {
      * @returns {Boolean}
      * @public
      */
-    get is() { return this.__lines__.length }
+    get is() { return !!this.__lines__.length }
 
     /**
      * isBlock getter. Whether or not we are in a block
@@ -126,18 +126,41 @@ class Program {
 
         // beginning of a block
         if (line.match(Program.BEGIN_BLK_RE)) {
-            this.__brackets__.push(true);
-            this.__tabs__++;
+            this.beginBlock();
         }
         
         this.__lines__.push(line);
         
         // end of a block
         if (line.match(Program.END_BLK_RE)) {
-            this.__brackets__.pop();
-            this.__tabs__--;
+            this.endBlock();
         }
     }
+
+    /**
+     * Initialises a block
+     * @public
+     */
+    beginBlock() {
+        this.__brackets__.push(true);
+        this.__tabs__++;
+    }
+
+    /**
+     * Ends a block
+     * @public
+     */
+    endBlock() {
+        this.__brackets__.pop();
+        this.__tabs__--;
+    }
+
+    /**
+     * Returns the last line of the program
+     * @returns {String}
+     * @public
+     */
+    getLastLine() { return this.__lines__[this.__lines__.length - 1] }
 
     /**
      * Clears the program

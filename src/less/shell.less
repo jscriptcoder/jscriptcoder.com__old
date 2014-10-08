@@ -11,9 +11,17 @@
     }
     
     .output {
-        .result { color: @terminal-font-result; }
+        
+        pre { color: @terminal-font-color; }
+        
+        .result {
+            color: @terminal-font-result;
+            pre { color: @terminal-font-pre;  }
+        }
+        
         .warning { color: @terminal-font-warning; }
         .error { color: @terminal-font-error; }
+        
     }
     
 }

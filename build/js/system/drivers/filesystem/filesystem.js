@@ -40,13 +40,13 @@ define(["require", "exports", './config'], function(require, exports, Config) {
                     // Success!
                     success(xhr.responseText);
                 } else {
-                    // We reached our target server, but it returned an error
+                    // we reached our target server, but it returned an error
                     error('Server error');
                 }
             };
 
             xhr.onerror = function () {
-                // There was a connection error of some sort
+                // there was a connection error of some sort
                 error('Connection error');
             };
 

@@ -148,6 +148,7 @@ class Prompt extends DOMWrap {
 	__listen__(sys) {
         sys.listen('keypress', this.onKeypress.bind(this));
         sys.listen('documentclick', this.onDocumentClick.bind(this));
+        sys.listen('outputdone', this.onOutputDone.bind(this));
         
     }
 
@@ -434,6 +435,8 @@ class Prompt extends DOMWrap {
         }
     }
 
+    isCmdEmpty() { return !!this.__cmd__.match(/^\s*$/); }
+    
     /**
      * Clears the command line
      * @public
@@ -483,7 +486,7 @@ class Prompt extends DOMWrap {
         // the last one then it's like just pressing enter
         shift = shift && !(prog.isLastBlock && !!cmd.match(Program.END_BLK_RE));
         
-        // ends the program is shift wasn't pressed
+        // ends the program if shift wasn't pressed
         if (!shift && prog.is) {
             prog.addLine(cmd); // add the last cmd
             cmd = prog.get();
@@ -497,6 +500,7 @@ class Prompt extends DOMWrap {
         this.clear();
         
         if (shift) {
+            
             prog.addLine(cmd);
             
             // hides the symbol at the beginning of a program
@@ -504,6 +508,13 @@ class Prompt extends DOMWrap {
 
             // sends as many tabs as there are in the previous line
             if (prog.numTabs) this.tab(prog.numTabs);
+            
+        } else {
+            
+            // hides the prompt while the command is running
+            // for asynchronous operations
+            // this.hide();
+            
         }
         
         // returns the symbol at the end of the program
@@ -560,13 +571,27 @@ class Prompt extends DOMWrap {
                 
         }
     }
-
+    
     /**
      * Sends a character
      * @param {String} c
      * @public
      */
-    char(c) { this.insert(c) }
+    char(c) {
+        var prog = this.__program__;
+        
+        if (prog.isBlock && this.isCmdEmpty() && c === '}') {
+            
+            // we're in a block and closing in with a single '}'
+            // Let's move the cursor one tab back
+            this.clear();
+            this.tab(prog.numTabs - 1);
+            
+        }
+            
+        
+        this.insert(c);
+    }
 
     /**
      * Copies selected text to the clipboard
@@ -592,6 +617,15 @@ class Prompt extends DOMWrap {
      * @event
      */
     onDocumentClick() { this.moveCursorTo(this.__curPos__) }
+    
+    /**
+     * Gets triggered when the output is done printing
+     * @event
+     */
+    onOutputDone() {
+        this.show();
+        this.el.scrollIntoView();
+    }
 }
 
 export = Prompt;

@@ -12,9 +12,8 @@ export var help = {
     
     header: [
         '/**',
-        '&nbsp;* List of commands',
+        '&nbsp;* List of available commands for depending on your privileges.',
         '&nbsp;* Pass <i>"-h"</i> as a parameter in any command for more help',
-        '&nbsp;*',
         '&nbsp;* <strong>@example</strong> <i>command("-h");</i>',
         '&nbsp;*/'
     ],
@@ -28,13 +27,10 @@ export var help = {
 
     about: [
         '/**',
-        '&nbsp;* Shows information about this app',
+        '&nbsp;* Shows information about this app.',
         '&nbsp;* If the string <i>"author"</i> is passed in, it\'ll show info about the author',
-        '&nbsp;*',
         '&nbsp;* <strong>@param</strong> {<i>string</i>} [<strong>what</strong>] - Optional parameter. Values: <i>"author"</i>',
-        '&nbsp;*',
         '&nbsp;* <strong>@example</strong> <i>about();</i> // prints info about this app',
-        '&nbsp;* <strong>@example</strong> <i>about("-h");</i> // prints this text',
         '&nbsp;* <strong>@example</strong> <i>about("author");</i> // prints info about me :-)',
         '&nbsp;*/'
     ]

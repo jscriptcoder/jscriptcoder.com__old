@@ -41,10 +41,11 @@ class Output extends DOMWrap {
     /**
      * Sends a message to the output
      * @param {String|String[]} message
+     * @param {string} [type]
      * @public
      */
-    print(message) {
-        this.__sys__.interrupt('output', message);
+    print(message, type?) {
+        this.__sys__.interrupt('output', message, type);
     }
 
 }

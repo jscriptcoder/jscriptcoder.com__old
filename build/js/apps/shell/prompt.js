@@ -75,6 +75,7 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
         Prompt.prototype.__listen__ = function (sys) {
             sys.listen('keypress', this.onKeypress.bind(this));
             sys.listen('documentclick', this.onDocumentClick.bind(this));
+            sys.listen('outputdone', this.onOutputDone.bind(this));
         };
 
         /**
@@ -364,6 +365,10 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
             }
         };
 
+        Prompt.prototype.isCmdEmpty = function () {
+            return !!this.__cmd__.match(/^\s*$/);
+        };
+
         /**
         * Clears the command line
         * @public
@@ -416,7 +421,7 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
             // the last one then it's like just pressing enter
             shift = shift && !(prog.isLastBlock && !!cmd.match(Program.END_BLK_RE));
 
-            // ends the program is shift wasn't pressed
+            // ends the program if shift wasn't pressed
             if (!shift && prog.is) {
                 prog.addLine(cmd); // add the last cmd
                 cmd = prog.get();
@@ -439,6 +444,10 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
                 // sends as many tabs as there are in the previous line
                 if (prog.numTabs)
                     this.tab(prog.numTabs);
+            } else {
+                // hides the prompt while the command is running
+                // for asynchronous operations
+                // this.hide();
             }
 
             // returns the symbol at the end of the program
@@ -512,6 +521,15 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
         * @public
         */
         Prompt.prototype.char = function (c) {
+            var prog = this.__program__;
+
+            if (prog.isBlock && this.isCmdEmpty() && c === '}') {
+                // we're in a block and closing in with a single '}'
+                // Let's move the cursor one tab back
+                this.clear();
+                this.tab(prog.numTabs - 1);
+            }
+
             this.insert(c);
         };
 
@@ -541,6 +559,15 @@ define(["require", "exports", '../../system/utils/utils', '../../system/drivers/
         */
         Prompt.prototype.onDocumentClick = function () {
             this.moveCursorTo(this.__curPos__);
+        };
+
+        /**
+        * Gets triggered when the output is done printing
+        * @event
+        */
+        Prompt.prototype.onOutputDone = function () {
+            this.show();
+            this.el.scrollIntoView();
         };
         return Prompt;
     })(DOMWrap);
