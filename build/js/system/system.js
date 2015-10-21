@@ -87,7 +87,7 @@ define(["require", "exports", './utils/interrupts', './drivers/graphic/graphic',
         };
 
         /**
-        * Instantiates the first ring level
+        * Instantiates the outter ring level
         * @returns {Ring}
         * @private
         */

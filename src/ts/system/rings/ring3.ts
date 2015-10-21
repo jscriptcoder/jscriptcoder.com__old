@@ -67,8 +67,6 @@ class Ring3 extends Ring {
 	about(arg) {
         if (arg === '-h') return Config.help.about;
         
-        this.__sys__.graphic
-        
         this.__sys__.filesystem
             .read('system/rings/about.txt')
             .then((data) => this.__sys__.interrupt('output', data, 'result'))

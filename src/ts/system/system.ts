@@ -114,7 +114,7 @@ class System extends Interrups {
     __createFilesystemDriver__() { return new Filesystem(this) }
 
     /**
-     * Instantiates the first ring level
+     * Instantiates the outter ring level
      * @returns {Ring}
      * @private
      */

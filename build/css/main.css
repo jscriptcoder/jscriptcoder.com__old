@@ -1426,6 +1426,38 @@ pre {
     color: #44d544;
   }
 }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  to {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-ms-keyframes spin {
+  to {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spin {
+  to {
+    transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+  }
+}
 .screen {
   height: 100%;
   overflow-y: scroll;
@@ -1439,6 +1471,10 @@ pre {
 .screen .cursor.blink {
   -webkit-animation: blink 1s infinite steps(1);
   animation: blink 1s infinite steps(1);
+}
+.screen .cursor.spin {
+  -webkit-animation: spin 1s infinite steps(8);
+  animation: spin 1s infinite steps(8);
 }
 .screen .cursor.type {
   background-color: #44d544;
